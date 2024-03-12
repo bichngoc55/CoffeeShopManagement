@@ -11,7 +11,7 @@
 - [Thông tin môn học](#ThongTin)
 - [Đóng góp](#contribution)
   
-# WEB QUẢN LÝ TIỆM COFFEE JAVA JOY
+# WEB QUẢN LÝ QUÁN COFFEE JAVA JOY
 
 Quán cà phê Java Joy là một điểm đến thú vị cho những người yêu thích cà phê. Không gian ấm cúng, thực đơn đa dạng và nhân viên thân thiện. Hãy ghé thăm để trải nghiệm những ly cà phê ngon và không gian thú vị! ☕🌟
 
