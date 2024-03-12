@@ -22,7 +22,8 @@ Quán cà phê Java Joy là một điểm đến thú vị cho những người 
 - Quản lý bàn trống theo tầng: Giúp nhân viên quản lý bàn trống một cách hiệu quả, đồng thời tối ưu hóa sử dụng không gian trong quán.
 - Quản lý nguyên vật liệu: Theo dõi số lượng nguyên vật liệu như cà phê, sữa, đường, để đảm bảo không bị thiếu hụt.
 - Tích hợp thanh toán và ghi lại lịch sử hoá đơn. 
-
+- Cho phép chủ cửa hàng quản lý doanh thu, nhân viên.
+  
 ## <a name="technology">Công Nghệ</a>
 
 - React & MUI (Frontend) 
