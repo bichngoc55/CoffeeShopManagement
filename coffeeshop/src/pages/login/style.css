@@ -1,0 +1,125 @@
+.main-container {
+  background-color: #f9f8fb;
+  flex: 1;
+}
+
+.columns-container {
+  gap: 20px;
+  align-items: center;
+}
+
+@media (max-width: 991px) {
+  .columns-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+}
+
+.image-column {
+  flex: 1/2;
+  height: 100%;
+}
+
+.image {
+  aspect-ratio: 0.76;
+  /* flex-grow: 1; */
+}
+
+@media (max-width: 991px) {
+  .image {
+    max-width: 100%;
+    margin-top: 40px;
+  }
+}
+
+.content-column {
+  flex: 1/2;
+}
+
+@media (max-width: 991px) {
+  .content-column {
+    width: 100%;
+  }
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  font-size: 26px;
+  color: #412d26;
+  font-weight: 500;
+  margin: auto 0;
+  padding: 0 20px;
+}
+
+@media (max-width: 991px) {
+  .content-wrapper {
+    max-width: 100%;
+    margin-top: 40px;
+  }
+}
+
+.title {
+  color: #714534;
+  align-self: center;
+  font: 700 32px Kumbh Sans, -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.description {
+  font-family: Kumbh Sans, sans-serif;
+  margin: 32px 11px 0;
+}
+
+@media (max-width: 991px) {
+  .description {
+    max-width: 100%;
+    margin-right: 10px;
+  }
+}
+
+.input {
+  font-family: Kumbh Sans, sans-serif;
+  margin-top: 62px;
+}
+
+@media (max-width: 991px) {
+  .input {
+    max-width: 100%;
+    margin-top: 40px;
+  }
+}
+
+.options-container {
+  display: flex;
+  margin-top: 112px;
+  gap: 20px;
+}
+
+@media (max-width: 991px) {
+  .options-container {
+    max-width: 100%;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+}
+
+.remember-me,
+.forgot-password {
+  font-family: Kumbh Sans, sans-serif;
+  flex-grow: 1;
+  flex-basis: auto;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
