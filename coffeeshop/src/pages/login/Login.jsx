@@ -7,7 +7,7 @@ const LoginPage = () => {
       <div className="image-section"></div>
       <div className="form-section">
         <div className="form">
-          <label className="welcome">WELCOME BACK</label>
+          <label className="welcome">WELCOME BACK!</label>
           <label className="please">Please enter your login information</label>
 
           <div className="form-group">
@@ -34,7 +34,7 @@ const LoginPage = () => {
             </a>
           </div>
 
-          <button type="submit">Login</button>
+          <button type="submit">Login!</button>
         </div>
       </div>
     </div>
