@@ -52,7 +52,7 @@ const HomePage = () => {
               JavaJoy is thrilled to welcome each new member to our family. Let's
               create unforgettable experiences and build an amazing work
               environment together. Be ready to explore, innovate, and achieve
-              remarkable success. Welcome to our team! Best regards, JavaJoy
+              remarkable success.Welcome to our team!Best regards,JavaJoy
             </div>
             <div className="shrink-0 mt-5 h-0.5 bg-yellow-900 border border-yellow-900 border-solid max-md:max-w-full" />
           </div>
