@@ -1,16 +1,14 @@
-<<<<<<< Updated upstream
-import Login from "./pages/login/Login";
-=======
-import {} from "./pages/login/Login.jsx";
-import "./App.css";
 
->>>>>>> Stashed changes
-function App() {
+import React from "react";
+import LoginPage from "./pages/login/Login";
+
+const App = () => {
+
   return (
-    <div className="App">
-      <Login />
+    <div>
+      <LoginPage />
     </div>
   );
-}
+};
 
 export default App;
