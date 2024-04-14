@@ -30,8 +30,9 @@ function App() {
           </Routes>
         </ThemeProvider>
       </BrowserRouter>
+
     </div>
   );
-}
+};
 
 export default App;
