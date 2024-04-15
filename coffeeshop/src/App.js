@@ -6,7 +6,9 @@ import { createTheme } from "@mui/material/styles";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import LoginPage from "./pages/Login/Login";
-//import DashBoard from "./components/dashBoard/dashboard";
+import DashBoard from "./components/dashBoard/dashBoard";
+import { useState } from "react";
+import NavBar from "./components/navBar/navBar";
 // import HomePage from "./pages/HomePage";
 // import OrderPage from "./pages/OrderPage";
 
@@ -14,19 +16,20 @@ function App() {
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   //const isAuth = Boolean(useSelector((state) => state.token));
+  const [isSidebar, setIsSidebar] = useState(true);
   return (
     <div className="App">
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          {/* <DashBoard /> */}
+
+          <DashBoard isSidebar={isSidebar} />
+          {/* <NavBar setIsSidebar={setIsSidebar} /> */}
           <Routes>
-            <Route path="/" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            {/* <Route path="/home" element={<DashBoard />} /> */}
+
             {/* <Route
-              path="/home"
-              element={isAuth ? <HomePage /> : <Navigate to="/" />}
-            />
-            <Route
               path="/order"
               element={isAuth ? <OrderPage /> : <Navigate to="/" />}
             />  */}
