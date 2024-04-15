@@ -8,7 +8,6 @@ const LoginPage = () => {
       <div className="form-section">
         <div className="form">
           <label className="welcome">WELCOME BACK</label>
-          
 
           <label className="please">Please enter your login information</label>
 
@@ -36,9 +35,7 @@ const LoginPage = () => {
             </a>
           </div>
 
-
           <button type="submit">Login</button>
-
         </div>
       </div>
     </div>
