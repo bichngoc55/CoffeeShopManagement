@@ -17,9 +17,6 @@ import userEvent from "@testing-library/user-event";
 import { BreakfastDiningOutlined } from "@mui/icons-material";
 
 
-
-import HomePage from "../../pages/HomePage/home";
-
 const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
@@ -88,7 +85,7 @@ const DashBoard = () => {
                 alt="profile-user"
                 width="100px"
                 height="100px"
-                src={`../../assets/image.png`}
+                src={`../../assets/avtUser.png`}
                 style={{ cursor: "pointer", borderRadius: "50%" }}
               />
             </Box>
@@ -172,7 +169,6 @@ const DashBoard = () => {
           />
         </Box>
       </Menu>
-      <HomePage/>
     </Sidebar>
   );
 };

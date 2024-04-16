@@ -24,7 +24,7 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
 
-          <DashBoard isSidebar={isSidebar} />
+          {/* <DashBoard isSidebar={isSidebar} /> */}
           {/* <NavBar setIsSidebar={setIsSidebar} /> */}
           <Routes>
             <Route path="/" element={<HomePage />} />
