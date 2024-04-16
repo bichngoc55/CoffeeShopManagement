@@ -9,7 +9,8 @@ import LoginPage from "./pages/Login/Login";
 import DashBoard from "./components/dashBoard/dashBoard";
 import { useState } from "react";
 import NavBar from "./components/navBar/navBar";
-// import HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage/home";
+import { Home } from "@mui/icons-material";
 // import OrderPage from "./pages/OrderPage";
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
           <DashBoard isSidebar={isSidebar} />
           {/* <NavBar setIsSidebar={setIsSidebar} /> */}
           <Routes>
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<HomePage />} />
             {/* <Route path="/home" element={<DashBoard />} /> */}
 
             {/* <Route

@@ -16,6 +16,10 @@ import TableBarOutlinedIcon from "@mui/icons-material/TableBarOutlined";
 import userEvent from "@testing-library/user-event";
 import { BreakfastDiningOutlined } from "@mui/icons-material";
 
+
+
+import HomePage from "../../pages/HomePage/home";
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
@@ -37,7 +41,7 @@ const DashBoard = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
   return (
-    <Sidebar collapsed={isCollapsed}>
+    <Sidebar collapsed={isCollapsed} flexDirection="row">
       <Menu
         menuItemStyles={{
           button: {
@@ -168,6 +172,7 @@ const DashBoard = () => {
           />
         </Box>
       </Menu>
+      <HomePage/>
     </Sidebar>
   );
 };
