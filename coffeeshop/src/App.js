@@ -8,9 +8,9 @@ import { useMemo } from "react";
 import LoginPage from "./pages/Login/Login";
 import DashBoard from "./components/dashBoard/dashBoard";
 import { useState } from "react";
-import NavBar from "./components/navBar/navBar";
-// import HomePage from "./pages/HomePage";
-// import OrderPage from "./pages/OrderPage";
+import Home from "./pages/HomePage/home";
+import Menu from "./pages/MenuPage/menu";
+import Inventory from "./pages/InventoryPage/inventory";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -22,18 +22,22 @@ function App() {
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-
-          <DashBoard isSidebar={isSidebar} />
+          <div className="sidebar">
+            <DashBoard isSidebar={isSidebar} />
+          </div>
           {/* <NavBar setIsSidebar={setIsSidebar} /> */}
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            {/* <Route path="/home" element={<DashBoard />} /> */}
-
-            {/* <Route
+          <div className="main-content">
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/menu" element={<Menu />} />
+              {/* <Route
               path="/order"
               element={isAuth ? <OrderPage /> : <Navigate to="/" />}
             />  */}
-          </Routes>
+            </Routes>
+          </div>
         </ThemeProvider>
       </BrowserRouter>
     </div>
