@@ -3,6 +3,7 @@ import "./Loginpage.css";
 
 const LoginPage = () => {
   return (
+
     <div className="login-page">
       <div className="image-section"></div>
       <div className="form-section">
