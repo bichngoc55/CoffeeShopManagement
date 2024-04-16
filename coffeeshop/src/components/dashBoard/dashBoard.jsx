@@ -13,15 +13,19 @@ import FreeBreakfastOutlinedIcon from "@mui/icons-material/FreeBreakfastOutlined
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import { useState } from "react";
 import TableBarOutlinedIcon from "@mui/icons-material/TableBarOutlined";
-import userEvent from "@testing-library/user-event";
 import { BreakfastDiningOutlined } from "@mui/icons-material";
+import { Switch } from "@mui/material";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
       active={selected === title}
+      //   style={{
+      //     color: "#553528",
+      //   }}
       style={{
-        color: "#553528",
+        color: selected === title ? "#412D26" : "#8D817D",
+        backgroundColor: selected === title ? "#AC7966" : "transparent",
       }}
       onClick={() => setSelected(title)}
       icon={icon}
@@ -31,13 +35,18 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const DashBoard = () => {
+const DashBoard = ({ handleChange, mode }) => {
   const theme = useTheme();
   const colors = themeSettings(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Dashboard");
+  const [selected, setSelected] = useState("Trang Chủ");
   return (
-    <Sidebar collapsed={isCollapsed}>
+    <Sidebar
+      collapsed={isCollapsed}
+      style={{
+        height: "100vh",
+      }}
+    >
       <Menu
         menuItemStyles={{
           button: {

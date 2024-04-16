@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+.switch-container {
+  z-index: 1;
+  position: fixed;
+  left: 1350px;
+}
