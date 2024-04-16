@@ -37,7 +37,9 @@ function App() {
         </ThemeProvider>
       </BrowserRouter>
     </div>
+
   );
 }
+
 
 export default App;
