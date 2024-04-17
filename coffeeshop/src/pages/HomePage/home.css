@@ -1,0 +1,66 @@
+/* text */
+
+html {
+    font-size: 16px; /* Đặt kích thước cơ sở là 16px */
+}
+
+.medium_text {
+    font-size: 2rem; /* Kích thước chữ là 2 lần kích thước cơ sở */
+}
+
+.large_text {
+  font-size: 3rem;
+}
+
+.small_text {
+  font-size: 1rem;
+  margin-top: 1.86%;
+  margin-bottom: 1.86% ;
+}
+
+p {
+  font-size: 1rem;
+}
+
+.title {
+  font-size: 1.8rem;
+  color: #714534;
+  font-weight: 500
+}
+  
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-input::placeholder {
+    font-size: 1rem;
+}
+
+/* style */
+
+.content {
+  margin-left: 2.64%;
+  margin-right: 2.64%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+
+}
+
+.line {
+  /* margin-top: 0.88%; */
+  margin-top: 2.05%;
+  margin-left: 3%;
+  margin-bottom: 2.05%;
+  width: 240px;
+  /* width: 26%; */
+  border-width: 0.6px;
+  border-style: solid;
+  border-color: #714534;
+  opacity: 0.6; /* Giá trị opacity để làm mờ màu */
+}
+

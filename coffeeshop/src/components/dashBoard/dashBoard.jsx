@@ -16,6 +16,7 @@ import TableBarOutlinedIcon from "@mui/icons-material/TableBarOutlined";
 import { BreakfastDiningOutlined } from "@mui/icons-material";
 import { Switch } from "@mui/material";
 
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
@@ -41,6 +42,7 @@ const DashBoard = ({ handleChange, mode }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("");
   return (
+
     <Sidebar
       collapsed={isCollapsed}
       style={{
@@ -50,6 +52,7 @@ const DashBoard = ({ handleChange, mode }) => {
         zIndex: "1",
       }}
     >
+
       <Menu
         menuItemStyles={{
           button: {

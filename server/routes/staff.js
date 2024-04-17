@@ -11,7 +11,6 @@ const router = express.Router();
 
 /* READ */
 router.get("/", getAllStaff);
-//http://localhost:3005/staff/getAllStaff
 /* READ */
 router.get("/:id", verifyToken, getDetailStaff);
 /* CREATE */

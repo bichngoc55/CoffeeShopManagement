@@ -16,7 +16,7 @@ const TabStaff = ({ items }) => {
             ref={index === 0 ? firstBtnRef : null}
             key={index}
             onClick={() => setSelectedTab(index)}
-            className="buttonTab"
+            className={selectedTab === index ? "buttonSelected" : "buttonTab"}
           >
             {item.title}
           </button>
