@@ -59,6 +59,7 @@ const DashBoard = ({ handleChange, mode }) => {
             },
             "&:hover": {
               color: "#714534 !important",
+              backgroundColor: "##8D817D !important",
             },
           },
           display: "flex",
@@ -136,7 +137,7 @@ const DashBoard = ({ handleChange, mode }) => {
           />
           <Item
             title="Nhân Viên"
-            to="/stuff"
+            to="/staff"
             icon={<PeopleOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}

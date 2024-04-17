@@ -1,9 +1,26 @@
 import React from "react";
 import "./Loginpage.css";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../../services/loginService.js";
 
 const LoginPage = () => {
+ 
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newUser = { username: username, password: password };
+    loginUser(newUser, dispatch, navigate);
+  };
   return (
-    <div className="login-page">
+    <form onsubmit={handleSubmit} className="login-page">
+ 
       <div className="image-section"></div>
       <div className="form-section">
         <div className="form">
@@ -15,16 +32,25 @@ const LoginPage = () => {
             <label htmlFor="username" className="user-pass">
               Username
             </label>
-            <input type="text" id="username" />
+            <input
+              type="text"
+              id="username"
+              onChange={(e) => setUsername(e.target.value)}
+            />
           </div>
 
           <div>
             <label htmlFor="password" className="inPutText">
               Password
             </label>
-            <input className="inPutText" type="text" id="password" />
+ 
+            <input
+              type="text"
+              id="password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+ 
           </div>
-
           <div className="remember-forgot">
             <div className="remember">
               <input type="checkbox" />
@@ -35,12 +61,14 @@ const LoginPage = () => {
             </a>
           </div>
 
+ 
           <button className="buttonLogin" type="submit">
+ 
             Login
           </button>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
