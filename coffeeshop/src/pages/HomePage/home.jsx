@@ -1,51 +1,67 @@
-import React from 'react';
+import React, {useState} from 'react';
+
+import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded';
 
 import DashBoard from '../../components/dashBoard/dashBoard';
 import {Box} from "@mui/material";
 import './home.css'
+import WorkScheduleTable from './WorkSchedule';
 
 const HomePage = () => {
-    return (
-      <Box sx={{display: "flex", maxWidth: "100vw", }}>
-        <DashBoard/>
-        <div className='container'>
-          <div className='flex justify-between ' style={{ marginTop: '2.15%',marginLeft: '2.64%', marginRight: '2.64%', flexDirection: 'row' }}>
-            <div className=" font-semibold medium_text">Home Page</div>
-            <div className=" text-base whitespace-nowrap bg-white rounded-xl max-md:pl-5">
-              <input type="text" className="search-input" style={{ fontSize: '16px' }} placeholder="Search..." />
-              <div className="shrink-0 rounded-2xl bg-zinc-300 h-[52px] w-[55px]" />
-            </div>
-            <img
-              alt="profile-user"
-              width="6%"
-              height="auto"
-              loading="lazy"
-              src={`../../assets/avtUser.png`}
-              style={{ cursor: "pointer", borderRadius: "100%" }}
-            />
+
+  const [isContentVisible, setIsContentVisible] = useState(false);
+
+  const handleToggleClick = () => {
+    setIsContentVisible(!isContentVisible);
+  };
+  
+  return (
+    <Box sx={{display: "flex", maxWidth: "100vw", }}>
+      <DashBoard/>
+      <div className='container'>
+        <div className='flex justify-between ' style={{ marginTop: '2.15%',marginLeft: '2.64%', marginRight: '2.64%', flexDirection: 'row' }}>
+          <div className=" font-semibold medium_text">Home Page</div>
+          <div className=" bg-white " style={{ width: '27.08%'}}>
+            <input type="text" className="search-input" placeholder="Search..." />
           </div>
-          <div className='content'>
-            <a className='large_text font-semibold' style={{marginTop: '4%', textAlign: 'left', display: 'block', color: "#714534" }}>
-              Hello [Name]!
+          <img
+            alt="profile-user"
+            width="6%"
+            height="auto"
+            loading="lazy"
+            src={`../../assets/avtUser.png`}
+            style={{ cursor: "pointer", borderRadius: "100%" }}
+          />
+        </div>
+        <div className='content'>
+          <a className='large_text font-semibold' style={{marginTop: '4%', textAlign: 'left', display: 'block', color: "#714534" }}>
+            Hello [Name]!
+          </a>
+          <div className='line'/>
+
+          <div className=''>
+            <a className='title'> Welcome to JavaJoy! </a>
+            <br/>
+            <a className='small_text'> 
+              We have been eagerly awaiting this moment to meet and work together.
+              JavaJoy is thrilled to welcome each new member to our family. Let's
+              create unforgettable experiences and build an amazing work
+              environment together.<br/> Be ready to explore, innovate, and achieve
+              remarkable success.Welcome to our team! <br/> Best regards, <br/> JavaJoy
             </a>
-            <div className='line'/>
-            {/* cuộn màn hình */}
-            <div className=''>
-              <a className='title'> Welcome to JavaJoy! </a>
-              <br/>
-              <a className='small_text'> 
-                We have been eagerly awaiting this moment to meet and work together.
-                JavaJoy is thrilled to welcome each new member to our family. Let's
-                create unforgettable experiences and build an amazing work
-                environment together.<br/> Be ready to explore, innovate, and achieve
-                remarkable success.Welcome to our team! <br/> Best regards, <br/> JavaJoy
-              </a>
+          </div>
+          <div className='line'/>
+          
+          <div className=''>
+            {/* Regulations and Terms */}
+            <div className='title' style={{flexDirection: 'row'}}>
+              <a > Regulations and Terms  </a>
+              <button onClick={handleToggleClick} className='icon'>
+                {isContentVisible ? <ArrowDropDownRoundedIcon /> : <ArrowDropDownRoundedIcon style={{ transform: 'rotate(-90deg)' }}/>}
+              </button>
             </div>
-            <div className='line'/>
-            <div className=''>
-              {/* Regulations and Terms */}
-              <a className='title'> Regulations and Terms  </a>
-              <br/>
+            <br/>
+            <div className={`term&condition ${isContentVisible ? 'visible' : 'hidden'}`}>
               <a className='small_text'> 
                 Here are some terms and conditions for you and other employees
                 in JavaJoy to help us work together better:
@@ -95,9 +111,18 @@ const HomePage = () => {
                 should discuss them with the café manager/supervisor.</a>
             </div>
           </div>
+          <div className='line'/>
+
+          <div className='WorkSchedule'> 
+            <a className='title'>Work schedule</a>
+            <div style={{marginTop: '7%',}}>
+              <WorkScheduleTable/>
+            </div>
+          </div>
         </div>
-      </Box>
-    );
+      </div>
+    </Box>
+  );
 };
 export default HomePage;
 

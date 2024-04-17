@@ -40,6 +40,13 @@ p {
 
 /* style */
 
+.search-input {
+    border: none; /* Loại bỏ viền */
+    background-color: transparent; /* Đặt màu nền là trong suốt */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Tạo bóng phía dưới */
+    border-radius: 10px;
+}
+
 .content {
   margin-left: 2.64%;
   margin-right: 2.64%;
@@ -64,3 +71,21 @@ p {
   opacity: 0.6; /* Giá trị opacity để làm mờ màu */
 }
 
+.icon {
+    color: #714534;
+    
+}
+
+.term&condition {
+    height: 0;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+.visible {
+    height: auto;
+}
+  
+.hidden {
+height: 0;
+}
