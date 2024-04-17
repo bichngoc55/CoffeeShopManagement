@@ -6,29 +6,31 @@ import { createTheme } from "@mui/material/styles";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import LoginPage from "./pages/LoginPage/Login";
-import DashBoard from "./components/dashBoard/dashBoard";
+
+import Booking from "./pages/BookingPage/booking";
+import Stuff from "./pages/StuffPage/stuff";
 import { useState } from "react";
-import NavBar from "./components/navBar/navBar";
-import HomePage from "./pages/HomePage/home";
-import { Home } from "@mui/icons-material"; 
-// import OrderPage from "./pages/OrderPage";
+import Home from "./pages/home/HomePage";
+//import Menu from "./pages/MenuPage/menu";
+import Inventory from "./pages/InventoryPage/inventory";
+
 
 function App() {
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   //const isAuth = Boolean(useSelector((state) => state.token));
-  const [isSidebar, setIsSidebar] = useState(true);
   return (
     <div className="App">
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
 
-          {/* <DashBoard isSidebar={isSidebar} /> */}
-          {/* <NavBar setIsSidebar={setIsSidebar} /> */}
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            {/* <Route path="/home" element={<DashBoard />} /> */}
+            <Route path="/home" element={<Home />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/stuff" element={<Stuff />} />
+            {/* <Route path="/menu" element={<Menu />} /> */}
+            <Route path="/booking" element={<Booking />} />
 
             {/* <Route
               path="/order"
@@ -38,9 +40,7 @@ function App() {
         </ThemeProvider>
       </BrowserRouter>
     </div>
-
   );
 }
-
 
 export default App;

@@ -55,7 +55,7 @@ input {
   margin-left: 70px;
   color: #714534;
 }
-button {
+.buttonLogin {
   background-color: #714534;
   color: #ffffff;
   padding: 10px 80px;
@@ -76,7 +76,8 @@ button {
   font-size: medium;
   color: #412d26;
 }
-input[type="text"] {
+
+.inPutText {
   width: 300px;
   padding: 10px;
   border: none;

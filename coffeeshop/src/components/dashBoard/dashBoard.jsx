@@ -13,16 +13,20 @@ import FreeBreakfastOutlinedIcon from "@mui/icons-material/FreeBreakfastOutlined
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import { useState } from "react";
 import TableBarOutlinedIcon from "@mui/icons-material/TableBarOutlined";
-import userEvent from "@testing-library/user-event";
 import { BreakfastDiningOutlined } from "@mui/icons-material";
+import { Switch } from "@mui/material";
 
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
       active={selected === title}
+      //   style={{
+      //     color: "#553528",
+      //   }}
       style={{
-        color: "#553528",
+        color: selected === title ? "#412D26" : "#8D817D",
+        backgroundColor: selected === title ? "#AA7E6D" : "transparent",
       }}
       onClick={() => setSelected(title)}
       icon={icon}
@@ -32,13 +36,23 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const DashBoard = () => {
+const DashBoard = ({ handleChange, mode }) => {
   const theme = useTheme();
   const colors = themeSettings(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Dashboard");
+  const [selected, setSelected] = useState("");
   return (
-    <Sidebar collapsed={isCollapsed} flexDirection="row">
+
+    <Sidebar
+      collapsed={isCollapsed}
+      style={{
+        height: "100vh",
+        position: "sticky",
+        top: "0px",
+        zIndex: "1",
+      }}
+    >
+
       <Menu
         menuItemStyles={{
           button: {
@@ -48,6 +62,7 @@ const DashBoard = () => {
             },
             "&:hover": {
               color: "#714534 !important",
+              backgroundColor: "##8D817D !important",
             },
           },
           display: "flex",
@@ -125,7 +140,7 @@ const DashBoard = () => {
           />
           <Item
             title="Nhân Viên"
-            to="/stuff"
+            to="/staff"
             icon={<PeopleOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
