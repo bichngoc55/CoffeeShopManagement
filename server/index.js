@@ -9,11 +9,12 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 //
-import authRoutes from "./routes/auth.js";
+
 //import inventoryRoutes from "./routes/inventory.js";
 import staffRoutes from "./routes/staff.js";
 import bookingRoutes from "./routes/booking.js";
 import historyRoutes from "./routes/order.js";
+import authRoutes from "./routes/auth.js";
 
 //config
 dotenv.config();
@@ -38,7 +39,7 @@ app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 app.get("/", (req, res) => {
   res.send("Hello to Memories API");
 });
-app.use("/auth", authRoutes);
+app.use("/auth", authRoutes); // localhost:3005/auth/register
 //app.use("/inventory", inventoryRoutes);
 app.use("/staff", staffRoutes);
 app.use("/booking", bookingRoutes);
@@ -56,3 +57,5 @@ mongoose
 app.listen(process.env.PORT, () => {
   console.log("Server is running on port ", process.env.PORT);
 });
+// npm start
+// node index.js

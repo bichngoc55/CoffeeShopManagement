@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/loginService.js";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
+  const [email, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newUser = { username: username, password: password };
+    const newUser = { email: email, password: password };
     loginUser(newUser, dispatch, navigate);
   };
   return (
@@ -52,9 +52,6 @@ const LoginPage = () => {
               <input type="checkbox" />
               <span>Remember me</span>
             </div>
-            <a href="#" className="forgot">
-              Forgot password
-            </a>
           </div>
 
           <button onClick={handleSubmit} type="submit">
