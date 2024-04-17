@@ -5,10 +5,11 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
-import LoginPage from "./pages/Login/Login";
+import LoginPage from "./pages/login/Login";
 import Booking from "./pages/BookingPage/booking";
+import Stuff from "./pages/StuffPage/stuff";
 import { useState } from "react";
-import Home from "./pages/HomePage/home";
+import Home from "./pages/home/HomePage";
 //import Menu from "./pages/MenuPage/menu";
 import Inventory from "./pages/InventoryPage/inventory";
 
@@ -22,9 +23,9 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            <Route path="/login" element={<LoginPage />} />
             <Route path="/home" element={<Home />} />
             <Route path="/inventory" element={<Inventory />} />
+            <Route path="/stuff" element={<Stuff />} />
             {/* <Route path="/menu" element={<Menu />} /> */}
             <Route path="/booking" element={<Booking />} />
             {/* <Route

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/loginService.js";
 
 const LoginPage = () => {
+ 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,6 +20,7 @@ const LoginPage = () => {
   };
   return (
     <form onsubmit={handleSubmit} className="login-page">
+ 
       <div className="image-section"></div>
       <div className="form-section">
         <div className="form">
@@ -38,14 +40,16 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="user-pass">
+            <label htmlFor="password" className="inPutText">
               Password
             </label>
+ 
             <input
               type="text"
               id="password"
               onChange={(e) => setPassword(e.target.value)}
             />
+ 
           </div>
           <div className="remember-forgot">
             <div className="remember">
@@ -57,7 +61,9 @@ const LoginPage = () => {
             </a>
           </div>
 
-          <button onClick={handleSubmit} type="submit">
+ 
+          <button className="buttonLogin" type="submit">
+ 
             Login
           </button>
         </div>
