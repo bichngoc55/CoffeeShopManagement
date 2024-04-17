@@ -39,12 +39,15 @@ const DashBoard = ({ handleChange, mode }) => {
   const theme = useTheme();
   const colors = themeSettings(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Trang Chủ");
+  const [selected, setSelected] = useState("");
   return (
     <Sidebar
       collapsed={isCollapsed}
       style={{
         height: "100vh",
+        position: "sticky",
+        top: "0px",
+        zIndex: "1",
       }}
     >
       <Menu

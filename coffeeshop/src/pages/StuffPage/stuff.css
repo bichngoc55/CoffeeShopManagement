@@ -1,0 +1,8 @@
+.Header {
+  font-size: 20px;
+  position: sticky;
+  top: 0px;
+  padding: 16px;
+  background-color: #fcfcfc;
+  z-index: 1;
+}

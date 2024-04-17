@@ -1,0 +1,31 @@
+.buttonTab {
+  font-size: 15px;
+  color: #d9d9d9;
+  padding: 10px;
+  margin: 15px;
+  border-bottom: 2px solid #d9d9d9;
+  overflow: hidden;
+}
+.buttonTab:hover {
+  font-size: 15px;
+  color: #ffffff;
+  background-color: #714534;
+}
+.buttonSelected {
+  color: #704332;
+  font-weight: bold;
+  font-size: 15px;
+  padding: 10px;
+  margin: 15px;
+  border-bottom: 2px solid #704332;
+}
+.contentContainer {
+  overflow: auto;
+}
+.header {
+  display: flex;
+  position: sticky;
+  top: 62px;
+  background-color: #fcfcfc;
+  z-index: 1;
+}

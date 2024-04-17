@@ -3,7 +3,6 @@ import "./Loginpage.css";
 
 const LoginPage = () => {
   return (
-
     <div className="login-page">
       <div className="image-section"></div>
       <div className="form-section">
@@ -20,10 +19,10 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="user-pass">
+            <label htmlFor="password" className="inPutText">
               Password
             </label>
-            <input type="text" id="password" />
+            <input className="inPutText" type="text" id="password" />
           </div>
 
           <div className="remember-forgot">
@@ -36,7 +35,9 @@ const LoginPage = () => {
             </a>
           </div>
 
-          <button type="submit">Login</button>
+          <button className="buttonLogin" type="submit">
+            Login
+          </button>
         </div>
       </div>
     </div>
