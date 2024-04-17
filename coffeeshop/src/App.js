@@ -5,7 +5,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
-import LoginPage from "./pages/login/Login";
+import LoginPage from "./pages/LoginPage/Login";
 import Booking from "./pages/BookingPage/booking";
 import Stuff from "./pages/StuffPage/stuff";
 import { useState } from "react";
