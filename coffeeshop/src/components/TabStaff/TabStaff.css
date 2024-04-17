@@ -19,9 +19,7 @@
   margin: 15px;
   border-bottom: 2px solid #704332;
 }
-.contentContainer {
-  overflow: auto;
-}
+
 .header {
   display: flex;
   position: sticky;
