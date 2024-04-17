@@ -96,7 +96,7 @@ const DashBoard = ({ handleChange, mode }) => {
                 alt="profile-user"
                 width="100px"
                 height="100px"
-                src={`../../assets/image.png`}
+                src={`../../assets/avtUser.png`}
                 style={{ cursor: "pointer", borderRadius: "50%" }}
               />
             </Box>
