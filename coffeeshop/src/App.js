@@ -5,12 +5,12 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
-import LoginPage from "./pages/Login/Login";
+import LoginPage from "./pages/LoginPage/Login";
 import DashBoard from "./components/dashBoard/dashBoard";
 import { useState } from "react";
 import NavBar from "./components/navBar/navBar";
 import HomePage from "./pages/HomePage/home";
-import { Home } from "@mui/icons-material";
+import { Home } from "@mui/icons-material"; 
 // import OrderPage from "./pages/OrderPage";
 
 function App() {
