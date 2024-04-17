@@ -11,11 +11,10 @@ const router = express.Router();
 
 /* READ */
 router.get("/", getAllStaff);
-
 /* READ */
 router.get("/:id", verifyToken, getDetailStaff);
 /* CREATE */
-router.post("/:id/add", verifyToken, addStaff);
+router.post("/add", verifyToken, addStaff);
 /* UPDATE */
 router.patch("/:id", verifyToken, updateStaff);
 
