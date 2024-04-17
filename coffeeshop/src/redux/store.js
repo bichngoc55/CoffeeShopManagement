@@ -15,7 +15,7 @@ import {
 } from "redux-persist";
 
 const rootReducer = combineReducers({
-  orders: orderReducer,
+  //orders: orderReducer,
   auths: authReducer,
 });
 
