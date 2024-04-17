@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 /* READ */
-router.get("/", verifyToken, getAllStaff);
+router.get("/", getAllStaff);
 
 /* READ */
 router.get("/:id", verifyToken, getDetailStaff);
