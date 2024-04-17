@@ -8,6 +8,12 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+//
+import authRoutes from "./routes/auth.js";
+//import inventoryRoutes from "./routes/inventory.js";
+import staffRoutes from "./routes/staff.js";
+import bookingRoutes from "./routes/booking.js";
+import historyRoutes from "./routes/order.js";
 
 //config
 dotenv.config();
@@ -32,6 +38,11 @@ app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 app.get("/", (req, res) => {
   res.send("Hello to Memories API");
 });
+app.use("/auth", authRoutes);
+//app.use("/inventory", inventoryRoutes);
+app.use("/staff", staffRoutes);
+app.use("/booking", bookingRoutes);
+app.use("/history", historyRoutes);
 //connect to mongodb
 mongoose
   .connect(process.env.URI)
