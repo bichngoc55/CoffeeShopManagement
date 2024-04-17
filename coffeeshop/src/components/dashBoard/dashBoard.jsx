@@ -39,12 +39,15 @@ const DashBoard = ({ handleChange, mode }) => {
   const theme = useTheme();
   const colors = themeSettings(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Trang Chủ");
+  const [selected, setSelected] = useState("");
   return (
     <Sidebar
       collapsed={isCollapsed}
       style={{
         height: "100vh",
+        position: "sticky",
+        top: "0px",
+        zIndex: "1",
       }}
     >
       <Menu
@@ -94,7 +97,7 @@ const DashBoard = ({ handleChange, mode }) => {
                 alt="profile-user"
                 width="100px"
                 height="100px"
-                src={`../../assets/image.png`}
+                src={`../../assets/avtUser.png`}
                 style={{ cursor: "pointer", borderRadius: "50%" }}
               />
             </Box>

@@ -38,9 +38,10 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="user-pass">
+            <label htmlFor="password" className="inPutText">
               Password
             </label>
+
             <input
               type="text"
               id="password"
@@ -54,7 +55,7 @@ const LoginPage = () => {
             </div>
           </div>
 
-          <button onClick={handleSubmit} type="submit">
+          <button className="buttonLogin" type="submit">
             Login
           </button>
         </div>
