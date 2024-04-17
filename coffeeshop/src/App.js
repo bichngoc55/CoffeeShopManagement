@@ -10,7 +10,7 @@ import LoginPage from "./pages/LoginPage/Login";
 import Booking from "./pages/BookingPage/booking";
 import Stuff from "./pages/StuffPage/stuff";
 import { useState } from "react";
-import Home from "./pages/home/HomePage";
+import Home from "./pages/HomePage/home";
 //import Menu from "./pages/MenuPage/menu";
 import Inventory from "./pages/InventoryPage/inventory";
 
