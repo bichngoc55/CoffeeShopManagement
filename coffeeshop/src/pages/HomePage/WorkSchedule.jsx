@@ -1,40 +1,49 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
 
 const WorkScheduleTable = () => {
-    const [selectedDate, setSelectedDate] = useState('');
 
-    const handleDateChange = (event) => {
-      const selectedDate = event.target.value;
-      setSelectedDate(selectedDate);
-    };
-  
-    const renderDay = () => {
+  const[staffs, setStaffs]=useState([])
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+
+  useEffect(() => {
+    axios.get(`http://localhost:3005/staff/`)
+         .then((staffs) => setStaffs(staffs.data))
+         .catch((err) => console.error(err));
+  }, [])
+
+  const handleDateChange = (event) => {
+    const selectedDate = event.target.value;
+    setSelectedDate(selectedDate);
+  };
+
+  const renderDay = () => {
+    const dayHeaders = [];
+    const selectedDateObj = new Date(selectedDate);
+
+    for (let i = 0; i < 7; i++) {
+      const currentDateObj = new Date(selectedDateObj);
+      currentDateObj.setDate(selectedDateObj.getDate() + i);
+      const dayOfMonth = currentDateObj.getDate();
+      dayHeaders.push(<th key={i}>{dayOfMonth}</th>);
+    }
+
+    return dayHeaders;
+  };
+
+  const renderWeekdays = () => {
       const dayHeaders = [];
       const selectedDateObj = new Date(selectedDate);
   
       for (let i = 0; i < 7; i++) {
         const currentDateObj = new Date(selectedDateObj);
         currentDateObj.setDate(selectedDateObj.getDate() + i);
-        const dayOfMonth = currentDateObj.getDate();
-        dayHeaders.push(<th key={i}>{dayOfMonth}</th>);
+        const dayOfWeek = currentDateObj.toLocaleDateString('en-US', { weekday: 'long' });
+        dayHeaders.push(<th key={i}>{dayOfWeek}</th>);
       }
   
       return dayHeaders;
-    };
-
-    const renderWeekdays = () => {
-        const dayHeaders = [];
-        const selectedDateObj = new Date(selectedDate);
-    
-        for (let i = 0; i < 7; i++) {
-          const currentDateObj = new Date(selectedDateObj);
-          currentDateObj.setDate(selectedDateObj.getDate() + i);
-          const dayOfWeek = currentDateObj.toLocaleDateString('en-US', { weekday: 'long' });
-          dayHeaders.push(<th key={i}>{dayOfWeek}</th>);
-        }
-    
-        return dayHeaders;
-      };
+  };
 
   return (
     <div style={{display: 'flex'}}>
@@ -81,7 +90,9 @@ const WorkScheduleTable = () => {
           </tr>
           <tr>
             <td>Sáng <br/>07:30 - 12:30</td>
-            <td>Làm việc</td>
+            <td>{staffs.map((staff, index) => (
+  <td key={index}>{staff.name}</td>
+))}</td>
             <td></td>
             <td>Làm việc</td>
             <td>Làm việc</td>

@@ -32,6 +32,7 @@ p {
 .container {
   display: flex;
   flex-direction: column;
+  padding-bottom: 4%;
 }
 
 .search-input::placeholder {
