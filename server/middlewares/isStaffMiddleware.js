@@ -1,4 +1,3 @@
-// import {User} from '../models/User.js';
 // export const isStaffMiddleware = async (req, res, next) => {
 //     try {
 //         // Get the user ID from the request object
@@ -20,3 +19,16 @@
 //         res.status(500).json({ error: 'Internal server error' });
 //     }
 // };
+export const checkAdmin = async (req, res, next) => {
+  try {
+    const user = req.user;
+    if (!user || user.Position !== "admin") {
+      return res.status(403).json({
+        error: "Forbidden: You dont have permission to access this resource",
+      });
+    }
+    next();
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

@@ -8,12 +8,13 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import { addStaff } from "./controllers/staff.js";
 //
 
 //import inventoryRoutes from "./routes/inventory.js";
 import staffRoutes from "./routes/staff.js";
 import bookingRoutes from "./routes/booking.js";
-import historyRoutes from "./routes/order.js";
+import historyRoutes from "./routes/history.js";
 import authRoutes from "./routes/auth.js";
 
 //config
@@ -33,7 +34,19 @@ app.use(morgan("common"));
 app.use(express.json());
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
-//middleware
+/* FILE STORAGE */
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/assets");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage });
+
+/* ROUTES WITH FILES */
+app.post("/staff/add", verifyToken, upload.single("picture"), addStaff);
 
 //routes
 app.get("/", (req, res) => {
