@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
+import { Time } from "mongoose-time";
 
 const scheduleSchema = new mongoose.Schema({
   day: {
-    type: String,
+    type: Date,
     required: true,
   },
   startTime: {
-    type: String,
+    type: Time,
     required: true,
   },
   endTime: {
-    type: String,
+    type: Time,
     required: true,
   },
   employeeId: {
