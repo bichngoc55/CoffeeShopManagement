@@ -7,3 +7,4 @@ router.post("/register", register);
 router.post("/login", login);
 // /auth/login
 export default router;
+// MVC 

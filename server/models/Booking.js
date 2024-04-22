@@ -12,26 +12,26 @@ const bookingSchema = new mongoose.Schema({
   },
   bookingDate: {
     type: Date,
-    required: true,
   },
   bookingTime: {
     type: Time,
     required: true,
+
   },
-  NumberOfPeople: {
+  numberOfPeople: {
     type: Number,
     required: true,
   },
-  PhoneNumberBooking: {
+  phoneNumberBooking: {
     type: String,
-    required: true,
   },
-  Note: {
+  note: {
     type: String,
     default: "",
   },
-  Status: {
+  status: {
     type: String,
+    enum: ["available", "occupied", "booked"],
     default: "Chờ xác nhận",
   },
 });

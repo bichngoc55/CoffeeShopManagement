@@ -2,10 +2,11 @@ import React from "react";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
+import { IconButton } from "@mui/material";
 
 const SearchBar = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
+  //const [suggestions, setSuggestions] = useState([]);
 
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
@@ -19,7 +20,8 @@ const SearchBar = ({ onSearch }) => {
   //       } catch (error) {
   //         console.log(error);
   //       }
-  //     };
+  //     };fetchData();
+  //}, [value]);
 
   return (
     <div className="search-bar">
@@ -28,8 +30,15 @@ const SearchBar = ({ onSearch }) => {
         placeholder="Search..."
         value={searchTerm}
         onChange={handleInputChange}
+        InputProps={{
+            endAdornment: (
+              <IconButton>
+                <SearchIcon /> {/* Display the SearchIcon */}
+              </IconButton>
+            ),
+          }}
       />
-      <SearchIcon sx={{}} />
+      
       <button onClick={() => onSearch(searchTerm)}>
         <i className="fa fa-search"></i>
       </button>
