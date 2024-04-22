@@ -3,12 +3,12 @@ import axios from 'axios';
 
 const WorkScheduleTable = () => {
 
-  const[staffs, setStaffs]=useState([])
+  const[users, setUsers]=useState([])
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
     axios.get(`http://localhost:3005/staff/`)
-         .then((staffs) => setStaffs(staffs.data))
+         .then((response) => setUsers(response.data.staff))
          .catch((err) => console.error(err));
   }, [])
 
@@ -90,9 +90,7 @@ const WorkScheduleTable = () => {
           </tr>
           <tr>
             <td>Sáng <br/>07:30 - 12:30</td>
-            <td>{staffs.map((staff, index) => (
-  <td key={index}>{staff.name}</td>
-))}</td>
+            <td></td>
             <td></td>
             <td>Làm việc</td>
             <td>Làm việc</td>
