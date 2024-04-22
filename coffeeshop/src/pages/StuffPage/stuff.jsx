@@ -2,9 +2,9 @@ import React from "react";
 import DashBoard from "../../components/dashBoard/dashBoard";
 import TabStaff from "../../components/TabStaff/TabStaff";
 import userImage from "../../components/userCard/user.jpg";
+import AddStaffComponent from "../../components/addStaff/addStaff";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
 import UserCard from "../../components/userCard/userCard";
 import "./stuff.css";
 import { Box } from "@mui/material";
@@ -49,9 +49,7 @@ const Stuff = () => {
       title: "Add Employee",
       content: (
         <div>
-          <p>
-            <strong>Add Employee 1</strong>
-          </p>
+          <AddStaffComponent />
         </div>
       ),
     },
@@ -59,7 +57,7 @@ const Stuff = () => {
   return (
     <Box sx={{ display: "flex" }}>
       <DashBoard />
-      <div style={{}}>
+      <div style={{ backgroundColor: "#f9f8fb", width: "100%" }}>
         <p className="Header">
           <strong>Staff Page</strong>
         </p>

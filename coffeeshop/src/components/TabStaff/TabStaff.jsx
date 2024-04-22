@@ -23,7 +23,7 @@ const TabStaff = ({ items }) => {
         ))}
       </div>
 
-      <div className="contentContainer">
+      <div>
         {items.map((item, index) => (
           <div className={`${selectedTab === index ? "" : "hidden"}`}>
             {item.content}
