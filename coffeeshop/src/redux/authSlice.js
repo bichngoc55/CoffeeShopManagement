@@ -27,7 +27,7 @@ export const authSlice = createSlice({
     setLoginSuccess: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
-      state.role = action.payload.role;
+      state.role = action.payload.user.Position;
       state.isFetching = false;
       state.error = false;
     },

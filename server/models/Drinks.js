@@ -30,7 +30,6 @@ const DrinkSchema = new Schema(
       default: "",
       required: true,
     },
-
     LoaiDoUong: {
       type: Array,
       default: [],
