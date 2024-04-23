@@ -40,7 +40,7 @@ const LoginPage = () => {
             />
           </div>
 
-          <div>
+          <div className="formgr">
             <label htmlFor="password" className="user-pass">
               Password
             </label>
@@ -58,9 +58,9 @@ const LoginPage = () => {
               <input type="checkbox" />
               <span style={{ marginLeft: "5px" }}>Remember me</span>
             </div>
-             
+
             <a href="#" className="forgot">
-              Forgot password
+              Forgot password?
             </a>
           </div>
 
