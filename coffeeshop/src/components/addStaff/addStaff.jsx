@@ -1,6 +1,6 @@
 import React from "react";
 
-const addStaff = () => {
+const addStaffComponent = () => {
   return (
     <div style={{ backgroundColor: "#f9f8fb", width: "100%" }}>
       <div>
@@ -15,4 +15,4 @@ const addStaff = () => {
   );
 };
 
-export default addStaff;
+export default addStaffComponent;

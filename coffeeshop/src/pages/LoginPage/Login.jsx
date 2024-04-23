@@ -33,6 +33,8 @@ const LoginPage = () => {
               Username
             </label>
             <input
+              placeHolder="Enter your username"
+              className="inPutText"
               type="text"
               id="username"
               onChange={(e) => setUsername(e.target.value)}
@@ -40,12 +42,14 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="inPutText">
+            <label htmlFor="password" className="user-pass">
               Password
             </label>
  
             <input
-              type="text"
+              placeHolder="Enter your password "
+              className="inPutText"
+              type="password"
               id="password"
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -54,10 +58,14 @@ const LoginPage = () => {
           <div className="remember-forgot">
             <div className="remember">
               <input type="checkbox" />
-              <span>Remember me</span>
+              <span style={{ marginLeft: "5px" }}>Remember me</span>
             </div>
             <a href="#" className="forgot">
+<<<<<<< Updated upstream
               Forgot password
+=======
+              Forgot password?
+>>>>>>> Stashed changes
             </a>
           </div>
 

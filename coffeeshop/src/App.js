@@ -23,6 +23,7 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/home" element={<Home />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/stuff" element={<Stuff />} />
