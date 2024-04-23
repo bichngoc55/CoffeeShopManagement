@@ -6,22 +6,24 @@ import { createTheme } from "@mui/material/styles";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import LoginPage from "./pages/LoginPage/Login";
+
 import Booking from "./pages/BookingPage/booking";
-import Stuff from "./pages/StuffPage/stuff";
-import { useState } from "react";
-import Home from "./pages/home/HomePage";
+import Stuff from "./pages/StuffPage/stuff"; 
+import Home from "./pages/HomePage/home";
 //import Menu from "./pages/MenuPage/menu";
 import Inventory from "./pages/InventoryPage/inventory";
 
 function App() {
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  //const isAuth = Boolean(useSelector((state) => state.token));
+  const isAuth = Boolean(useSelector((state) => state.token));
+ 
   return (
     <div className="App">
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
+
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/home" element={<Home />} />
@@ -29,10 +31,11 @@ function App() {
             <Route path="/stuff" element={<Stuff />} />
             {/* <Route path="/menu" element={<Menu />} /> */}
             <Route path="/booking" element={<Booking />} />
-            {/* <Route
-              path="/order"
-              element={isAuth ? <OrderPage /> : <Navigate to="/" />}
-            />  */}
+
+            <Route
+              path="/"
+              element={isAuth ? <Inventory /> : <Navigate to="/login" />}
+            />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

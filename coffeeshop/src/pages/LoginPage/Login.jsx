@@ -1,13 +1,13 @@
 import React from "react";
 import "./Loginpage.css";
+
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/loginService.js";
 
 const LoginPage = () => {
- 
-  const [username, setUsername] = useState("");
+  const [email, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
@@ -15,12 +15,11 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newUser = { username: username, password: password };
+    const newUser = { email: email, password: password };
     loginUser(newUser, dispatch, navigate);
   };
   return (
     <form onsubmit={handleSubmit} className="login-page">
- 
       <div className="image-section"></div>
       <div className="form-section">
         <div className="form">
@@ -45,7 +44,7 @@ const LoginPage = () => {
             <label htmlFor="password" className="user-pass">
               Password
             </label>
- 
+
             <input
               placeHolder="Enter your password "
               className="inPutText"
@@ -53,25 +52,19 @@ const LoginPage = () => {
               id="password"
               onChange={(e) => setPassword(e.target.value)}
             />
- 
           </div>
           <div className="remember-forgot">
             <div className="remember">
               <input type="checkbox" />
               <span style={{ marginLeft: "5px" }}>Remember me</span>
             </div>
+             
             <a href="#" className="forgot">
-<<<<<<< Updated upstream
               Forgot password
-=======
-              Forgot password?
->>>>>>> Stashed changes
             </a>
           </div>
 
- 
-          <button className="buttonLogin" type="submit">
- 
+          <button onClick={handleSubmit} className="buttonLogin" type="submit">
             Login
           </button>
         </div>

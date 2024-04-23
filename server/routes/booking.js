@@ -14,7 +14,7 @@ router.get("/", verifyToken, getAllBooking);
 router.get("/:id", verifyToken, getDetailBooking);
 
 /* CREATE */
-router.post("/", verifyToken, addBooking);
+router.post("/add", addBooking);
 
 /* UPDATE */
 router.patch("/:id", verifyToken, updateBooking);

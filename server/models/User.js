@@ -18,10 +18,10 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: true,
-      min: 5,
+      min: 6,
     },
     Ava: {
-      type: String,
+      type: Image,
       default: "",
     },
     Phone: {

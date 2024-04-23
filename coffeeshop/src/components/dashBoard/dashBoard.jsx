@@ -1,5 +1,5 @@
 import React from "react";
-import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { themeSettings } from "../../theme";
@@ -9,12 +9,12 @@ import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutl
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import FreeBreakfastOutlinedIcon from "@mui/icons-material/FreeBreakfastOutlined";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TableBarOutlinedIcon from "@mui/icons-material/TableBarOutlined";
 import { BreakfastDiningOutlined } from "@mui/icons-material";
-import { Switch } from "@mui/material";
+//import { Switch } from "@mui/material";
+import { useSelector } from "react-redux";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
@@ -35,11 +35,21 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const DashBoard = ({ handleChange, mode }) => {
+const DashBoard = () => {
   const theme = useTheme();
   const colors = themeSettings(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("");
+  const [isAdmin, setAdmin] = useState(false);
+  const { Ava, Name, Position } = useSelector((state) => state.auths.user);
+  //   useEffect(() => {
+  //     if (Position === "admin") {
+  //       setAdmin(true);
+  //     } else {
+  //       setAdmin(false);
+  //     }
+  //   }, [Position]);
+
   return (
     <Sidebar
       collapsed={isCollapsed}
@@ -97,7 +107,8 @@ const DashBoard = ({ handleChange, mode }) => {
                 alt="profile-user"
                 width="100px"
                 height="100px"
-                src={`../../assets/avtUser.png`}
+                src={`http://localhost:3005/public/assets/${Ava}`}
+                //src={`../../assets/avtUser.png`}
                 style={{ cursor: "pointer", borderRadius: "50%" }}
               />
             </Box>
@@ -107,9 +118,9 @@ const DashBoard = ({ handleChange, mode }) => {
                 fontWeight="bold"
                 sx={{ m: "10px 0 0 0" }}
               >
-                TUN PHAM
+                {Name}
               </Typography>
-              <Typography>Admin</Typography>
+              <Typography>{Position}</Typography>
             </Box>
           </Box>
         )}
@@ -135,13 +146,15 @@ const DashBoard = ({ handleChange, mode }) => {
             selected={selected}
             setSelected={setSelected}
           />
-          <Item
-            title="Nhân Viên"
-            to="/staff"
-            icon={<PeopleOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
+          {
+            <Item
+              title="Nhân Viên"
+              to="/staff"
+              icon={<PeopleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          }
           <Item
             title="Kho Hàng"
             to="/inventory"

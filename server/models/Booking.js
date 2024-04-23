@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Time } from "mongoose-time";
 
 const bookingSchema = new mongoose.Schema({
   customerName: {
@@ -13,7 +14,9 @@ const bookingSchema = new mongoose.Schema({
     type: Date,
   },
   bookingTime: {
-    type: String,
+    type: Time,
+    required: true,
+
   },
   numberOfPeople: {
     type: Number,

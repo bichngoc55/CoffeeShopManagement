@@ -9,12 +9,9 @@ const billSchema = new mongoose.Schema({
   },
   items: [
     {
-      name: {
-        type: String,
-        required: true,
-      },
-      price: {
-        type: Number,
+      drink: {
+        type: Schema.Types.ObjectId,
+        ref: "Drinks",
         required: true,
       },
       quantity: {
