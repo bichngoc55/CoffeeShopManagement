@@ -8,7 +8,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
-import { addStaff } from "./controllers/staff.js";
+import { addStaff } from "./controllers/staffController.js";
 //
 
 //import inventoryRoutes from "./routes/inventory.js";
@@ -46,7 +46,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /* ROUTES WITH FILES */
-app.post("/staff/add", verifyToken, upload.single("picture"), addStaff);
+/*app.post("/staff/add", verifyToken, upload.single("picture"), addStaff);*/
 
 //routes
 app.get("/", (req, res) => {

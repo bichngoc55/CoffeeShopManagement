@@ -86,8 +86,19 @@ input {
   font-size: 14px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Kích thước mong muốn */
 }
+.inputText.error {
+  border: 1px solid red;
+  width: 320px;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 14px;
+}
 .user-pass {
   font-size: 14px;
   font-size: medium;
   color: #412d26;
+}
+.error-message {
+  color: #f71616;
+  margin-top: 5px;
 }
