@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -21,7 +22,7 @@ const UserSchema = new Schema(
       min: 6,
     },
     Ava: {
-      type: Image,
+      type: String,
       default: "",
     },
     Phone: {
