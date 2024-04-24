@@ -2,8 +2,8 @@ import User from "../models/User.js";
 
 export const getAllStaff = async (req, res) => {
   try {
-    const staff = await User.find({ position: "staff" });
-    res.status(200).json(staff);
+    const staff = await User.find({ Position: "staff" });
+    res.status(200).json({ staff });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

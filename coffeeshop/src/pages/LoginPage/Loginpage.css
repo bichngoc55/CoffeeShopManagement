@@ -19,14 +19,14 @@
   justify-content: center;
   align-items: center;
 }
-.form {
-  display: grid;
-  place-items: center;
-  width: fit-content;
-}
+
 .form-group {
   margin-bottom: 10px;
   margin-top: 30px;
+  text-align: left;
+}
+.formgr {
+  text-align: left;
 }
 
 label {
@@ -35,7 +35,7 @@ label {
 }
 
 input {
-  width: 100%;
+  width: 300px;
   padding: 5px;
 }
 .remember-forgot {
@@ -63,11 +63,12 @@ input {
   cursor: pointer;
   margin-top: 30px;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: bold;
 }
 .welcome {
-  font: 700 20px Kumbh Sans, -apple-system, Roboto, Helvetica, sans-serif;
-  font-weight: bold;
+  font: 750 25px Kumbh Sans, -apple-system, Roboto, Helvetica, sans-serif;
+  /* font-weight: bold; */
   color: #714534;
   margin-bottom: 5px;
 }
@@ -78,14 +79,27 @@ input {
 }
 
 .inPutText {
-  width: 300px;
+  width: 320px;
   padding: 10px;
   border: none;
+  outline: none;
   border-radius: 4px;
+  font-size: 14px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Kích thước mong muốn */
+}
+.inputText.error {
+  border: 1px solid red;
+  width: 320px;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 14px;
 }
 .user-pass {
   font-size: 14px;
   font-size: medium;
   color: #412d26;
+}
+.error-message {
+  color: #f71616;
+  margin-top: 5px;
 }

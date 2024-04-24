@@ -7,21 +7,30 @@ import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/loginService.js";
 
 const LoginPage = () => {
- 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [emailInput, setUsername] = useState("");
+  const [passwordInput, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newUser = { username: username, password: password };
-    loginUser(newUser, dispatch, navigate);
+    const newUser = { email: emailInput, password: passwordInput };
+    try {
+      const result = await loginUser(newUser, dispatch, navigate);
+      if (result && result.success) {
+        navigate("/stuff");
+      } else {
+        setErrorMessage(" *Not found user, incorrect email or password");
+      }
+    } catch (err) {
+      // Xử lý lỗi nếu có
+      console.error(err);
+    }
   };
   return (
-    <form onsubmit={handleSubmit} className="login-page">
- 
+    <form onSubmit={handleSubmit} className="login-page">
       <div className="image-section"></div>
       <div className="form-section">
         <div className="form">
@@ -34,37 +43,42 @@ const LoginPage = () => {
               Username
             </label>
             <input
+              placeHolder="Enter your username"
+              className={`inputText ${errorMessage ? "error" : ""}`}
               type="text"
               id="username"
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="inPutText">
+          <div className="formgr">
+            <label htmlFor="password" className="user-pass">
               Password
             </label>
- 
+
             <input
-              type="text"
+              placeHolder="Enter your password "
+              className={`inputText ${errorMessage ? "error" : ""}`}
+              type="password"
               id="password"
               onChange={(e) => setPassword(e.target.value)}
             />
- 
+            {errorMessage && (
+              <label className="error-message">{errorMessage}</label>
+            )}
           </div>
           <div className="remember-forgot">
             <div className="remember">
               <input type="checkbox" />
-              <span>Remember me</span>
+              <span style={{ marginLeft: "5px" }}>Remember me</span>
             </div>
+
             <a href="#" className="forgot">
-              Forgot password
+              Forgot password?
             </a>
           </div>
 
- 
-          <button className="buttonLogin" type="submit">
- 
+          <button onClick={handleSubmit} className="buttonLogin" type="submit">
             Login
           </button>
         </div>
