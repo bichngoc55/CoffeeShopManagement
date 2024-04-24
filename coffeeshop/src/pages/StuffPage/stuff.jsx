@@ -19,7 +19,7 @@ const Stuff = () => {
 
   const items = [
     {
-      title: "Employee Profile",
+      title: "Hồ sơ nhân viên",
       content: (
         <div>
           {users.map((user) => {
@@ -46,7 +46,7 @@ const Stuff = () => {
       ),
     },
     {
-      title: "Add Employee",
+      title: "Thêm nhân viên",
       content: (
         <div>
           <AddStaffComponent />
@@ -59,7 +59,7 @@ const Stuff = () => {
       <DashBoard />
       <div style={{ backgroundColor: "#f9f8fb", width: "100%" }}>
         <p className="Header">
-          <strong>Staff Page</strong>
+          <strong>Quản lý nhân viên</strong>
         </p>
         <TabStaff items={items} />
       </div>
