@@ -5,6 +5,7 @@
   padding: 16px;
   background-color: #f9f8fb;
   z-index: 1;
+  text-align: left;
 }
 .container-card {
   display: flex;
@@ -32,6 +33,7 @@
 .inforContainer {
   width: 300px;
   align-items: center;
+  text-align: left;
 }
 .name {
   font-weight: bold;
