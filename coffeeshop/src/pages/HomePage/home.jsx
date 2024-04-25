@@ -114,8 +114,8 @@ const HomePage = () => {
           <div className='line'/>
 
           <div className='WorkSchedule'> 
-            <a className='title'>Work schedule</a>
-            <div style={{marginTop: '5%',}}>
+            <a className='title'>Work Schedule</a>
+            <div style={{marginTop: '5%', }}>
               <WorkScheduleTable/>
             </div>
           </div>
