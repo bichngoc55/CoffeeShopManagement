@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 
 const WorkScheduleTable = () => {
   const [users, setUsers] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [staffs, setSelectedStaffs] = useState(""); // Trạng thái để lưu trữ user được chọn
 
   useEffect(() => {
     axios
@@ -17,6 +23,11 @@ const WorkScheduleTable = () => {
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
     setSelectedDate(selectedDate);
+  };
+
+  const handleStaffSelect = (event) => {
+    console.log(event.target.value); 
+    setSelectedStaffs(event.target.value);
   };
 
   const renderDay = () => {
@@ -100,7 +111,25 @@ const WorkScheduleTable = () => {
               Sáng <br />
               07:30 - 12:30
             </td>
-            <td></td>
+            <td>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Staff</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={staffs }
+                label="Staff"
+                onChange={handleStaffSelect}
+                style={{width: '150px'}}
+              >
+                {users.map((user) => (
+                  <MenuItem key={user.id} value={user.id}>
+                    {user.Name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            </td>
             <td></td>
             <td>Làm việc</td>
             <td>Làm việc</td>
