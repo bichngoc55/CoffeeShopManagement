@@ -1,11 +1,11 @@
 import React from "react";
 import DashBoard from "../../components/dashBoard/dashBoard";
 import TabStaff from "../../components/TabStaff/TabStaff";
-import userImage from "../../components/userCard/user.jpg";
+import userImage from "../../asset/user.jpg";
 import AddStaffComponent from "../../components/addStaff/addStaff";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import UserCard from "../../components/userCard/userCard";
+import StaffInfo from "../../components/StaffInfo/StaffInfo";
 import "./stuff.css";
 import { Box } from "@mui/material";
 const Stuff = () => {
@@ -50,6 +50,14 @@ const Stuff = () => {
       content: (
         <div>
           <AddStaffComponent />
+        </div>
+      ),
+    },
+    {
+      title: "Thông tin cá nhân",
+      content: (
+        <div>
+          <StaffInfo></StaffInfo>
         </div>
       ),
     },

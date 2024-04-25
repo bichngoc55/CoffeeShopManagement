@@ -52,6 +52,9 @@ const upload = multer({ storage });
 app.get("/", (req, res) => {
   res.send("Hello to Memories API");
 });
+const assetsPath = path.join(__dirname, "public", "assets");
+app.use(express.static(assetsPath));
+
 app.use("/auth", authRoutes); // localhost:3005/auth/register
 //app.use("/inventory", inventoryRoutes);
 app.use("/staff", staffRoutes);
