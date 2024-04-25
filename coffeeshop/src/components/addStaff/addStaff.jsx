@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import userImage from "../userCard/user.jpg";
+import userImage from "../../asset/user.jpg";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -9,7 +9,12 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
+import InputAdornment from "@mui/material/InputAdornment";
+import EmailIcon from "@mui/icons-material/Email";
+import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 import "./addStaff.css";
 import { Diversity1Outlined } from "@mui/icons-material";
@@ -42,7 +47,12 @@ const AddStaffComponent = () => {
   };
   return (
     <div
-      style={{ backgroundColor: "#f9f8fb", width: "100%", paddingLeft: "16px" }}
+      style={{
+        backgroundColor: "#f9f8fb",
+        width: "100%",
+        paddingLeft: "16px",
+        textAlign: "left",
+      }}
     >
       <div
         style={{
@@ -50,7 +60,7 @@ const AddStaffComponent = () => {
           alignItems: "center",
         }}
       >
-        <div>
+        <div style={{ textAlign: "center" }}>
           <button className="image-con">
             <img src={userImage} alt="User" />
           </button>
@@ -67,20 +77,47 @@ const AddStaffComponent = () => {
           </Button>
         </div>
         <div className="infoRight">
-          <label className="labelUsername">Họ và tên</label>
-          <input className="username" type="text" placeholder="Nhập họ tên" />
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div
+            style={{
+              justifyContent: "space-between",
+            }}
+          >
+            <label className="labelUsername">Họ và tên</label>
+            <div className="input-container">
+              <AccountCircleIcon className="email-icon" />
+              <input
+                className="username"
+                type="text"
+                placeholder="Nhập họ tên"
+              />
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "30px",
+            }}
+          >
             <div>
               <label className="labelUsername">Email</label>
-              <input className="email" type="text" placeholder="Nhập email" />
+              <div className="input-container">
+                <EmailIcon className="email-icon" />
+                <input className="email" type="text" placeholder="Nhập email" />
+              </div>
             </div>
+
             <div>
               <label className="labelUsername">Số điện thoại</label>
-              <input
-                className="phone"
-                type="text"
-                placeholder="Nhập số điện thoại"
-              />
+              <div className="input-container">
+                <PhoneIphoneIcon className="email-icon" />
+                <input
+                  className="phone"
+                  type="text"
+                  placeholder="Nhập số điện thoại"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -90,7 +127,8 @@ const AddStaffComponent = () => {
         style={{
           display: "flex",
           alignItems: "center",
-          marginTop: "20px",
+          marginTop: "30px",
+          marginBottom: "20px",
           marginLeft: "16px",
           justifyContent: "space-between",
           width: "900px",
@@ -178,6 +216,45 @@ const AddStaffComponent = () => {
             </Select>
           </div>
         </div>
+      </div>
+
+      <div style={{ marginTop: "30px" }}>
+        <label className="labelUsername">Địa chỉ</label>
+        <div className="input-container">
+          <LocationOnIcon className="email-icon" />
+          <input className="address" type="text" placeholder="Nhập địa chỉ" />
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          width: "900px",
+          justifyContent: "space-between",
+          marginTop: "30px",
+        }}
+      >
+        <div>
+          <label className="labelUsername">Mật khẩu</label>
+          <input className="password" type="text" placeholder="Nhập mật khẩu" />
+        </div>
+        <div>
+          <label className="labelUsername">Xác nhận mật khẩu</label>
+          <input className="password" type="text" placeholder="Nhập mật khẩu" />
+        </div>
+      </div>
+
+      <div
+        style={{
+          width: "900px",
+          marginBottom: "50px",
+          display: "flex",
+          textAlign: "right",
+          justifyContent: "flex-end",
+        }}
+      >
+        <button className="buttonCancel">Quay lại</button>
+        <button className="buttonAdd">Thêm</button>
       </div>
     </div>
   );

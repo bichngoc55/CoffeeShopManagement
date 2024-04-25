@@ -1,0 +1,129 @@
+.image-con {
+  width: 180px;
+  height: 180px;
+  border: 4px solid #fff;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.infoRight {
+  text-align: left;
+  margin-left: 20px;
+  align-items: center;
+}
+.username {
+  outline: none;
+  border-radius: 10px;
+  font-size: 14px;
+  width: 700px;
+  height: 35px;
+  position: relative;
+  padding-left: 35px;
+  z-index: 1;
+}
+.email {
+  outline: none;
+  border-radius: 10px;
+  font-size: 12px;
+  width: 350px;
+  height: 35px;
+  position: relative;
+  padding-left: 35px;
+}
+.phone {
+  outline: none;
+  border-radius: 10px;
+  font-size: 14px;
+  width: 320px;
+  height: 35px;
+  position: relative;
+  padding-left: 35px;
+}
+.labelUsername {
+  margin-bottom: 10px;
+  font: 800 12px "Montserrat";
+  color: #714534;
+}
+.iconContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+  height: 35px;
+  position: relative;
+  border-radius: 50px;
+  background-color: #d0d0d0;
+}
+.label {
+  font: 800 12px "Montserrat";
+  color: #714534;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.datePick {
+  outline: none;
+  border-radius: 10px;
+  font-size: 12px;
+  width: 150px;
+  height: 35px;
+}
+.address {
+  outline: none;
+  border-radius: 10px;
+  font-size: 14px;
+  width: 900px;
+  height: 35px;
+  position: relative;
+  padding-left: 35px;
+}
+.password {
+  outline: none;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 30px;
+  width: 430px;
+  height: 35px;
+}
+.email-icon {
+  left: 8px;
+  position: absolute;
+  color: gray;
+  z-index: 2;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+.buttonCancel {
+  background-color: #714534;
+  width: 140px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 5px;
+  border: none;
+  border-radius: 8px;
+}
+.buttonCancel:hover {
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.buttonAdd {
+  background-color: #ffffff;
+  width: 140px;
+  color: #714534;
+  padding: 5px;
+  border: 1px solid #714534;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  margin-left: 40px;
+}
+.buttonAdd:hover {
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}

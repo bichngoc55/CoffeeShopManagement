@@ -12,7 +12,10 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import { useState, useEffect } from "react";
 import TableBarOutlinedIcon from "@mui/icons-material/TableBarOutlined";
-import { BreakfastDiningOutlined } from "@mui/icons-material";
+import {
+  BreakfastDiningOutlined,
+  NearMeDisabledTwoTone,
+} from "@mui/icons-material";
 //import { Switch } from "@mui/material";
 import { useSelector } from "react-redux";
 
@@ -149,7 +152,7 @@ const DashBoard = () => {
           {
             <Item
               title="Nhân Viên"
-              to="/staff"
+              to="/stuff"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
