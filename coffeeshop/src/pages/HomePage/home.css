@@ -90,3 +90,17 @@ p {
 .hidden {
 height: 0;
 }
+
+/* img */
+.avatar-image {
+  width: auto;
+  height: auto;
+  cursor: pointer;
+  border-radius: 100%;
+}
+
+.notification-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

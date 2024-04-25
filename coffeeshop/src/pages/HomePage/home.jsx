@@ -1,19 +1,28 @@
 import React, {useState} from 'react';
 
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded';
+import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
 
 import DashBoard from '../../components/dashBoard/dashBoard';
 import {Box} from "@mui/material";
 import './home.css'
 import WorkScheduleTable from './WorkSchedule';
+import NotificationButton from './Notification';
 
 const HomePage = () => {
 
   const [isContentVisible, setIsContentVisible] = useState(false);
+  const [isNotificationShown, setNotificationShown] = useState(false);
+
 
   const handleToggleClick = () => {
     setIsContentVisible(!isContentVisible);
   };
+
+  const toggleNotificationList = () => {
+    setNotificationShown(!isNotificationShown);
+  };
+
   
   return (
     <Box sx={{display: "flex", maxWidth: "100vw", }}>
@@ -24,14 +33,27 @@ const HomePage = () => {
           <div className=" bg-white " style={{ width: '27.08%'}}>
             <input type="text" className="search-input" placeholder="Search..." />
           </div>
-          <img
-            alt="profile-user"
-            width="6%"
-            height="auto"
-            loading="lazy"
-            src={`../../assets/avtUser.png`}
-            style={{ cursor: "pointer", borderRadius: "100%" }}
-          />
+          <div style={{width: "10%", justifyItems: 'center', alignItems: 'center'}}>
+            <button className="notification-button" onClick={toggleNotificationList}>
+              <div style={{width: "70%", position: 'relative'}}>
+              <img
+                alt="profile-user"
+                loading="lazy"
+                src="../../assets/avtUser.png"
+                className="avatar-image" 
+              />
+              <NotificationsNoneRoundedIcon className="notification-icon"
+                style={{ color: isNotificationShown ? 'red' : 'inherit' }}
+              />
+              </div>
+                {isNotificationShown && (
+                  <div className="notification-list">
+                    <NotificationButton/>
+                  </div>
+                )}
+            </button>
+            
+          </div>
         </div>
         <div className='content'>
           <a className='large_text font-semibold' style={{marginTop: '4%', textAlign: 'left', display: 'block', color: "#714534" }}>
@@ -115,7 +137,7 @@ const HomePage = () => {
 
           <div className='WorkSchedule'> 
             <a className='title'>Work Schedule</a>
-            <div style={{marginTop: '5%', }}>
+            <div style={{marginTop: '5%',}}>
               <WorkScheduleTable/>
             </div>
           </div>

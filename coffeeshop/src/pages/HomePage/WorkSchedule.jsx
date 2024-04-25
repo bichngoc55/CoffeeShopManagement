@@ -33,7 +33,7 @@ const WorkScheduleTable = () => {
       const currentDateObj = new Date(selectedDateObj);
       currentDateObj.setDate(selectedDateObj.getDate() + i);
       const dayOfMonth = currentDateObj.getDate();
-      dayHeaders.push(<th key={i} style={{ width: '150px'}} >{dayOfMonth}</th>);
+      dayHeaders.push(<th key={i} style={{ }} >{dayOfMonth}</th>);
     }
 
     return dayHeaders;
@@ -63,19 +63,19 @@ const WorkScheduleTable = () => {
     };
     
     return  (
-      <FormControl fullWidth>
-        <InputLabel id={`demo-simple-select-label-${index}`}>Staff</InputLabel>
+      <FormControl fullWidth style={{marginTop: '3.5px', marginBottom: '3.5px'}}>
+        <InputLabel id={`demo-simple-select-label-${index}`} >Staff</InputLabel>
         <Select
           labelId={`demo-simple-select-label-${index}`}
           id={`demo-simple-select-${index}`}
           value={staffSelections[index] || ""}
           label="Staff"
           onChange={handleStaffSelect}
-          style={{width: '100%'}}
+          style={{width: '100%',}}
         >
           {users.map((user) => (
             <MenuItem key={user.id} value={user}>
-              {user.Name}
+              <span style={{fontSize: '14px'}}>{user.Name}</span>
             </MenuItem>
           ))}
         </Select>
@@ -85,7 +85,7 @@ const WorkScheduleTable = () => {
 
 
   return (
-    <div style={{ display: "flex"}}>
+    <div style={{ display: "block"}}>
       <style>
         {`
           .work-schedule-table {
@@ -94,7 +94,7 @@ const WorkScheduleTable = () => {
 
           .work-schedule-table th, .work-schedule-table td {
             border: 1px solid black;
-            padding: 8px;
+            padding: 3px;
             text-align: center;
           }
 
@@ -116,8 +116,8 @@ const WorkScheduleTable = () => {
       <table className="work-schedule-table">
         <thead>
           <tr>
-            <th>
-              <div className="date-picker"  >
+            <th style={{}}>
+              <div className="date-picker" style={{ }} >
                 <input
                   type="date"
                   id="date"
@@ -143,6 +143,8 @@ const WorkScheduleTable = () => {
             {Array.from({ length: 7 }).map((_, index) => (
               <td key={index}>
                 {renderStaffOptions(index)}
+                {renderStaffOptions(index+7)}
+                {renderStaffOptions(index+14)}
               </td>
             ))}
           </tr>
@@ -152,7 +154,9 @@ const WorkScheduleTable = () => {
             </td>
             {Array.from({ length: 7 }).map((_, index) => (
               <td key={index}>
-                {renderStaffOptions(index+7)}
+                {renderStaffOptions(index+21)}
+                {renderStaffOptions(index+28)}
+                {renderStaffOptions(index+35)}
               </td>
             ))}
           </tr>
@@ -161,7 +165,9 @@ const WorkScheduleTable = () => {
           </td>
             {Array.from({ length: 7 }).map((_, index) => (
               <td key={index}>
-                {renderStaffOptions(index+14)}
+                {renderStaffOptions(index+42)}
+                {renderStaffOptions(index+49)}
+                {renderStaffOptions(index+56)}
               </td>
             ))}
         </tbody>
