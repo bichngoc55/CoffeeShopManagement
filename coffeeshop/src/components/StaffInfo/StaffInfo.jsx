@@ -13,6 +13,7 @@ import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { format } from "date-fns";
+import axios from "axios";
 import "./StaffInfo.css";
 
 const StaffInfoComponent = () => {
@@ -46,7 +47,20 @@ const StaffInfoComponent = () => {
   const [phoneInput, setPhone] = React.useState(Phone);
   const [dateOfBirthInput, setDateOfBirth] = React.useState(formattedDate);
   const [locationInput, setLocation] = React.useState(location);
+  const [file, setFile] = React.useState();
 
+  const handleUpload = (event) => {
+    const formdata = new FormData();
+    formdata.append("file", file);
+    axios
+      .post("http://localhost:3005/upload", formdata)
+      .then((res) => {
+        const baseUrl = "http://localhost:3005"; // Thay thế bằng URL thực tế của máy chủ
+        const imageUrl = `${baseUrl}/${res.data.path.replace("\\", "/")}`;
+        setFile(imageUrl);
+      })
+      .catch((err) => console.log(err));
+  };
   return (
     <div
       style={{
@@ -64,7 +78,7 @@ const StaffInfoComponent = () => {
       >
         <div style={{ textAlign: "center" }}>
           <button className="image-con">
-            <img src={userImage} alt="User" />
+            <img src={`http://localhost:3005/assets/${Ava}`} alt="User" />
           </button>
           <Button
             component="label"
@@ -75,7 +89,13 @@ const StaffInfoComponent = () => {
             startIcon={<CloudUploadIcon />}
           >
             Upload file
-            <VisuallyHiddenInput type="file" />
+            <VisuallyHiddenInput
+              type="file"
+              onChange={(e) => {
+                const selectedFile = e.target.files[0];
+                setFile(selectedFile);
+              }}
+            />
           </Button>
         </div>
         <div className="infoRight">
@@ -283,7 +303,9 @@ const StaffInfoComponent = () => {
         }}
       >
         <button className="buttonCancel">Hủy thay đổi</button>
-        <button className="buttonAdd">Lưu thay đổi</button>
+        <button className="buttonAdd" onClick={handleUpload}>
+          Lưu thay đổi
+        </button>
       </div>
     </div>
   );

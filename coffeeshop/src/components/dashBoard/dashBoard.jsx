@@ -110,7 +110,7 @@ const DashBoard = () => {
                 alt="profile-user"
                 width="100px"
                 height="100px"
-                src={`http://localhost:3005/public/assets/${Ava}`}
+                src={`http://localhost:3005/assets/${Ava}`}
                 //src={`../../assets/avtUser.png`}
                 style={{ cursor: "pointer", borderRadius: "50%" }}
               />
