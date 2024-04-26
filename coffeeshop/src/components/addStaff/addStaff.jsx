@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import userImage from "../userCard/user.jpg";
+import userImage from "../../asset/user.jpg";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -9,9 +9,17 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-
+import Select from "@mui/material/Select";
+import InputAdornment from "@mui/material/InputAdornment";
+import EmailIcon from "@mui/icons-material/Email";
+import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import axios from "axios";
 import "./addStaff.css";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { registerUser } from "../../services/registerService";
 import { Diversity1Outlined } from "@mui/icons-material";
 const AddStaffComponent = () => {
   const VisuallyHiddenInput = styled("input")({
@@ -25,24 +33,79 @@ const AddStaffComponent = () => {
     whiteSpace: "nowrap",
     width: 1,
   });
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+
+  // const [nameInput, setName] = React.useState();
+  // const [positionInput, setPosition] = React.useState();
+  // const [genderInput, setGender] = React.useState();
+  // const [emailInput, setEmail] = React.useState();
+  // const [phoneInput, setPhone] = React.useState();
+  // const [dateOfBirthInput, setDateOfBirth] = React.useState();
+  // const [passwordInput, setPassword] = React.useState();
+  // const [locationInput, setLocation] = React.useState();
+  const [nameInput, setName] = React.useState("");
+  const [positionInput, setPosition] = React.useState("");
+  const [genderInput, setGender] = React.useState("");
+  const [emailInput, setEmail] = React.useState("");
+  const [phoneInput, setPhone] = React.useState("");
+  const [dateOfBirthInput, setDateOfBirth] = React.useState("");
+  const [passwordInput, setPassword] = React.useState("");
+  const [locationInput, setLocation] = React.useState("");
+  const [newUser, setNewUser] = React.useState({
+    Name: "",
+    Position: "",
+    gender: "",
+    email: "",
+    Phone: "",
+    dateOfBirth: "",
+    location: "",
+    password: "",
+    Ava: "",
+  });
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
-    setSelectedDate(selectedDate);
+    setDateOfBirth(selectedDate);
   };
-  const [position, setPosition] = React.useState("");
-  const [gender, setGender] = React.useState("");
-  const handleChange = (event) => {
-    setPosition(event.target.value);
+  const [image, setImage] = React.useState();
+  const [file, setFile] = React.useState(userImage);
+  useEffect(() => {
+    // Cleanup function to revoke the object URL
+    return () => URL.revokeObjectURL(file);
+  }, [file]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleUpload = (event) => {
+    event.preventDefault();
+    const formdata = new FormData();
+    formdata.append("file", image);
+
+    axios
+      .post("http://localhost:3005/upload", formdata)
+      .then((res) => {
+        console.log(res);
+        setNewUser({
+          Name: nameInput,
+          Position: positionInput,
+          gender: genderInput,
+          email: emailInput,
+          Phone: phoneInput,
+          dateOfBirth: dateOfBirthInput,
+          location: locationInput,
+          password: passwordInput,
+          Ava: res.data.originalname,
+        });
+        registerUser(newUser, dispatch, navigate);
+      })
+      .catch((err) => console.log(err));
   };
-  const handleChangeGender = (event) => {
-    setGender(event.target.value);
-  };
+
   return (
     <div
-      style={{ backgroundColor: "#f9f8fb", width: "100%", paddingLeft: "16px" }}
+      style={{
+        backgroundColor: "#f9f8fb",
+        width: "100%",
+        paddingLeft: "16px",
+        textAlign: "left",
+      }}
     >
       <div
         style={{
@@ -50,9 +113,9 @@ const AddStaffComponent = () => {
           alignItems: "center",
         }}
       >
-        <div>
+        <div style={{ textAlign: "center" }}>
           <button className="image-con">
-            <img src={userImage} alt="User" />
+            <img src={file} alt="User" />
           </button>
           <Button
             component="label"
@@ -63,24 +126,64 @@ const AddStaffComponent = () => {
             startIcon={<CloudUploadIcon />}
           >
             Upload file
-            <VisuallyHiddenInput type="file" />
+            <VisuallyHiddenInput
+              type="file"
+              onChange={(e) => {
+                setImage(e.target.files[0]);
+                setFile(URL.createObjectURL(e.target.files[0]));
+              }}
+            />
           </Button>
         </div>
         <div className="infoRight">
-          <label className="labelUsername">Họ và tên</label>
-          <input className="username" type="text" placeholder="Nhập họ tên" />
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div
+            style={{
+              justifyContent: "space-between",
+            }}
+          >
+            <label className="labelUsername">Họ và tên</label>
+            <div className="input-container">
+              <AccountCircleIcon className="email-icon" />
+              <input
+                className="username"
+                type="text"
+                placeholder="Nhập họ tên"
+                onChange={(event) => setName(event.target.value)}
+              />
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "30px",
+            }}
+          >
             <div>
               <label className="labelUsername">Email</label>
-              <input className="email" type="text" placeholder="Nhập email" />
+              <div className="input-container">
+                <EmailIcon className="email-icon" />
+                <input
+                  className="email"
+                  type="text"
+                  placeholder="Nhập email"
+                  onChange={(event) => setEmail(event.target.value)}
+                />
+              </div>
             </div>
+
             <div>
               <label className="labelUsername">Số điện thoại</label>
-              <input
-                className="phone"
-                type="text"
-                placeholder="Nhập số điện thoại"
-              />
+              <div className="input-container">
+                <PhoneIphoneIcon className="email-icon" />
+                <input
+                  className="phone"
+                  type="text"
+                  placeholder="Nhập số điện thoại"
+                  onChange={(event) => setPhone(event.target.value)}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -90,7 +193,8 @@ const AddStaffComponent = () => {
         style={{
           display: "flex",
           alignItems: "center",
-          marginTop: "20px",
+          marginTop: "30px",
+          marginBottom: "20px",
           marginLeft: "16px",
           justifyContent: "space-between",
           width: "900px",
@@ -111,7 +215,6 @@ const AddStaffComponent = () => {
               type="date"
               id="date"
               className="datePick"
-              value={selectedDate}
               onChange={handleDateChange}
             />
           </div>
@@ -130,8 +233,7 @@ const AddStaffComponent = () => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={gender}
-            onChange={handleChangeGender}
+            onChange={(event) => setGender(event.target.value)}
             style={{
               height: "35px",
               borderRadius: "10px",
@@ -139,8 +241,8 @@ const AddStaffComponent = () => {
               width: "90px",
             }}
           >
-            <MenuItem value={"boy"}>Nam</MenuItem>
-            <MenuItem value={"girl"}>Nữ</MenuItem>
+            <MenuItem value={"nam"}>Nam</MenuItem>
+            <MenuItem value={"nu"}>Nữ</MenuItem>
           </Select>
         </div>
 
@@ -164,8 +266,7 @@ const AddStaffComponent = () => {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={position}
-              onChange={handleChange}
+              onChange={(event) => setPosition(event.target.value)}
               style={{
                 height: "35px",
                 borderRadius: "10px",
@@ -178,6 +279,57 @@ const AddStaffComponent = () => {
             </Select>
           </div>
         </div>
+      </div>
+
+      <div style={{ marginTop: "30px" }}>
+        <label className="labelUsername">Địa chỉ</label>
+        <div className="input-container">
+          <LocationOnIcon className="email-icon" />
+          <input
+            className="address"
+            type="text"
+            placeholder="Nhập địa chỉ"
+            onChange={(event) => setLocation(event.target.value)}
+          />
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          width: "900px",
+          justifyContent: "space-between",
+          marginTop: "30px",
+        }}
+      >
+        <div>
+          <label className="labelUsername">Mật khẩu</label>
+          <input
+            className="password"
+            type="text"
+            placeholder="Nhập mật khẩu"
+            onChange={(event) => setPassword(event.target.value)}
+          />
+        </div>
+        <div>
+          <label className="labelUsername">Xác nhận mật khẩu</label>
+          <input className="password" type="text" placeholder="Nhập mật khẩu" />
+        </div>
+      </div>
+
+      <div
+        style={{
+          width: "900px",
+          marginBottom: "50px",
+          display: "flex",
+          textAlign: "right",
+          justifyContent: "flex-end",
+        }}
+      >
+        <button className="buttonCancel">Quay lại</button>
+        <button className="buttonAdd" onClick={handleUpload}>
+          Thêm
+        </button>
       </div>
     </div>
   );

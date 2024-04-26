@@ -12,7 +12,10 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import { useState, useEffect } from "react";
 import TableBarOutlinedIcon from "@mui/icons-material/TableBarOutlined";
-import { BreakfastDiningOutlined } from "@mui/icons-material";
+import {
+  BreakfastDiningOutlined,
+  NearMeDisabledTwoTone,
+} from "@mui/icons-material";
 //import { Switch } from "@mui/material";
 import { useSelector } from "react-redux";
 
@@ -20,9 +23,6 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
       active={selected === title}
-      //   style={{
-      //     color: "#553528",
-      //   }}
       style={{
         color: selected === title ? "#412D26" : "#8D817D",
         backgroundColor: selected === title ? "#AA7E6D" : "transparent",
@@ -42,13 +42,12 @@ const DashBoard = () => {
   const [selected, setSelected] = useState("");
   const [isAdmin, setAdmin] = useState(false);
   const { Ava, Name, Position } = useSelector((state) => state.auths.user);
-  //   useEffect(() => {
-  //     if (Position === "admin") {
-  //       setAdmin(true);
-  //     } else {
-  //       setAdmin(false);
-  //     }
-  //   }, [Position]);
+
+  useEffect(() => {
+    setSelected("Home");
+    if (Position === "admin") setAdmin(true);
+    else setAdmin(false);
+  }, [Position]);
 
   return (
     <Sidebar
@@ -107,7 +106,7 @@ const DashBoard = () => {
                 alt="profile-user"
                 width="100px"
                 height="100px"
-                src={`http://localhost:3005/public/assets/${Ava}`}
+                src={`http://localhost:3005/assets/${Ava}`}
                 //src={`../../assets/avtUser.png`}
                 style={{ cursor: "pointer", borderRadius: "50%" }}
               />
@@ -146,15 +145,15 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
-          {
+          {isAdmin && (
             <Item
               title="Nhân Viên"
-              to="/staff"
+              to="/stuff"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-          }
+          )}
           <Item
             title="Kho Hàng"
             to="/inventory"
@@ -169,6 +168,7 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
+
           <Item
             title="Đặt Bàn"
             to="/booking"

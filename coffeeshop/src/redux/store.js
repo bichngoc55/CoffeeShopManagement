@@ -37,4 +37,5 @@ export const store = configureStore({
     }),
 });
 
-export let persistor = persistStore(store);
+const persistor = persistStore(store);
+export { persistor };
