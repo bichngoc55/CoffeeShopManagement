@@ -19,9 +19,11 @@ const DrinkSchema = new Schema(
       default: "",
     },
     Size: {
+ 
       type: String,
       default: [],
       enum: ["S", "M", "L"],
+ 
     },
     Price: {
       type: Number,
@@ -33,9 +35,11 @@ const DrinkSchema = new Schema(
       required: true,
     },
     LoaiDoUong: {
+ 
       type: String,
       default: [],
-      enum: ["milk based", "coffee", "tea", "juice"],
+      enum: ["Coffee", "Juice", "Tea", "Milk based", "Topping"],
+ 
     },
   },
   { timestamps: true }

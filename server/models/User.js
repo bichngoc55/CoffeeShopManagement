@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -18,7 +19,7 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: true,
-      min: 5,
+      min: 6,
     },
     Ava: {
       type: String,
