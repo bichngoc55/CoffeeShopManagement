@@ -26,7 +26,10 @@ const Stuff = () => {
             return (
               <div className="container-card">
                 <div className="image-container">
-                  <img src={userImage} alt="User" />
+                  <img
+                    src={`http://localhost:3005/assets/${user.Ava}`}
+                    alt="User"
+                  />
                 </div>
 
                 <div className="inforContainer">
