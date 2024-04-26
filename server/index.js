@@ -23,16 +23,15 @@ dotenv.config();
 //express app
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
-app.use(morgan("common"));
+app.use(morgan("dev"));
 app.use(express.json());
-app.use("/assets", express.static(path.join(__dirname, "public/assets")));
+app.use(express.static("public"));
 
 /* FILE STORAGE */
 const storage = multer.diskStorage({
@@ -43,7 +42,6 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-const upload = multer({ storage });
 
 /* ROUTES WITH FILES */
 /*app.post("/staff/add", verifyToken, upload.single("picture"), addStaff);*/
@@ -52,8 +50,21 @@ const upload = multer({ storage });
 app.get("/", (req, res) => {
   res.send("Hello to Memories API");
 });
-const assetsPath = path.join(__dirname, "public", "assets");
-app.use(express.static(assetsPath));
+
+const upload = multer({
+  storage: storage,
+});
+app.post("/upload", upload.single("file"), (req, res) => {
+  const file = req.file;
+  const fileInfo = {
+    filename: file.filename,
+    originalname: file.originalname,
+    mimetype: file.mimetype,
+    size: file.size,
+    path: file.path,
+  };
+  res.send(fileInfo);
+});
 
 app.use("/auth", authRoutes); // localhost:3005/auth/register
 //app.use("/inventory", inventoryRoutes);
