@@ -11,7 +11,7 @@ import { fileURLToPath } from "url";
 import { addStaff } from "./controllers/staffController.js";
  
 import inventoryRoutes from "./routes/inventory.js";
- 
+// import analyticsRoutes from "./routes/"
 import staffRoutes from "./routes/staff.js";
 import bookingRoutes from "./routes/booking.js";
 import historyRoutes from "./routes/history.js";
