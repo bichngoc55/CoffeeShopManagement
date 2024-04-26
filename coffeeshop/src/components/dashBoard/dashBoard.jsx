@@ -42,11 +42,12 @@ const DashBoard = () => {
   const [selected, setSelected] = useState("");
   const [isAdmin, setAdmin] = useState(false);
   const { Ava, Name, Position } = useSelector((state) => state.auths.user);
-  if (Position === "admin") setAdmin(true);
-  else setAdmin(false);
+
   useEffect(() => {
     setSelected("Home");
-  }, []);
+    if (Position === "admin") setAdmin(true);
+    else setAdmin(false);
+  }, [Position]);
 
   return (
     <Sidebar
@@ -160,15 +161,14 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
-          {isAdmin && (
-            <Item
-              title="Cài Đặt"
-              to="/settings"
-              icon={<SettingsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          )}
+          <Item
+            title="Cài Đặt"
+            to="/settings"
+            icon={<SettingsOutlinedIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          />
+
           <Item
             title="Đặt Bàn"
             to="/booking"
@@ -176,15 +176,13 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
-          {isAdmin && (
-            <Item
-              title="Thống Kê"
-              to="/statistics"
-              icon={<PieChartOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          )}
+          <Item
+            title="Thống Kê"
+            to="/statistics"
+            icon={<PieChartOutlineOutlinedIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          />
         </Box>
         <Box mt="30px" paddingLeft={isCollapsed ? undefined : "10%"}>
           <Item

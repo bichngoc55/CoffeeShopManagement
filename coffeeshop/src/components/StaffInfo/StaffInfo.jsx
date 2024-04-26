@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import userImage from "../../asset/user.jpg";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -52,7 +52,11 @@ const StaffInfoComponent = () => {
   const [image, setImage] = React.useState();
   const [file, setFile] = React.useState(`http://localhost:3005/assets/${Ava}`);
   console.log(typeof dateOfBirth);
-  const handleUpload = (event) => {
+  useEffect(() => {
+    // Cleanup function to revoke the object URL
+    return () => URL.revokeObjectURL(file);
+  }, [file]);
+  const handleUpload = useCallback((event) => {
     const formdata = new FormData();
     formdata.append("file", image);
     axios
@@ -61,7 +65,7 @@ const StaffInfoComponent = () => {
         console.log(res);
       })
       .catch((err) => console.log(err));
-  };
+  }, []);
   return (
     <div
       style={{
