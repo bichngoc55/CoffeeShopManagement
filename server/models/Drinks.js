@@ -12,14 +12,16 @@ const DrinkSchema = new Schema(
     percentOfSugar: {
       type: Number,
       default: 100,
+      enum: [0, 50, 80, 100],
     },
     Description: {
       type: String,
       default: "",
     },
     Size: {
-      type: Array,
+      type: String,
       default: [],
+      enum: ["S", "M", "L"],
     },
     Price: {
       type: Number,
@@ -31,8 +33,9 @@ const DrinkSchema = new Schema(
       required: true,
     },
     LoaiDoUong: {
-      type: Array,
+      type: String,
       default: [],
+      enum: ["milk based", "coffee", "tea", "juice"],
     },
   },
   { timestamps: true }

@@ -8,14 +8,14 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
-import { addStaff } from "./controllers/staff.js";
-//
-
-//import inventoryRoutes from "./routes/inventory.js";
+import { addStaff } from "./controllers/staffController.js";
+import inventoryRoutes from "./routes/inventory.js";
 import staffRoutes from "./routes/staff.js";
 import bookingRoutes from "./routes/booking.js";
 import historyRoutes from "./routes/history.js";
 import authRoutes from "./routes/auth.js";
+import menuRoutes from "./routes/menu.js";
+import { verifyToken } from "./middlewares/authMiddleware.js";
 
 //config
 dotenv.config();
@@ -53,10 +53,11 @@ app.get("/", (req, res) => {
   res.send("Hello to Memories API");
 });
 app.use("/auth", authRoutes); // localhost:3005/auth/register
-//app.use("/inventory", inventoryRoutes);
+app.use("/inventory", inventoryRoutes);
 app.use("/staff", staffRoutes);
 app.use("/booking", bookingRoutes);
 app.use("/history", historyRoutes);
+app.use("/menu", menuRoutes);
 //connect to mongodb
 mongoose
   .connect(process.env.URI)

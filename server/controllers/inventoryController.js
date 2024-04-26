@@ -1,50 +1,73 @@
-import Bill from "../models/Bill.js";
- 
-// Get all bills
-const getAllBills = async (req, res) => {
-    try {
-        const bills = await Bill.find();
-        res.status(200).json(bills);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to get bills" });
+import Ingredient from "../models/Ingredient.js";
+
+// get all ingredients
+const getAllIngredients = async (req, res) => {
+  try {
+    const Ingredients = await Ingredient.find();
+    res.status(200).json(Ingredients);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get Ingredients" });
+  }
+};
+// get details ingredients
+const getDetailIngredient = async (req, res) => {
+  try {
+    const { ingredientId } = req.params;
+    const ingredient = await Ingredient.findById(ingredientId);
+    if (!ingredient) {
+      return res.status(404).json({ error: "Ingredient not found" });
     }
+    res.status(200).json(ingredient);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get Ingredient details" });
+  }
+};
+// update an ingredient
+const updateIngredient = async (req, res) => {
+  try {
+    const ingredient = await Ingredient.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+    if (!ingredient) {
+      return res.status(404).json({ error: "Ingredient not found" });
+    }
+    res.status(200).json(ingredient);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update Ingredient" });
+  }
 };
 
-// Update a bill
-const updateBill = async (req, res) => {
-    const { id } = req.params;
-    const { /* update fields */ } = req.body;
-
-    try {
-        const updatedBill = await Bill.findByIdAndUpdate(id, { /* update fields */ }, { new: true });
-        res.status(200).json(updatedBill);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to update bill" });
-    }
+// create an ingredient
+const createIngredient = async (req, res) => {
+  try {
+    const ingredient = new Ingredient(req.body);
+    await ingredient.save();
+    res.status(201).json(ingredient);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create Ingredient" });
+  }
 };
 
-// Create a new bill
-const createBill = async (req, res) => {
-    const { /* bill data */ } = req.body;
-
-    try {
-        const newBill = await Bill.create({ /* bill data */ });
-        res.status(201).json(newBill);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to create bill" });
+// delete an ingredient
+const deleteIngredient = async (req, res) => {
+  try {
+    const ingredient = await Ingredient.findByIdAndDelete(req.params.id);
+    if (!ingredient) {
+      return res.status(404).json({ error: "Ingredient not found" });
     }
+    res.status(200).json({ message: "Ingredient deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete Ingredient" });
+  }
 };
-
-// Delete a bill
-const deleteBill = async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        await Bill.findByIdAndDelete(id);
-        res.status(200).json({ message: "Bill deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete bill" });
-    }
+export {
+  getAllIngredients,
+  updateIngredient,
+  createIngredient,
+  deleteIngredient,
+  getDetailIngredient,
 };
-
-export { getAllBills, updateBill, createBill, deleteBill };
