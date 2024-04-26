@@ -9,13 +9,15 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import { addStaff } from "./controllers/staffController.js";
-//
-
-//import inventoryRoutes from "./routes/inventory.js";
+ 
+import inventoryRoutes from "./routes/inventory.js";
+ 
 import staffRoutes from "./routes/staff.js";
 import bookingRoutes from "./routes/booking.js";
 import historyRoutes from "./routes/history.js";
 import authRoutes from "./routes/auth.js";
+import menuRoutes from "./routes/menu.js";
+import { verifyToken } from "./middlewares/authMiddleware.js";
 
 //config
 dotenv.config();
@@ -67,10 +69,11 @@ app.post("/upload", upload.single("file"), (req, res) => {
 });
 
 app.use("/auth", authRoutes); // localhost:3005/auth/register
-//app.use("/inventory", inventoryRoutes);
+app.use("/inventory", inventoryRoutes);
 app.use("/staff", staffRoutes);
 app.use("/booking", bookingRoutes);
 app.use("/history", historyRoutes);
+app.use("/menu", menuRoutes);
 //connect to mongodb
 mongoose
   .connect(process.env.URI)

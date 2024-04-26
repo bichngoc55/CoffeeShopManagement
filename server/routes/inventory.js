@@ -1,19 +1,22 @@
 import { verifyToken } from "../middlewares/authMiddleware.js";
 import express from "express";
 import {
-  getAllInventory,
-  addInventory,
-  updateInventory,
-  deleteInventory,
+  getAllIngredients,
+  updateIngredient,
+  createIngredient,
+  getDetailIngredient,
+  deleteIngredient,
 } from "../controllers/inventoryController.js";
 const router = express.Router();
 
 /* READ */
-router.get("/", verifyToken, getAllInventory);
+router.get("/", getAllIngredients);
+/* READ */
+router.get("/:ingredientId", verifyToken, getDetailIngredient);
 /* CREATE */
-router.post("/add", addInventory);
+router.post("/add", createIngredient);
 /* UPDATE */
-router.patch("/:id", verifyToken, updateInventory);
+router.patch("/:id", verifyToken, updateIngredient);
 /* DELETE */
-router.delete("/:id", verifyToken, deleteInventory);
+router.delete("/:id", verifyToken, deleteIngredient);
 export default router;

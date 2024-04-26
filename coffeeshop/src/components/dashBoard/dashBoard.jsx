@@ -23,9 +23,6 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
       active={selected === title}
-      //   style={{
-      //     color: "#553528",
-      //   }}
       style={{
         color: selected === title ? "#412D26" : "#8D817D",
         backgroundColor: selected === title ? "#AA7E6D" : "transparent",
@@ -45,13 +42,11 @@ const DashBoard = () => {
   const [selected, setSelected] = useState("");
   const [isAdmin, setAdmin] = useState(false);
   const { Ava, Name, Position } = useSelector((state) => state.auths.user);
-  //   useEffect(() => {
-  //     if (Position === "admin") {
-  //       setAdmin(true);
-  //     } else {
-  //       setAdmin(false);
-  //     }
-  //   }, [Position]);
+  if (Position === "admin") setAdmin(true);
+  else setAdmin(false);
+  useEffect(() => {
+    setSelected("Home");
+  }, []);
 
   return (
     <Sidebar
@@ -149,7 +144,7 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
-          {
+          {isAdmin && (
             <Item
               title="Nhân Viên"
               to="/stuff"
@@ -157,7 +152,7 @@ const DashBoard = () => {
               selected={selected}
               setSelected={setSelected}
             />
-          }
+          )}
           <Item
             title="Kho Hàng"
             to="/inventory"
@@ -165,13 +160,15 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
-          <Item
-            title="Cài Đặt"
-            to="/settings"
-            icon={<SettingsOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
+          {isAdmin && (
+            <Item
+              title="Cài Đặt"
+              to="/settings"
+              icon={<SettingsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          )}
           <Item
             title="Đặt Bàn"
             to="/booking"
@@ -179,13 +176,15 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
-          <Item
-            title="Thống Kê"
-            to="/statistics"
-            icon={<PieChartOutlineOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
+          {isAdmin && (
+            <Item
+              title="Thống Kê"
+              to="/statistics"
+              icon={<PieChartOutlineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          )}
         </Box>
         <Box mt="30px" paddingLeft={isCollapsed ? undefined : "10%"}>
           <Item
