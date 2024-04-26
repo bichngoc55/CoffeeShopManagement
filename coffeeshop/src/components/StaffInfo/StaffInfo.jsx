@@ -12,7 +12,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import axios from "axios";
 import "./StaffInfo.css";
 
@@ -45,19 +45,20 @@ const StaffInfoComponent = () => {
   const [genderInput, setGender] = React.useState(gender);
   const [emailInput, setEmail] = React.useState(email);
   const [phoneInput, setPhone] = React.useState(Phone);
-  const [dateOfBirthInput, setDateOfBirth] = React.useState(formattedDate);
+  const [dateOfBirthInput, setDateOfBirth] = React.useState(
+    parseISO(dateOfBirth)
+  );
   const [locationInput, setLocation] = React.useState(location);
-  const [file, setFile] = React.useState();
-
+  const [image, setImage] = React.useState();
+  const [file, setFile] = React.useState(`http://localhost:3005/assets/${Ava}`);
+  console.log(typeof dateOfBirth);
   const handleUpload = (event) => {
     const formdata = new FormData();
-    formdata.append("file", file);
+    formdata.append("file", image);
     axios
       .post("http://localhost:3005/upload", formdata)
       .then((res) => {
-        const baseUrl = "http://localhost:3005"; // Thay thế bằng URL thực tế của máy chủ
-        const imageUrl = `${baseUrl}/${res.data.path.replace("\\", "/")}`;
-        setFile(imageUrl);
+        console.log(res);
       })
       .catch((err) => console.log(err));
   };
@@ -78,7 +79,7 @@ const StaffInfoComponent = () => {
       >
         <div style={{ textAlign: "center" }}>
           <button className="image-con">
-            <img src={`http://localhost:3005/assets/${Ava}`} alt="User" />
+            <img src={file} alt="User" />
           </button>
           <Button
             component="label"
@@ -92,8 +93,8 @@ const StaffInfoComponent = () => {
             <VisuallyHiddenInput
               type="file"
               onChange={(e) => {
-                const selectedFile = e.target.files[0];
-                setFile(selectedFile);
+                setImage(e.target.files[0]);
+                setFile(URL.createObjectURL(e.target.files[0]));
               }}
             />
           </Button>
@@ -181,9 +182,8 @@ const StaffInfoComponent = () => {
               type="date"
               id="date"
               className="datePick"
-              value={dateOfBirthInput}
-              onChange={(event) => setDateOfBirth(event.target.value)}
-              format="dd/MM/yyyy"
+              value={format(dateOfBirthInput, "yyyy-MM-dd")}
+              onChange={(event) => setDateOfBirth(parseISO(event.target.value))}
             />
           </div>
         </div>
@@ -210,8 +210,8 @@ const StaffInfoComponent = () => {
               width: "90px",
             }}
           >
-            <MenuItem value={"Nam"}>Nam</MenuItem>
-            <MenuItem value={"Nữ"}>Nữ</MenuItem>
+            <MenuItem value={"nam"}>Nam</MenuItem>
+            <MenuItem value={"nu"}>Nữ</MenuItem>
           </Select>
         </div>
 

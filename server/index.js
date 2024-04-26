@@ -57,7 +57,7 @@ const upload = multer({
 app.post("/upload", upload.single("file"), (req, res) => {
   const file = req.file;
   const fileInfo = {
-    filename: file.filename,
+    filename: file.fieldname,
     originalname: file.originalname,
     mimetype: file.mimetype,
     size: file.size,
