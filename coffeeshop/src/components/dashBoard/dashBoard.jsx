@@ -182,7 +182,8 @@ const DashBoard = () => {
           />
           <Item
             title="Thống Kê"
-            to="./analytics"
+            to= "/analytics"
+
             icon={<PieChartOutlineOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
