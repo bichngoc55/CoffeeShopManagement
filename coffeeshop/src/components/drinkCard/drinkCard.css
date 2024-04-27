@@ -1,0 +1,93 @@
+.card {
+  width: 40%;
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  background-color: beige;
+}
+.details {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+.options {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+.moodOption {
+  display: flex;
+  flex-direction: row;
+}
+.moodIcon {
+  display: flex;
+  justify-content: "space-between";
+}
+.coldOption {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.hotOption {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.sizeOption {
+  display: flex;
+  flex-direction: row;
+}
+.S {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.M {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.L {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.LeastSugar {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.MediumSugar {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.DefaultSugar {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.Sugar {
+  display: flex;
+  flex-direction: row;
+}
+.sugarIcon {
+  display: flex;
+  flex-direction: row;
+}
+.LeastIce {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.MediumIce {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.DefaultIce {
+  background-color: antiquewhite;
+  border-radius: 50px;
+}
+.optionTitle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.Ice {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
