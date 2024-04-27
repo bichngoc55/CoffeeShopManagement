@@ -77,7 +77,6 @@ const AddStaffComponent = () => {
     event.preventDefault();
     const formdata = new FormData();
     formdata.append("file", image);
-
     axios
       .post("http://localhost:3005/upload", formdata)
       .then((res) => {

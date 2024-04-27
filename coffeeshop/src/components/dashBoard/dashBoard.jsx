@@ -150,7 +150,7 @@ const DashBoard = () => {
           {isAdmin && (
             <Item
               title="Nhân Viên"
-              to="/stuff"
+              to="/staff"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -180,7 +180,7 @@ const DashBoard = () => {
           />
           <Item
             title="Thống Kê"
-            to="/statistics"
+            to= "./analytics"
             icon={<PieChartOutlineOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
