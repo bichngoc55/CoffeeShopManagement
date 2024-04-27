@@ -34,7 +34,7 @@ const HomePage = () => {
           <div className=" font-semibold medium_text">Home Page</div>
           <div className=" bg-white " style={{ width: '27.08%'}}>
             {/* <input type="text" className="search-input" placeholder="Search..." /> */}
-            <SearchBar setResults={setResults}/>
+            <SearchBar type="text" setResults={setResults} placeholder="Search..." />
             {results && results.length > 0 && (
               <SearchResultsList results={results} />
             )}
