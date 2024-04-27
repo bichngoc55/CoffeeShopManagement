@@ -12,13 +12,10 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import { useState, useEffect } from "react";
 import TableBarOutlinedIcon from "@mui/icons-material/TableBarOutlined";
-import {
-  BreakfastDiningOutlined,
-  NearMeDisabledTwoTone,
-} from "@mui/icons-material";
+import { BreakfastDiningOutlined } from "@mui/icons-material";
 //import { Switch } from "@mui/material";
 import { useSelector } from "react-redux";
-
+import "./dashBoard.css";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
@@ -51,6 +48,7 @@ const DashBoard = () => {
 
   return (
     <Sidebar
+      className="sidebar-container"
       collapsed={isCollapsed}
       style={{
         height: "100vh",
@@ -104,11 +102,15 @@ const DashBoard = () => {
             <Box display="flex" justifyContent="center" alignItems="center">
               <img
                 alt="profile-user"
-                width="100px"
-                height="100px"
+                width="80%" // Adjust the width as desired
+                height="auto" // Adjust the height as desired
                 src={`http://localhost:3005/assets/${Ava}`}
-                //src={`../../assets/avtUser.png`}
-                style={{ cursor: "pointer", borderRadius: "50%" }}
+                style={{
+                  cursor: "pointer",
+                  borderRadius: "50%",
+                  maxWidth: "200px", // Adjust the maximum width as desired
+                  maxHeight: "150px", // Adjust the maximum height as desired
+                }}
               />
             </Box>
             <Box textAlign="center">
@@ -148,7 +150,7 @@ const DashBoard = () => {
           {isAdmin && (
             <Item
               title="Nhân Viên"
-              to="/stuff"
+              to="/staff"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -178,7 +180,7 @@ const DashBoard = () => {
           />
           <Item
             title="Thống Kê"
-            to="/statistics"
+            to= "./analytics"
             icon={<PieChartOutlineOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
