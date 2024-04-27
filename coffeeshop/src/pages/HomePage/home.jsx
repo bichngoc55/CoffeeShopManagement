@@ -8,12 +8,14 @@ import {Box} from "@mui/material";
 import './home.css'
 import WorkScheduleTable from './WorkSchedule';
 import NotificationButton from './Notification';
+import SearchBar from "../../components/searchBar/searchbar";
+import { SearchResultsList } from "../../components/searchBar/searchResultList";
 
 const HomePage = () => {
 
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [isNotificationShown, setNotificationShown] = useState(false);
-
+  const [results, setResults] = useState([]);
 
   const handleToggleClick = () => {
     setIsContentVisible(!isContentVisible);
@@ -31,7 +33,11 @@ const HomePage = () => {
         <div className='flex justify-between ' style={{ marginTop: '2.15%', flexDirection: 'row' }}>
           <div className=" font-semibold medium_text">Home Page</div>
           <div className=" bg-white " style={{ width: '27.08%'}}>
-            <input type="text" className="search-input" placeholder="Search..." />
+            {/* <input type="text" className="search-input" placeholder="Search..." /> */}
+            <SearchBar setResults={setResults}/>
+            {results && results.length > 0 && (
+              <SearchResultsList results={results} />
+            )}
           </div>
           <div style={{width: "10%", justifyItems: 'center', alignItems: 'center'}}>
             <button className="notification-button" onClick={toggleNotificationList}>

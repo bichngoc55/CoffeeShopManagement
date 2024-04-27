@@ -1,7 +1,7 @@
 /* text */
 
 html {
-    font-size: 16px; /* Đặt kích thước cơ sở là 16px */
+    font-size: 14px; /* Đặt kích thước cơ sở là 16px */
 }
 
 .medium_text {
@@ -25,7 +25,7 @@ p {
 .title {
   font-size: 1.8rem;
   color: #714534;
-  font-weight: 500
+  font-weight: 550
 }
   
 

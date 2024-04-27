@@ -1,0 +1,61 @@
+/* text */
+
+html {
+    font-size: 14px; /* Đặt kích thước cơ sở là 16px */
+}
+
+.medium_text {
+    font-size: 2rem; /* Kích thước chữ là 2 lần kích thước cơ sở */
+}
+
+.large_text {
+  font-size: 3rem;
+}
+
+.small_text {
+  font-size: 1rem;
+    text-transform: none;
+}
+
+p {
+  font-size: 1rem;
+}
+
+.title {
+  font-size: 1.8rem;
+  color: #714534;
+  font-weight: 500
+}
+  
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 4%;
+  margin-left: 2.64%;
+  margin-right: 2.64%;
+}
+
+.search-input::placeholder {
+    font-size: 1rem;
+}
+
+
+/* style */
+
+.time_tabs {
+    background-color: #714534;
+  opacity: 0.6; /* Giá trị opacity để làm mờ màu */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Tạo bóng phía dưới */
+  align-self: center;
+  border-radius: 10px;
+  padding: 2px;
+  display: inline-block;
+}
+
+
+.MuiTab-root.Mui-selected {
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #000000;
+}
