@@ -1,20 +1,24 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const DrinkSchema = new Schema(
+const toppingSchema = new Schema(
   {
     Name: {
       type: String,
       required: true,
-      min: 5,
-      max: 70,
+      enum: [
+        "Tran chau den",
+        "Tran chau trang",
+        "Suong sao",
+        "Pho mai vien",
+        "Kem trung",
+        "Thach dua",
+      ],
     },
-
     Description: {
       type: String,
       default: "",
     },
-
     Price: {
       type: Number,
       required: true,
@@ -24,15 +28,10 @@ const DrinkSchema = new Schema(
       default: "",
       required: true,
     },
-    LoaiDoUong: {
-      type: String,
-      default: [],
-      enum: ["Coffee", "Juice", "Tea", "Milk based", "Topping"],
-    },
   },
   { timestamps: true }
 );
 
-const Drinks = mongoose.model("Drinks", DrinkSchema);
+const Topping = mongoose.model("Topping", toppingSchema);
 
-export default Drinks;
+export default Topping;

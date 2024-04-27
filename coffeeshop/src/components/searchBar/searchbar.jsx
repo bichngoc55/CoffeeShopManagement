@@ -1,56 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import { IconButton } from "@mui/material";
+import "./searchBar.css";
 
-const SearchBar = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  //const [suggestions, setSuggestions] = useState([]);
+const SearchBar = ({ width, height, setResults, placeholder }) => {
+  const [input, setInput] = useState("");
 
-  const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
-    onSearch(event.target.value);
+  const fetchData = (value) => {
+    fetch("http://localhost:3005/menu")
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        // const results = json.filter((user) => {
+        //   return (
+        //     value &&
+        //     user &&
+        //     user.name &&
+        //     user.name.toLowerCase().includes(value)
+        //   );
+        // });
+        //setResults(results);
+      });
   };
-  // useEffect(() => {
-  //     const fetchData = async () => {
-  //       try {
-  //         const { data } = await axios.get(``);
-  //         setSuggestions(data.products);
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     };fetchData();
-  //}, [value]);
+  const handleChange = (value) => {
+    setInput(value);
+    fetchData(value);
+  };
 
   return (
     <div className="search-bar">
       <input
-        type="text"
-        placeholder="Search..."
-        value={searchTerm}
-        onChange={handleInputChange}
-        InputProps={{
-            endAdornment: (
-              <IconButton>
-                <SearchIcon /> {/* Display the SearchIcon */}
-              </IconButton>
-            ),
-          }}
+        placeholder={placeholder}
+        value={input}
+        onChange={(e) => handleChange(e.target.value)}
       />
-      
-      <button onClick={() => onSearch(searchTerm)}>
-        <i className="fa fa-search"></i>
-      </button>
+      <IconButton className="search-icon">
+        <SearchIcon className="fa fa-search" />
+      </IconButton>
     </div>
   );
 };
 
 export default SearchBar;
-
-// return (
-//     <div>
-//       <h1>My App</h1>
-//       <SearchBar onSearch={handleSearch} />
-//     </div>
-//   );

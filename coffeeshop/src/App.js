@@ -10,7 +10,7 @@ import LoginPage from "./pages/LoginPage/Login";
 import Booking from "./pages/BookingPage/booking";
 import Stuff from "./pages/StuffPage/stuff";
 import Home from "./pages/HomePage/home";
-//import Menu from "./pages/MenuPage/menu";
+import MenuPage from "./pages/MenuPage/MenuPage";
 import Inventory from "./pages/InventoryPage/inventory";
 
 function App() {
@@ -45,6 +45,10 @@ function App() {
             <Route
               path="/"
               element={isAuth ? <Inventory /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/menu"
+              element={isAuth ? <MenuPage /> : <Navigate to="/login" />}
             />
           </Routes>
         </ThemeProvider>
