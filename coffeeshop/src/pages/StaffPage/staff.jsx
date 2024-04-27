@@ -3,18 +3,32 @@ import DashBoard from "../../components/dashBoard/dashBoard";
 import TabStaff from "../../components/TabStaff/TabStaff";
 import userImage from "../../asset/user.jpg";
 import AddStaffComponent from "../../components/addStaff/addStaff";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import StaffInfo from "../../components/StaffInfo/StaffInfo";
 import "./staff.css";
 import { Box } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { deleteUser } from "../../services/deleteStaffService";
 const Stuff = () => {
   const [users, setUsers] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`http://localhost:3005/staff/`)
       .then((response) => setUsers(response.data.staff))
       .catch((err) => console.error(err));
+  }, []);
+
+  const deleteStaff = useCallback((user) => {
+    console.log("delete staff");
+    try {
+      deleteUser(user.token, dispatch, user._id, navigate);
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
   const items = [
@@ -26,7 +40,10 @@ const Stuff = () => {
             return (
               <div className="container-card">
                 <div className="image-container">
-                  <img src={userImage} alt="User" />
+                  <img
+                    src={`http://localhost:3005/assets/${user.Ava}`}
+                    alt="User"
+                  />
                 </div>
 
                 <div className="inforContainer">
@@ -36,8 +53,21 @@ const Stuff = () => {
                 </div>
 
                 <div className="buttonCon">
-                  <button className="buttonE">Edit</button>
-                  <button className="buttonD">Delete</button>
+                  <button
+                    className="buttonE"
+                    onClick={() => console.log("edit staff")}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="buttonD"
+                    onClick={() => {
+                      console.log("delete staff");
+                      deleteStaff(user);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             );
