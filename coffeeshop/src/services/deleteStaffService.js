@@ -3,7 +3,7 @@ import {
   deleteStaffStart,
   deleteStaffFail,
   deleteStaffSuccess,
-} from "../redux/staffSlice";
+} from "../redux/staffSlide";
 const deleteUser = async (accessToken, dispatch, id, navigate) => {
   dispatch(deleteStaffStart());
   try {
