@@ -20,6 +20,46 @@ const billSchema = new mongoose.Schema({
       },
     },
   ],
+  notes: [
+    {
+      percentOfSugar: {
+        type: Number,
+        default: 100,
+        enum: [0, 50, 80, 100],
+      },
+      size: {
+        type: String,
+        default: [],
+        enum: ["S", "M", "L"],
+      },
+      hotOrCold: {
+        type: String,
+        default: [],
+        enum: ["Hot", "Cold"],
+      },
+      topping: {
+        type: String,
+        default: [],
+        enum: [
+          "Tran chau trang",
+          "Tran chau den",
+          "Pho mai vien",
+          "Suong sao",
+          "Kem trung",
+          "Thach dua",
+        ],
+      },
+      percentOfIce: {
+        type: Number,
+        default: 100,
+        enum: [0, 50, 80, 100],
+      },
+      additionalNote: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
 
   totalAmount: {
     type: Number,

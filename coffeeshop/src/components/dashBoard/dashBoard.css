@@ -1,0 +1,10 @@
+.sidebar-container {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.sidebar-container::-webkit-scrollbar {
+  width: 0px;
+  background-color: transparent;
+}

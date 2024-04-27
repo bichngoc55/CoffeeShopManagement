@@ -10,7 +10,7 @@ import LoginPage from "./pages/LoginPage/Login";
 import Booking from "./pages/BookingPage/booking";
 import Staff from "./pages/StaffPage/staff";
 import Home from "./pages/HomePage/home";
-//import Menu from "./pages/MenuPage/menu";
+import MenuPage from "./pages/MenuPage/MenuPage";
 import Inventory from "./pages/InventoryPage/inventory";
 import Analytics from "./pages/AnalyticsPage/analytics";
 
@@ -50,6 +50,10 @@ function App() {
             <Route
               path="/analytics"
               element={isAuth ? <Analytics /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/menu"
+              element={isAuth ? <MenuPage /> : <Navigate to="/login" />}
             />
           </Routes>
         </ThemeProvider>
