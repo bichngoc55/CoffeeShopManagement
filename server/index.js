@@ -9,9 +9,15 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import { addStaff } from "./controllers/staffController.js";
+<<<<<<< Updated upstream
 //
 
 //import inventoryRoutes from "./routes/inventory.js";
+=======
+
+import inventoryRoutes from "./routes/inventory.js";
+// import analyticsRoutes from "./routes/"
+>>>>>>> Stashed changes
 import staffRoutes from "./routes/staff.js";
 import bookingRoutes from "./routes/booking.js";
 import historyRoutes from "./routes/history.js";
@@ -57,7 +63,6 @@ const upload = multer({
 app.post("/upload", upload.single("file"), (req, res) => {
   const file = req.file;
   const fileInfo = {
-    filename: file.fieldname,
     originalname: file.originalname,
     mimetype: file.mimetype,
     size: file.size,

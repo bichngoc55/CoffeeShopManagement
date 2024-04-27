@@ -52,6 +52,7 @@ const StaffInfoComponent = () => {
   const [image, setImage] = React.useState();
   const [file, setFile] = React.useState(`http://localhost:3005/assets/${Ava}`);
   console.log(typeof dateOfBirth);
+<<<<<<< Updated upstream
   const handleUpload = (event) => {
     const formdata = new FormData();
     formdata.append("file", image);
@@ -62,6 +63,25 @@ const StaffInfoComponent = () => {
       })
       .catch((err) => console.log(err));
   };
+=======
+  useEffect(() => {
+    // Cleanup function to revoke the object URL
+    return () => URL.revokeObjectURL(file);
+  }, [file]);
+  const handleUpload = useCallback(
+    (event) => {
+      const formdata = new FormData();
+      formdata.append("file", image);
+      axios
+        .post("http://localhost:3005/upload", formdata)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
+    },
+    [image]
+  );
+>>>>>>> Stashed changes
   return (
     <div
       style={{
