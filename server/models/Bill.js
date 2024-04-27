@@ -33,7 +33,7 @@ const billSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  Stuff: {
+  Staff: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,

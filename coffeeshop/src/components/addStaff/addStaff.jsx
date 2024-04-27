@@ -34,32 +34,54 @@ const AddStaffComponent = () => {
     width: 1,
   });
 
-  const [nameInput, setName] = React.useState();
-  const [positionInput, setPosition] = React.useState();
-  const [genderInput, setGender] = React.useState();
-  const [emailInput, setEmail] = React.useState();
-  const [phoneInput, setPhone] = React.useState();
-  const [dateOfBirthInput, setDateOfBirth] = React.useState();
-  const [passwordInput, setPassword] = React.useState();
-  const [locationInput, setLocation] = React.useState();
+  // const [nameInput, setName] = React.useState();
+  // const [positionInput, setPosition] = React.useState();
+  // const [genderInput, setGender] = React.useState();
+  // const [emailInput, setEmail] = React.useState();
+  // const [phoneInput, setPhone] = React.useState();
+  // const [dateOfBirthInput, setDateOfBirth] = React.useState();
+  // const [passwordInput, setPassword] = React.useState();
+  // const [locationInput, setLocation] = React.useState();
+  const [nameInput, setName] = React.useState("");
+  const [positionInput, setPosition] = React.useState("");
+  const [genderInput, setGender] = React.useState("");
+  const [emailInput, setEmail] = React.useState("");
+  const [phoneInput, setPhone] = React.useState("");
+  const [dateOfBirthInput, setDateOfBirth] = React.useState("");
+  const [passwordInput, setPassword] = React.useState("");
+  const [locationInput, setLocation] = React.useState("");
+  const [newUser, setNewUser] = React.useState({
+    Name: "",
+    Position: "",
+    gender: "",
+    email: "",
+    Phone: "",
+    dateOfBirth: "",
+    location: "",
+    password: "",
+    Ava: "",
+  });
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
     setDateOfBirth(selectedDate);
   };
   const [image, setImage] = React.useState();
   const [file, setFile] = React.useState(userImage);
+  useEffect(() => {
+    // Cleanup function to revoke the object URL
+    return () => URL.revokeObjectURL(file);
+  }, [file]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleUpload = (event) => {
     event.preventDefault();
     const formdata = new FormData();
     formdata.append("file", image);
-
     axios
       .post("http://localhost:3005/upload", formdata)
       .then((res) => {
         console.log(res);
-        const newUser = {
+        setNewUser({
           Name: nameInput,
           Position: positionInput,
           gender: genderInput,
@@ -67,10 +89,9 @@ const AddStaffComponent = () => {
           Phone: phoneInput,
           dateOfBirth: dateOfBirthInput,
           location: locationInput,
-          gender: genderInput,
           password: passwordInput,
           Ava: res.data.originalname,
-        };
+        });
         registerUser(newUser, dispatch, navigate);
       })
       .catch((err) => console.log(err));

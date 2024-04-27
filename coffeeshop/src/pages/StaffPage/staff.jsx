@@ -6,7 +6,7 @@ import AddStaffComponent from "../../components/addStaff/addStaff";
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import StaffInfo from "../../components/StaffInfo/StaffInfo";
-import "./stuff.css";
+import "./staff.css";
 import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";

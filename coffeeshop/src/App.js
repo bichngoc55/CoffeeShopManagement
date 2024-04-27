@@ -8,16 +8,18 @@ import { useMemo } from "react";
 import LoginPage from "./pages/LoginPage/Login";
 
 import Booking from "./pages/BookingPage/booking";
-import Stuff from "./pages/StuffPage/stuff"; 
+import Staff from "./pages/StaffPage/staff";
 import Home from "./pages/HomePage/home";
 //import Menu from "./pages/MenuPage/menu";
 import Inventory from "./pages/InventoryPage/inventory";
+import Analytics from "./pages/AnalyticsPage/analytics";
 
 function App() {
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  const isAuth = Boolean(useSelector((state) => state.token));
- 
+
+  const isAuth = Boolean(useSelector((state) => state.auths.token));
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -26,15 +28,28 @@ function App() {
 
           <Routes>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/stuff" element={<Stuff />} />
-            {/* <Route path="/menu" element={<Menu />} /> */}
-            <Route path="/booking" element={<Booking />} />
-
             <Route
+              path="/home"
+              element={isAuth ? <Home /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/inventory"
+              element={isAuth ? <Inventory /> : <Navigate to="/login" />}
+            />
+            <Route path="/staff" element={<Staff />} />
+            {/* <Route path="/menu" element={<Menu />} /> */}
+            <Route
+              path="/booking"
+              element={isAuth ? <Booking /> : <Navigate to="/login" />}
+            />
+
+            {/* <Route
               path="/"
               element={isAuth ? <Inventory /> : <Navigate to="/login" />}
+            /> */}
+            <Route
+              path="/analytics"
+              element={isAuth ? <Analytics /> : <Navigate to="/login" />}
             />
           </Routes>
         </ThemeProvider>

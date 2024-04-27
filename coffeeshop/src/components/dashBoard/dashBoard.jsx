@@ -23,9 +23,6 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
       active={selected === title}
-      //   style={{
-      //     color: "#553528",
-      //   }}
       style={{
         color: selected === title ? "#412D26" : "#8D817D",
         backgroundColor: selected === title ? "#AA7E6D" : "transparent",
@@ -45,13 +42,12 @@ const DashBoard = () => {
   const [selected, setSelected] = useState("");
   const [isAdmin, setAdmin] = useState(false);
   const { Ava, Name, Position } = useSelector((state) => state.auths.user);
-  //   useEffect(() => {
-  //     if (Position === "admin") {
-  //       setAdmin(true);
-  //     } else {
-  //       setAdmin(false);
-  //     }
-  //   }, [Position]);
+
+  useEffect(() => {
+    setSelected("Home");
+    if (Position === "admin") setAdmin(true);
+    else setAdmin(false);
+  }, [Position]);
 
   return (
     <Sidebar
@@ -149,15 +145,15 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
-          {
+          {isAdmin && (
             <Item
               title="Nhân Viên"
-              to="/stuff"
+              to="/staff"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-          }
+          )}
           <Item
             title="Kho Hàng"
             to="/inventory"
@@ -172,6 +168,7 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
+
           <Item
             title="Đặt Bàn"
             to="/booking"
@@ -181,7 +178,7 @@ const DashBoard = () => {
           />
           <Item
             title="Thống Kê"
-            to="/statistics"
+            to= "./analytics"
             icon={<PieChartOutlineOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
