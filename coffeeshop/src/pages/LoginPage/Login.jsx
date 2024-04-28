@@ -29,6 +29,27 @@ const LoginPage = () => {
       console.error(err);
     }
   };
+
+  const forgotPassword = async (e) => {
+    e.preventDefault();
+    console.log(emailInput);
+    fetch("http://localhost:3005/auth/forgotPassword", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: emailInput }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data, "userRegister");
+        alert(data.status);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <form onSubmit={handleSubmit} className="login-page">
       <div className="image-section"></div>
@@ -73,7 +94,7 @@ const LoginPage = () => {
               <span style={{ marginLeft: "5px" }}>Remember me</span>
             </div>
 
-            <a href="#" className="forgot">
+            <a href="#" className="forgot" onClick={forgotPassword}>
               Forgot password?
             </a>
           </div>
