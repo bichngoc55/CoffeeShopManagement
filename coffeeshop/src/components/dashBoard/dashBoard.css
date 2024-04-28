@@ -8,3 +8,10 @@
   width: 0px;
   background-color: transparent;
 }
+.profile-user {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.profile-user:hover {
+  border-color: #000000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

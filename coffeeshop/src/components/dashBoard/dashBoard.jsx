@@ -101,6 +101,7 @@ const DashBoard = () => {
           <Box mb="25px">
             <Box display="flex" justifyContent="center" alignItems="center">
               <img
+                className="profile-user"
                 alt="profile-user"
                 width="80%" // Adjust the width as desired
                 height="auto" // Adjust the height as desired
@@ -108,8 +109,9 @@ const DashBoard = () => {
                 style={{
                   cursor: "pointer",
                   borderRadius: "50%",
-                  maxWidth: "200px", // Adjust the maximum width as desired
+                  maxWidth: "150px", // Adjust the maximum width as desired
                   maxHeight: "150px", // Adjust the maximum height as desired
+                  objectFit: "cover", // This property ensures the image maintains its aspect ratio and fills the container
                 }}
               />
             </Box>
@@ -180,11 +182,7 @@ const DashBoard = () => {
           />
           <Item
             title="Thống Kê"
-<<<<<<< Updated upstream
-            to= "./analytics"
-=======
-            to="/analytics"
->>>>>>> Stashed changes
+            to= "/analytics"
             icon={<PieChartOutlineOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
