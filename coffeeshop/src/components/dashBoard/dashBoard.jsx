@@ -180,7 +180,11 @@ const DashBoard = () => {
           />
           <Item
             title="Thống Kê"
+<<<<<<< Updated upstream
             to= "./analytics"
+=======
+            to="/analytics"
+>>>>>>> Stashed changes
             icon={<PieChartOutlineOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
