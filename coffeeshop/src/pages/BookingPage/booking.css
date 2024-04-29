@@ -1,0 +1,72 @@
+.table-container {
+  background-color: aquamarine;
+  margin-top: 200px;
+}
+.headerBooking {
+  font-size: 20px;
+  font-weight: bold;
+  position: sticky;
+  top: 0px;
+  padding: 16px;
+  background-color: #f9f8fb;
+  z-index: 1;
+  text-align: left;
+  width: 600px;
+}
+
+.number {
+  display: flex;
+  margin-top: 20px;
+  justify-content: space-between;
+  align-items: center;
+  width: 500px;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: #ffffff;
+  padding: 7px;
+  border-radius: 10px;
+  margin: 0 auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.emptyheader {
+  display: flex;
+  color: #38cf36;
+  width: 120px;
+  justify-content: space-between;
+}
+.workheader {
+  display: flex;
+  color: #d63c3c;
+  width: 145px;
+  justify-content: space-between;
+}
+.bookheader {
+  display: flex;
+  width: 125px;
+  justify-content: space-between;
+}
+.containerGrid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  width: 80%;
+  margin-top: 30px;
+  font-size: 14px;
+  align-items: center;
+}
+.containercard {
+  background-color: #ffffff;
+  border-radius: 10px;
+  height: 50px;
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+.containercard:hover {
+  color: #704332 !important;
+  background-color: #d0d0d0 !important;
+}
