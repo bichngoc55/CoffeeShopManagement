@@ -18,7 +18,7 @@ import historyRoutes from "./routes/history.js";
 import authRoutes from "./routes/auth.js";
 import menuRoutes from "./routes/menu.js";
 import { verifyToken } from "./middlewares/authMiddleware.js";
-
+import toppingRoutes from "./routes/topping.js";
 //config
 dotenv.config();
 
@@ -73,6 +73,7 @@ app.use("/staff", staffRoutes);
 app.use("/booking", bookingRoutes);
 app.use("/history", historyRoutes);
 app.use("/menu", menuRoutes);
+app.use("/topping", toppingRoutes);
 //connect to mongodb
 mongoose
   .connect(process.env.URI)

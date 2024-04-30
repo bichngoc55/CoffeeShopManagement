@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   mode: "light",
-  user: null,
+  staff: null,
   token: null,
   role: null,
   isFetching: false,
@@ -16,7 +16,9 @@ export const staffSlice = createSlice({
     },
     deleteStaffStart: (state) => {},
     deleteStaffFail: (state, action) => {},
-    deleteStaffSuccess: (state, action) => {},
+    deleteStaffSuccess: (state, action) => {
+      state.staff = action.staff;
+    },
   },
 });
 export const {

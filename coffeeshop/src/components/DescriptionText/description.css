@@ -1,0 +1,31 @@
+.description-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8em;
+  display: flex;
+  padding-top: 10%;
+  padding-bottom: 10%;
+  align-items: center;
+}
+
+.description-text.expanded {
+  overflow: visible;
+  white-space: normal;
+}
+
+.description-text-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.description-text-content.expanded {
+  overflow: visible;
+  white-space: normal;
+}
+
+.toggle-icon {
+  margin-left: 0.2em;
+  cursor: pointer;
+}
