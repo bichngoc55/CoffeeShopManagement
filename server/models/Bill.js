@@ -2,16 +2,10 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const billSchema = new mongoose.Schema({
-  customerName: {
-    type: Schema.Types.ObjectId,
-    ref: "Customer",
-    required: true,
-  },
   items: [
     {
-      drink: {
-        type: Schema.Types.ObjectId,
-        ref: "Drinks",
+      drinkName: {
+        type: String,
         required: true,
       },
       quantity: {
@@ -37,26 +31,11 @@ const billSchema = new mongoose.Schema({
         default: [],
         enum: ["Hot", "Cold"],
       },
-      topping: {
-        type: String,
-        default: [],
-        enum: [
-          "Tran chau trang",
-          "Tran chau den",
-          "Pho mai vien",
-          "Suong sao",
-          "Kem trung",
-          "Thach dua",
-        ],
-      },
+
       percentOfIce: {
         type: Number,
         default: 100,
         enum: [0, 50, 80, 100],
-      },
-      additionalNote: {
-        type: String,
-        default: "",
       },
     },
   ],
@@ -70,7 +49,8 @@ const billSchema = new mongoose.Schema({
     default: Date.now,
   },
   TableNo: {
-    type: Number,
+    type: Schema.Types.ObjectId,
+    ref: "Booking",
     required: true,
   },
   Staff: {

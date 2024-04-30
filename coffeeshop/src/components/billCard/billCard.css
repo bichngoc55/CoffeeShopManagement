@@ -1,0 +1,90 @@
+.bill-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bill-items {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  width: 100%;
+  margin-left: 4%;
+  margin-right: 4%;
+  justify-content: space-between;
+}
+
+.bill-item-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.bill-item-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.imgDrink {
+  width: 20%;
+  height: 70px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+  margin-left: 7%;
+  margin-right: 5%;
+  align-items: center;
+  justify-content: center;
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+}
+.leftInfo {
+  margin-left: 0%;
+  width: 50%;
+}
+.size {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.8em;
+}
+.mood {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.8em;
+}
+.ice {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.8em;
+}
+.sugar {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.8em;
+}
+.price {
+  font-family: Montserrat, sans-serif;
+  margin-left: 6%;
+  font-weight: "bold";
+  font-size: 1.5em;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.name {
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3em;
+  font-weight: "bold";
+}
+.value {
+  color: red;
+  font-family: Montserrat, sans-serif;
+  font-size: 1em;
+}
+.quantity {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.8em;
+}
+.span {
+  font-family: Montserrat, sans-serif;
+  font-weight: "bold";
+  font-size: 1em;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
