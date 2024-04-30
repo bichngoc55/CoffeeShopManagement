@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 
 const WorkScheduleTable = () => {
   const [users, setUsers] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [staffSelections, setStaffSelections] = useState([]); // Trạng thái để lưu trữ user được chọn
 
   useEffect(() => {
     axios
@@ -27,7 +33,7 @@ const WorkScheduleTable = () => {
       const currentDateObj = new Date(selectedDateObj);
       currentDateObj.setDate(selectedDateObj.getDate() + i);
       const dayOfMonth = currentDateObj.getDate();
-      dayHeaders.push(<th key={i}>{dayOfMonth}</th>);
+      dayHeaders.push(<th key={i} style={{ }} >{dayOfMonth}</th>);
     }
 
     return dayHeaders;
@@ -43,24 +49,52 @@ const WorkScheduleTable = () => {
       const dayOfWeek = currentDateObj.toLocaleDateString("en-US", {
         weekday: "long",
       });
-      dayHeaders.push(<th key={i}>{dayOfWeek}</th>);
+      dayHeaders.push(<th key={i} >{dayOfWeek}</th>);
     }
 
     return dayHeaders;
   };
 
+  const renderStaffOptions = (index) => {
+    const handleStaffSelect = (event) => {
+      const updatedSelections = [...staffSelections];
+      updatedSelections[index] = event.target.value;
+      setStaffSelections(updatedSelections);
+    };
+    
+    return  (
+      <FormControl fullWidth style={{marginTop: '3.5px', marginBottom: '3.5px'}}>
+        <InputLabel id={`demo-simple-select-label-${index}`} >Staff</InputLabel>
+        <Select
+          labelId={`demo-simple-select-label-${index}`}
+          id={`demo-simple-select-${index}`}
+          value={staffSelections[index] || ""}
+          label="Staff"
+          onChange={handleStaffSelect}
+          style={{width: '100%',}}
+        >
+          {users.map((user) => (
+            <MenuItem key={user.id} value={user}>
+              <span style={{fontSize: '14px'}}>{user.Name}</span>
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    );
+  };
+
+
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "block"}}>
       <style>
         {`
           .work-schedule-table {
-            width: 100%;
             border-collapse: collapse;
           }
 
           .work-schedule-table th, .work-schedule-table td {
             border: 1px solid black;
-            padding: 8px;
+            padding: 3px;
             text-align: center;
           }
 
@@ -68,22 +102,28 @@ const WorkScheduleTable = () => {
             background-color: #f2f2f2;
           }
 
+          .work-schedule-table td {
+            background-color: #f2f2f2;
+          }
+
           .work-schedule-table tbody tr:nth-child(even) {
             background-color: #f9f9f9;
           }
+
         `}
       </style>
 
       <table className="work-schedule-table">
         <thead>
           <tr>
-            <th>
-              <div className="date-picker">
+            <th style={{}}>
+              <div className="date-picker" style={{ }} >
                 <input
                   type="date"
                   id="date"
                   value={selectedDate}
                   onChange={handleDateChange}
+                  style={{width: '90%', borderWidth: '0'}}
                 />
               </div>
             </th>
@@ -91,8 +131,8 @@ const WorkScheduleTable = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th>Thời gian</th>
+          <tr className="header-row">
+            <th >Thời gian</th>
             {selectedDate && renderWeekdays()}
           </tr>
           <tr>
@@ -100,36 +140,36 @@ const WorkScheduleTable = () => {
               Sáng <br />
               07:30 - 12:30
             </td>
-            <td></td>
-            <td></td>
-            <td>Làm việc</td>
-            <td>Làm việc</td>
-            <td>Làm việc</td>
-            <td></td>
-            <td></td>
+            {Array.from({ length: 7 }).map((_, index) => (
+              <td key={index}>
+                {renderStaffOptions(index)}
+                {renderStaffOptions(index+7)}
+                {renderStaffOptions(index+14)}
+              </td>
+            ))}
           </tr>
           <tr>
             <td>
               Chiều <br /> 12:30 - 17:30
             </td>
-            <td>Làm việc</td>
-            <td></td>
-            <td>Làm việc</td>
-            <td>Làm việc</td>
-            <td>Làm việc</td>
-            <td></td>
-            <td></td>
+            {Array.from({ length: 7 }).map((_, index) => (
+              <td key={index}>
+                {renderStaffOptions(index+21)}
+                {renderStaffOptions(index+28)}
+                {renderStaffOptions(index+35)}
+              </td>
+            ))}
           </tr>
           <td>
             Tối <br /> 17:30 - 22:30
           </td>
-          <td>Làm việc</td>
-          <td></td>
-          <td>Làm việc</td>
-          <td>Làm việc</td>
-          <td>Làm việc</td>
-          <td></td>
-          <td></td>
+            {Array.from({ length: 7 }).map((_, index) => (
+              <td key={index}>
+                {renderStaffOptions(index+42)}
+                {renderStaffOptions(index+49)}
+                {renderStaffOptions(index+56)}
+              </td>
+            ))}
         </tbody>
       </table>
     </div>
@@ -137,3 +177,4 @@ const WorkScheduleTable = () => {
 };
 
 export default WorkScheduleTable;
+

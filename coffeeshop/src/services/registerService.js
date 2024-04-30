@@ -9,7 +9,7 @@ const registerUser = async (user, dispatch, navigate) => {
   try {
     const res = await axios.post("http://localhost:3005/auth/register", user);
     dispatch(registerSuccess(res.data));
-    navigate("/stuff");
+    navigate("/staff");
   } catch (err) {
     console.log(err);
     dispatch(registerFail());

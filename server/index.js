@@ -73,7 +73,8 @@ app.use("/staff", staffRoutes);
 app.use("/booking", bookingRoutes);
 app.use("/history", historyRoutes);
 app.use("/menu", menuRoutes);
-app.use("/topping", toppingRoutes);
+ 
+ 
 //connect to mongodb
 mongoose
   .connect(process.env.URI)
