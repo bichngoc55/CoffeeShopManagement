@@ -1,93 +1,219 @@
-.card {
-  width: 40%;
-  height: 60%;
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+}
+.drink-card {
+  width: 48%;
+  margin-bottom: 20px;
+  border-radius: 20px;
+
+  transition: background-color 0.3s ease;
+}
+.drink-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+@media (max-width: 768px) {
+  .drink-card {
+    width: 100%;
+  }
+}
+.image {
+  width: 50%;
+  height: 200px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.above {
+  display: flex;
+  flex-direction: row;
+}
+.loading-container,
+.no-results-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+.textComponent {
+  padding-left: 5%;
+  gap: 10px;
+}
+.below {
   display: flex;
   flex-direction: column;
-  background-color: beige;
 }
-.details {
-  flex: 1;
+.upperSection {
   display: flex;
-  flex-direction: row;
+  justify-content: space-between;
 }
-.options {
-  flex: 1;
+.belowSection {
   display: flex;
-  flex-direction: row;
+  justify-content: space-between;
 }
-.moodOption {
+.Mood {
+  border-radius: 10px;
+  width: 50%;
+}
+.Icon {
   display: flex;
-  flex-direction: row;
+  gap: 7%;
+  width: 100%;
 }
-.moodIcon {
+.hot-icon {
+  background-color: #d9d9d9;
+  border-radius: 50px;
+  width: 20% !important;
+  text-align: center;
+  align-items: center;
+  border-color: red;
+}
+.cold-icon {
+  background-color: #d9d9d9;
+  border-radius: 50px;
+  width: 20% !important;
+  text-align: center;
+  align-items: center;
+}
+
+.Size {
+  padding-right: 20%;
+  width: 50%;
+  padding-top: 1%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.smallSize {
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  width: 35%;
+  background-color: #d9d9d9;
+  text-align: center;
+  align-items: center;
+}
+.mediumSize {
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  width: 35%;
+  text-align: center;
+}
+.largeSize {
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  width: 35%;
+  text-align: center;
+}
+.SizeContent {
   display: flex;
-  justify-content: "space-between";
-}
-.coldOption {
-  background-color: antiquewhite;
-  border-radius: 50px;
-}
-.hotOption {
-  background-color: antiquewhite;
-  border-radius: 50px;
-}
-.sizeOption {
-  display: flex;
-  flex-direction: row;
-}
-.S {
-  background-color: antiquewhite;
-  border-radius: 50px;
-}
-.M {
-  background-color: antiquewhite;
-  border-radius: 50px;
-}
-.L {
-  background-color: antiquewhite;
-  border-radius: 50px;
-}
-.LeastSugar {
-  background-color: antiquewhite;
-  border-radius: 50px;
-}
-.MediumSugar {
-  background-color: antiquewhite;
-  border-radius: 50px;
-}
-.DefaultSugar {
-  background-color: antiquewhite;
-  border-radius: 50px;
+  justify-content: space-around;
+  width: 100%;
+  gap: 10%;
 }
 .Sugar {
+  border-radius: 10px;
+  width: 50%;
+}
+.sugarContent {
   display: flex;
-  flex-direction: row;
+  gap: 8%;
+  width: 100%;
 }
-.sugarIcon {
-  display: flex;
-  flex-direction: row;
+.leastSugar {
+  background-color: #d9d9d9;
+  width: 20%;
+  border-radius: 50%;
+  text-align: center;
 }
-.LeastIce {
-  background-color: antiquewhite;
-  border-radius: 50px;
+.mediumSugar {
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  width: 20%;
+  text-align: center;
 }
-.MediumIce {
-  background-color: antiquewhite;
-  border-radius: 50px;
-}
-.DefaultIce {
-  background-color: antiquewhite;
-  border-radius: 50px;
-}
-.optionTitle {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+.defaultSugar {
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  width: 20%;
+  text-align: center;
 }
 .Ice {
+  border-radius: 10px;
+  width: 50%;
+}
+.iceContent {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  gap: 6%;
+  width: 100%;
+}
+.leastIce {
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  width: 20%;
+  text-align: center;
+}
+.mediumIce {
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  width: 20%;
+  text-align: center;
+}
+.defaultIce {
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  width: 20%;
+  text-align: center;
+}
+.drink-card:hover .add-to-billing {
+  display: block;
   align-items: center;
+  width: 80%;
+  margin-left: 8%;
+  margin-top: 7%;
+  background-color: #704332;
+
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.add-to-billing {
+  display: none;
+  background-color: #704332;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin-top: 8px;
+
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.smallSize,
+.mediumSize,
+.largeSize,
+.leastSugar,
+.mediumSugar,
+.defaultSugar,
+.leastIce,
+.mediumIce,
+.defaultIce {
+  border: 1px solid transparent; /* Set the initial border color as transparent */
+  cursor: pointer;
+}
+
+.smallSize:hover,
+.mediumSize:hover,
+.largeSize:hover,
+.leastSugar:hover,
+.mediumSugar:hover,
+.defaultSugar:hover,
+.leastIce:hover,
+.mediumIce:hover,
+.defaultIce:hover {
+  background-color: blanchedalmond;
+}
+.selected {
+  border: 1px solid red !important;
 }
