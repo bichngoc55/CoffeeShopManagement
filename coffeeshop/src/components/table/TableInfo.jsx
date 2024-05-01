@@ -8,8 +8,20 @@ import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import FormTable from "./modalTable";
+
 import Gachchan from "./gachchan";
-const table = () => {
+
+const TableInfo = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
   return (
     <div className="tableInfoContainer">
       <h1 className="headerTable">Thông tin đặt bàn</h1>
@@ -100,9 +112,11 @@ const table = () => {
       </div>
       <div className="customerContainer" style={{ marginBottom: "20px" }}></div>
 
-      <button className="btnE">Sửa</button>
+      <button className="btnE" onClick={openModal}>
+        Sửa
+      </button>
+      <FormTable isOpen={isOpen} onClose={closeModal} />
     </div>
   );
 };
-
-export default table;
+export default TableInfo;

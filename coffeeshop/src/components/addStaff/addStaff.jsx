@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import userImage from "../../asset/user.jpg";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
+import WcIcon from "@mui/icons-material/Wc";
 import Button from "@mui/material/Button";
 import CakeIcon from "@mui/icons-material/Cake";
 import BadgeIcon from "@mui/icons-material/Badge";
@@ -226,7 +227,7 @@ const AddStaffComponent = () => {
           }}
         >
           <div className="iconContainer">
-            <BadgeIcon />
+            <WcIcon />
           </div>
           <label className="label">Giới tính: </label>
           <Select

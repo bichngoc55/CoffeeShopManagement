@@ -9,19 +9,14 @@ const SearchBar = ({ width, height, setResults, placeholder }) => {
   const [input, setInput] = useState("");
 
   const fetchData = (value) => {
-    fetch("http://localhost:3005/menu")
+    fetch("http://localhost:3005/menu/")
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
-        // const results = json.filter((user) => {
-        //   return (
-        //     value &&
-        //     user &&
-        //     user.name &&
-        //     user.name.toLowerCase().includes(value)
-        //   );
-        // });
-        //setResults(results);
+        const results = json.filter((item) => {
+          return item && item.Name.toLowerCase().includes(value.toLowerCase());
+        });
+        setResults(results);
       });
   };
   const handleChange = (value) => {

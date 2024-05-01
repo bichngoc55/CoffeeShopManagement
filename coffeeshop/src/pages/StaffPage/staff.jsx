@@ -1,7 +1,6 @@
 import React from "react";
 import DashBoard from "../../components/dashBoard/dashBoard";
 import TabStaff from "../../components/TabStaff/TabStaff";
-import userImage from "../../asset/user.jpg";
 import AddStaffComponent from "../../components/addStaff/addStaff";
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
@@ -11,10 +10,21 @@ import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteUser } from "../../services/deleteStaffService";
+import PopupStaff from "../../components/table/popupEdit";
+
 const Stuff = () => {
   const [users, setUsers] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [openPopupId, setOpenPopupId] = useState(null);
+
+  const openModal = (index) => {
+    setOpenPopupId(index);
+  };
+
+  const closeModal = () => {
+    setOpenPopupId(null);
+  };
   useEffect(() => {
     axios
       .get(`http://localhost:3005/staff/`)
@@ -36,7 +46,7 @@ const Stuff = () => {
       title: "Hồ sơ nhân viên",
       content: (
         <div>
-          {users.map((user) => {
+          {users.map((user, index) => {
             return (
               <div className="container-card">
                 <div className="image-container">
@@ -53,16 +63,20 @@ const Stuff = () => {
                 </div>
 
                 <div className="buttonCon">
-                  <button
-                    className="buttonE"
-                    onClick={() => console.log("edit staff")}
-                  >
+                  <button className="buttonE" onClick={() => openModal(index)}>
                     Edit
                   </button>
+                  {openPopupId === index && (
+                    <PopupStaff
+                      isOpen={true}
+                      onClose={closeModal}
+                      id={user._id}
+                    />
+                  )}
+
                   <button
                     className="buttonD"
                     onClick={() => {
-                      console.log("delete staff");
                       deleteStaff(user);
                     }}
                   >
