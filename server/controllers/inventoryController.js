@@ -12,8 +12,8 @@ const getAllIngredients = async (req, res) => {
 // get details ingredients
 const getDetailIngredient = async (req, res) => {
   try {
-    const { ingredientId } = req.params;
-    const ingredient = await Ingredient.findById(ingredientId);
+    const { _id } = req.params;
+    const ingredient = await Ingredient.findById(_id);
     if (!ingredient) {
       return res.status(404).json({ error: "Ingredient not found" });
     }

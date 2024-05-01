@@ -1,0 +1,68 @@
+.print-section {
+  font-family: Arial, sans-serif;
+  color: #333;
+  padding: 20px;
+  margin: auto;
+  width: 50%;
+}
+
+.HoaDon {
+  margin: 20px 0;
+  text-align: center;
+  font-family: Montserrat, sans-serif;
+}
+
+.MaHoaDon,
+.date,
+.tableNumber,
+.staffName {
+  font-size: 1em;
+  margin: 5px 0;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+}
+
+.TableDrink table {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.TableDrink th,
+.TableDrink td {
+  text-align: center;
+  padding: 10px;
+}
+
+.totalPrice {
+  font-weight: bold;
+  margin: 20px 0;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.5em;
+  font-weight: "bold";
+}
+
+.wifi-password {
+  font-size: 0.8em;
+  margin: 20px 0;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+}
+
+.quote {
+  font-style: italic;
+  margin: 20px 0;
+  text-align: center;
+  font-family: Montserrat, sans-serif;
+}
+.container2 {
+  display: block;
+  justify-content: center;
+  align-items: center;
+}
+
+.JavaJoy {
+  text-align: center;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.5em;
+  font-weight: "bold";
+}
