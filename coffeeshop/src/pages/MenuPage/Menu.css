@@ -58,8 +58,33 @@
 .cardDrink {
   margin-top: 20px;
 }
+.btn {
+  gap: 5%;
+  background-color: #704332;
+  border-radius: 5px;
+  color: #ffffff;
+  width: 100%;
+  height: 90%;
+  border-color: black;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+.btn:hover {
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
 .coffeeMenu {
   padding-top: 2%;
+  display: flex;
+  justify-content: space-between;
+}
+.ButtonComponent {
+  display: flex;
+  flex-direction: row;
+  margin-left: 5%;
+  justify-content: space-between;
+  align-items: center;
+  width: 50%;
+  gap: 10px;
+  padding-right: 5%;
 }
 .hehe {
   width: 90%;
@@ -125,6 +150,82 @@
   margin-top: 10%;
   transition: opacity 0.5s ease;
 }
-.billprinted {
-  opacity: 0;
+@media screen {
+  .print-section {
+    display: none;
+  }
+}
+
+@media print {
+  .print-section {
+    display: block;
+  }
+}
+.print-section {
+  font-family: Arial, sans-serif;
+  color: #333;
+  padding: 20px;
+  margin: auto;
+  width: 50%;
+}
+
+.HoaDon {
+  margin: 20px 0;
+  text-align: center;
+  font-family: Montserrat, sans-serif;
+}
+
+.MaHoaDon,
+.date,
+.tableNumber,
+.staffName {
+  font-size: 1em;
+  margin: 5px 0;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+}
+
+.TableDrink table {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.TableDrink th,
+.TableDrink td {
+  text-align: center;
+  padding: 10px;
+}
+
+.totalPrice {
+  font-weight: bold;
+  margin: 20px 0;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.5em;
+  font-weight: "bold";
+}
+
+.wifi-password {
+  font-size: 0.8em;
+  margin: 20px 0;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+}
+
+.quote {
+  font-style: italic;
+  margin: 20px 0;
+  text-align: center;
+  font-family: Montserrat, sans-serif;
+}
+.container2 {
+  display: block;
+  justify-content: center;
+  align-items: center;
+}
+
+.JavaJoy {
+  text-align: center;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.5em;
+  font-weight: "bold";
 }

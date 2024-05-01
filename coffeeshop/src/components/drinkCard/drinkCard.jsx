@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import LocalFireDepartmentOutlinedIcon from "@mui/icons-material/LocalFireDepartmentOutlined";
 import AcUnitOutlinedIcon from "@mui/icons-material/AcUnitOutlined";
 import DescriptionText from "../DescriptionText//DescriptionText";
-
+import { useReactToPrint } from "react-to-print";
 import { IconButton } from "@mui/material";
 const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
   const [results, setResults] = useState([]);
@@ -166,45 +166,39 @@ const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
                             <div
                               className={`smallSize ${
                                 selectedCardId === item._id &&
-                                selectedSize === "small"
+                                selectedSize === "S"
                                   ? "selected"
                                   : ""
                               }`}
-                              onClick={() => handleSizeClick("small")}
+                              onClick={() => handleSizeClick("S")}
                             >
-                              <Typography
-                                onClick={() => handleSizeClick("small")}
-                              >
+                              <Typography onClick={() => handleSizeClick("S")}>
                                 S
                               </Typography>
                             </div>
                             <div
                               className={`mediumSize ${
                                 selectedCardId === item._id &&
-                                selectedSize === "medium"
+                                selectedSize === "M"
                                   ? "selected"
                                   : ""
                               }`}
-                              onClick={() => handleSizeClick("medium")}
+                              onClick={() => handleSizeClick("M")}
                             >
-                              <Typography
-                                onClick={() => handleSizeClick("medium")}
-                              >
+                              <Typography onClick={() => handleSizeClick("M")}>
                                 M
                               </Typography>
                             </div>
                             <div
                               className={`largeSize ${
                                 selectedCardId === item._id &&
-                                selectedSize === "large"
+                                selectedSize === "L"
                                   ? "selected"
                                   : ""
                               }`}
-                              onClick={() => handleSizeClick("large")}
+                              onClick={() => handleSizeClick("L")}
                             >
-                              <Typography
-                                onClick={() => handleSizeClick("large")}
-                              >
+                              <Typography onClick={() => handleSizeClick("L")}>
                                 L
                               </Typography>
                             </div>
@@ -284,13 +278,13 @@ const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
                             <div
                               className={`leastIce ${
                                 selectedCardId === item._id &&
-                                selectedIce === "30"
+                                selectedIce === "0"
                                   ? "selected"
                                   : ""
                               }`}
-                              onClick={() => handleIceClick("30")}
+                              onClick={() => handleIceClick("0")}
                             >
-                              <Typography>30</Typography>
+                              <Typography>0</Typography>
                             </div>
                             <div
                               className={`mediumIce ${
