@@ -6,7 +6,7 @@ import LocalCafeIcon from "@mui/icons-material/LocalCafe";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import { useSelector } from "react-redux";
-import Table from "../../components/table/table";
+import TableInfo from "../../components/table/TableInfo";
 import "./booking.css";
 
 const Booking = () => {

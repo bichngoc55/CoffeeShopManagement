@@ -1,0 +1,189 @@
+.sbtnt {
+  justify-content: space-between;
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+  align-items: last baseline;
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  font-family: Montserrat, sans-serif;
+}
+.sbtnx {
+  border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.sbtnx:hover {
+  color: #ff5959 !important;
+  background-color: #ffb6b6 !important;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.sfirst {
+  display: flex;
+  margin-top: 10px;
+  width: 395px;
+}
+.simage-con {
+  width: 100px;
+  height: 100px;
+  border: 4px solid #fff;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.slabel-input {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+.sinput-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  z-index: 2;
+  width: 95px;
+  height: 35px;
+  font-size: 14px;
+  align-items: center;
+}
+.slabel {
+  font-size: 14px;
+  font-weight: 600;
+}
+.iconH {
+  left: 8px;
+  position: absolute;
+  color: gray;
+  z-index: 2;
+}
+.susername {
+  outline: none;
+  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  width: 200px;
+  height: 35px;
+  position: relative;
+  padding-left: 35px;
+  z-index: 1;
+}
+.semail {
+  outline: none;
+  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  width: 207px;
+  margin-left: 0px;
+  height: 35px;
+  position: relative;
+  padding-left: 35px;
+  z-index: 1;
+}
+.sphonea {
+  outline: none;
+  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  width: 290px;
+  margin-right: 0px;
+  margin-left: 0px;
+  height: 35px;
+  position: relative;
+  padding-left: 35px;
+  z-index: 1;
+}
+.sdatepick {
+  outline: none;
+  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  width: 200px;
+  height: 35px;
+  margin-left: 10px;
+}
+.siconContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  border-radius: 50px;
+  background-color: #d0d0d0;
+}
+.slabelGender {
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 10px;
+}
+.slocation {
+  outline: none;
+  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  width: 350px;
+  margin-right: 0px;
+  margin-left: 0px;
+  height: 35px;
+  position: relative;
+  padding-left: 35px;
+  z-index: 1;
+}
+.sinputlocation {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  width: 330px;
+  height: 35px;
+  font-size: 14px;
+}
+.sinputpassword {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  flex: 1;
+  margin-left: 10px;
+  height: 35px;
+  font-size: 14px;
+}
+.slabelLocation {
+  font-size: 14px;
+  font-weight: 600;
+}
+.sbtnCN {
+  background-color: #714534;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 20px;
+}
+
+.sbtnCN:hover {
+  background-color: #d9d9d9;
+  color: #714534;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.spass1 {
+  outline: none;
+  border-radius: 10px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  width: 100%;
+  margin-right: 0px;
+  height: 35px;
+  position: relative;
+  padding-left: 35px;
+  z-index: 1;
+}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import userImage from "../../asset/user.jpg";
+import WcIcon from "@mui/icons-material/Wc";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -202,7 +203,7 @@ const StaffInfoComponent = () => {
           }}
         >
           <div className="iconContainer">
-            <BadgeIcon />
+            <WcIcon />
           </div>
           <label className="label">Giới tính: </label>
           <Select
