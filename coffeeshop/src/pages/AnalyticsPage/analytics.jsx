@@ -88,7 +88,9 @@ const Analytics = () => {
 
   const barOptions1={}
   const options ={
-
+    legend: {
+      position: 'left'
+    }
   }
 
   const options2 ={
@@ -114,14 +116,14 @@ const Analytics = () => {
           <TabPanel value={value} index={0} className='content'>
             <div className='justify-between' style={{display: 'flex' ,flexDirection: 'row'}}>
               <div className='squareCard card'>
-                <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Quantity of drinks</a>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Quantity of drinks</a>
                 <Pie 
                   data={data}
                   options= {options}
                 />
               </div>
               <div className='squareCard card'>
-                <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Price per drink</a>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Price per drink</a>
                 <Pie 
                   data={data2}   
                   options={options2}   
@@ -129,15 +131,15 @@ const Analytics = () => {
               </div>
               <div className='flex' style={{ flexDirection: 'column', justifyContent: 'space-between', width:  '20%'}}>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: ''}}>Revenue</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: ''}}>Revenue</a>
                   <a className='normal_text' >10.000.000</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Customers</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Customers</a>
                   <a className='normal_text' style={{  }}>100</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
                   <a className='normal_text' style={{  }}>100</a>
                 </div>
               </div>
@@ -152,16 +154,16 @@ const Analytics = () => {
             </div>
           </TabPanel>
           <TabPanel value={value} index={1} className='content'>
-          <div className='justify-between' style={{display: 'flex' ,flexDirection: 'row'}}>
+            <div className='justify-between' style={{display: 'flex' ,flexDirection: 'row'}}>
               <div className='squareCard card'>
-                <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Quantity of drinks</a>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Quantity of drinks</a>
                 <Pie 
                   data={data}
                   options= {options}
                 />
               </div>
               <div className='squareCard card'>
-                <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Price per drink</a>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Price per drink</a>
                 <Pie 
                   data={data2}   
                   options={options2}   
@@ -169,15 +171,15 @@ const Analytics = () => {
               </div>
               <div className='flex' style={{ flexDirection: 'column', justifyContent: 'space-between', width:  '20%'}}>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: ''}}>Revenue</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: ''}}>Revenue</a>
                   <a className='normal_text' >10.000.000</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Customers</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Customers</a>
                   <a className='normal_text' style={{  }}>100</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
                   <a className='normal_text' style={{  }}>100</a>
                 </div>
               </div>
@@ -192,16 +194,16 @@ const Analytics = () => {
             </div>
           </TabPanel>
           <TabPanel value={value} index={2} className='content'>
-          <div className='justify-between' style={{display: 'flex' ,flexDirection: 'row'}}>
+            <div className='justify-between' style={{display: 'flex' ,flexDirection: 'row'}}>
               <div className='squareCard card'>
-                <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Quantity of drinks</a>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Quantity of drinks</a>
                 <Pie 
                   data={data}
                   options= {options}
                 />
               </div>
               <div className='squareCard card'>
-                <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Price per drink</a>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Price per drink</a>
                 <Pie 
                   data={data2}   
                   options={options2}   
@@ -209,15 +211,15 @@ const Analytics = () => {
               </div>
               <div className='flex' style={{ flexDirection: 'column', justifyContent: 'space-between', width:  '20%'}}>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: ''}}>Revenue</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: ''}}>Revenue</a>
                   <a className='normal_text' >10.000.000</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Customers</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Customers</a>
                   <a className='normal_text' style={{  }}>100</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
                   <a className='normal_text' style={{  }}>100</a>
                 </div>
               </div>
