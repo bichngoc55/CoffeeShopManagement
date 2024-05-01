@@ -113,6 +113,7 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
   useEffect(() => {
     return () => URL.revokeObjectURL(file);
   }, [file]);
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setUser((prevUser) => ({

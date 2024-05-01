@@ -11,7 +11,16 @@ import "./booking.css";
 
 const Booking = () => {
   const [table, setTable] = useState([]);
-
+<<<<<<< Updated upstream
+  const [selectedTable, setSelectedTable] = useState("");
+  const handleCellClick = (cellValue) => {
+    setSelectedTable(cellValue);
+  };
+=======
+  const [selectedTable, setSelectedTable] = useState(
+    "661ffb050f8b90fbff1b40ce"
+  );
+>>>>>>> Stashed changes
   const { token } = useSelector((state) => state.auths);
 
   useEffect(() => {
@@ -73,16 +82,16 @@ const Booking = () => {
           }}
         >
           <div className="containerGrid">
-            {table.map((table) => {
+            {table.map((item) => {
               let containerColor = "";
               let iconComponent;
-              if (table.status === "available") {
+              if (item.status === "available") {
                 containerColor = "#38cf36";
                 iconComponent = <CheckCircleIcon />;
-              } else if (table.status === "occupied") {
+              } else if (item.status === "occupied") {
                 containerColor = "#d63c3c";
                 iconComponent = <LocalCafeIcon />;
-              } else if (table.status === "booked") {
+              } else if (item.status === "booked") {
                 containerColor = "black";
                 iconComponent = <CalendarMonthIcon />;
               }
@@ -90,11 +99,15 @@ const Booking = () => {
               return (
                 <button
                   className="containercard"
-                  key={table._id}
+                  key={item._id}
                   style={{ color: containerColor }}
+                  onClick={() => {
+                    console.log("table click");
+                    setSelectedTable(item._id);
+                  }}
                 >
                   <TableRestaurantIcon />
-                  <label className="tableNumber">Bàn {table.tableNumber}</label>
+                  <label className="tableNumber">Bàn {item.tableNumber}</label>
                 </button>
               );
             })}
@@ -103,7 +116,11 @@ const Booking = () => {
       </div>
 
       <div>
-        <TableInfo />
+<<<<<<< Updated upstream
+        <Table />
+=======
+        <TableInfo selectedTable={selectedTable} />
+>>>>>>> Stashed changes
       </div>
     </Box>
   );
