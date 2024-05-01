@@ -1,8 +1,16 @@
 {
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "chart.js": "^4.4.2",
     "date-fns": "^3.6.0",
     "ejs": "^3.1.10",
+<<<<<<< Updated upstream
     "nodemailer": "^6.9.13"
+=======
+    "nodemailer": "^6.9.13",
+    "react-chartjs-2": "^5.2.0",
+    "react-modal": "^3.16.1",
+    "react-to-print": "^2.15.1"
+>>>>>>> Stashed changes
   }
 }
