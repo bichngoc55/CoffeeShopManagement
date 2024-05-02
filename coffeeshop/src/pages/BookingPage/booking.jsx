@@ -11,16 +11,11 @@ import "./booking.css";
 
 const Booking = () => {
   const [table, setTable] = useState([]);
-<<<<<<< Updated upstream
-  const [selectedTable, setSelectedTable] = useState("");
-  const handleCellClick = (cellValue) => {
-    setSelectedTable(cellValue);
-  };
-=======
+
   const [selectedTable, setSelectedTable] = useState(
     "661ffb050f8b90fbff1b40ce"
   );
->>>>>>> Stashed changes
+
   const { token } = useSelector((state) => state.auths);
 
   useEffect(() => {
@@ -116,11 +111,7 @@ const Booking = () => {
       </div>
 
       <div>
-<<<<<<< Updated upstream
-        <Table />
-=======
         <TableInfo selectedTable={selectedTable} />
->>>>>>> Stashed changes
       </div>
     </Box>
   );
