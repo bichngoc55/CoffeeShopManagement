@@ -62,7 +62,7 @@ export const login = async (req, res) => {
     refreshTokens.push(refreshToken);
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       path: "/",
       sameSite: "strict",
     });
@@ -77,7 +77,13 @@ export const login = async (req, res) => {
 export const refresh = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email: email });
-  const refreshToken = req.cookie.refreshToken;
+  //const refreshToken = req.cookie.refreshToken;
+  //const refreshToken = req.header("token");
+  const refreshToken = req.headers.cookie
+    .split("; ")
+    .find((cookie) => cookie.startsWith("refreshToken="))
+    ?.split("=")[1];
+
   if (!refreshToken) {
     return res.status(401).json({ msg: "No token, chua dang nhap" });
   }
@@ -100,7 +106,7 @@ export const refresh = async (req, res) => {
     refreshTokens.push(newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       path: "/",
       sameSite: "strict",
     });
