@@ -14,7 +14,7 @@ const SearchBar = ({ width, height, setResults, placeholder }) => {
       .then((json) => {
         console.log(json);
         const results = json.filter((item) => {
-          return  item.Name.toLowerCase().includes(value.toLowerCase());
+          return item && item.Name.toLowerCase().includes(value.toLowerCase());
         });
         setResults(results);
       });

@@ -44,9 +44,14 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
- 
+
+/* ROUTES WITH FILES */
+/*app.post("/staff/add", verifyToken, upload.single("picture"), addStaff);*/
 
 //routes
+app.get("/", (req, res) => {
+  res.send("Hello to Memories API");
+});
 
 const upload = multer({
   storage: storage,

@@ -3,8 +3,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 0.8em;
-  display: flex; 
-  
+  display: flex;
+  padding-top: 10%;
+  padding-bottom: 10%;
   align-items: center;
 }
 
