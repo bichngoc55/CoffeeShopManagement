@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { Box, Typography } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
 import DrinkCard from "../../components/drinkCard/drinkCard";
+import Modal from "../../components/modal/modal";
 import DrinkTypeCard from "../../components/drinkType/DrinkType";
 import EmojiFoodBeverageOutlinedIcon from "@mui/icons-material/EmojiFoodBeverageOutlined";
 import FreeBreakfastOutlinedIcon from "@mui/icons-material/FreeBreakfastOutlined";
@@ -18,6 +19,8 @@ import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlin
 import { SearchResultsList } from "../../components/searchBar/searchResultList";
 import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
 import BillCard from "../../components/billCard/billCard";
+import PrintSection from "./printSection";
+import ModifyDialog from "../../components/ModifyDialog/ModifyDialog";
 
 const MenuPage = () => {
   const [drinksData, setDrinksData] = useState([]);
@@ -31,24 +34,40 @@ const MenuPage = () => {
   const [selectedSugar, setSugar] = useState("100");
   const [selectedDrinkType, setSelectedDrinkType] = useState("");
   const [totalPirce, setTotalPrice] = useState(0);
-  const { token, user } = useSelector((state) => state.auths);
-  const { Name } = user.Name;
+  const [shouldRenderPrintSection, setShouldRenderPrintSection] =
+    useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const token = useSelector((state) => state.auths.token);
+  const user = useSelector((state) => state.auths.user);
+  const Name = user.Name;
   const [availableTables, setAvailableTables] = useState([]);
-  const [savedBill, setSavedBill] = useState(null);
+  const [savedBillDetails, setSavedBillDetails] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [showModifyDialog, setShowModifyDialog] = useState(false);
+
   //print function
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-    onBeforePrint: () => {
-      saveBillToDatabase();
-      setIsVisible(true);
+    onBeforePrint: async () => {
+      if (billItems.length > 0) {
+        const billId = await saveBillToDatabase();
+        const savedBillDetails = await fetchBillDetails(billId);
+        // console.log(
+        //   "savedBillDetails: ",
+        //   JSON.stringify(savedBillDetails, null, 2)
+        // );
+        setSavedBillDetails(savedBillDetails);
+        setIsVisible(true);
+      } else {
+        alert("Nothing to print in the bill!");
+      }
     },
   });
   const updateTableStatus = async (tableId) => {
     try {
       await fetch(`http://localhost:3005/booking/${tableId}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -83,43 +102,65 @@ const MenuPage = () => {
       console.error("Error:", error);
     }
   };
-  const saveBillToDatabase = () => {
+  useEffect(() => {
+    if (isVisible) {
+      setShouldRenderPrintSection(true);
+    }
+  }, [isVisible]);
+  const fetchBillDetails = async (BillId) => {
+    try {
+      const response = await fetch(`http://localhost:3005/history/${BillId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const billDetails = await response.json();
+      return billDetails;
+    } catch (error) {
+      console.error("Failed to get bill details:", error);
+    }
+  };
+  const saveBillToDatabase = async () => {
     const items = billItems.map((item) => ({
-      drinkName: item.drink.Name,
+      Drinks: item.drink._id,
       quantity: item.quantity,
-    }));
-
-    const notes = billItems.map((item) => ({
       percentOfSugar: item.sugar,
       size: item.size,
       hotOrCold: item.mood,
       percentOfIce: item.ice,
     }));
-
-    const tableNo = availableTables[0].tableNumber;
-    let data = {
+    const tableNo = availableTables[0]._id;
+    const postData = {
       items,
-      notes,
       totalAmount: totalPirce,
       TableNo: tableNo,
       Staff: user._id,
       PhuThu: 0,
     };
-    fetch("http://localhost:3005/history/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-        updateTableStatus(availableTables[0]._id);
-        setSavedBill(data);
-      })
-      .catch((error) => console.error("Error:", error));
+
+    try {
+      const response = await fetch("http://localhost:3005/history/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(postData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      //updateTableStatus(availableTables[0]._id);
+      //   console.log("data: ", JSON.stringify(data, null, 2));
+      return data._id;
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const calculateTotalPrice = (price) => {
@@ -129,12 +170,8 @@ const MenuPage = () => {
     setSelectedDrinkType(drinkType);
   };
   useEffect(() => {
-    setMood("hot");
-    setSize("M");
-    setSugar("100");
-    setIce("100");
     fetchAvailableTables();
-  }, [selectedSugar, selectedIce, selectedSize, selectedMood, availableTables]);
+  }, []);
   const handleDrinkClick = (
     drink,
     selectedMood,
@@ -189,7 +226,26 @@ const MenuPage = () => {
       setDrinksData(res);
     });
   }, []);
+  const handleShowModal = () => {
+    setShowModal(false);
+  };
+  const handleHideModal = () => {
+    setShowModal(false);
+  };
+  const handleAddDrink = (drink) => {
+    setShowModal(true);
+  };
 
+  const handleDeleteDrink = (drinkId) => {
+    const newBillItems = billItems.filter((item) => item.drink.id !== drinkId);
+    setBillItems(newBillItems);
+  };
+  const handleShowModifyDialog = () => {
+    setShowModifyDialog(true);
+  };
+  const handleHideModifyDialog = () => {
+    setShowModifyDialog(false);
+  };
   return (
     <Box sx={{ display: "flex" }}>
       <DashBoard />
@@ -264,6 +320,27 @@ const MenuPage = () => {
             >
               Coffee Menu
             </Typography>
+            <div className="ButtonComponent">
+              <button className="btn" onClick={handleAddDrink}>
+                Them Mon
+              </button>
+              <button
+                className="btn"
+                onClick={() => handleDeleteDrink(selectedDrink._id)}
+              >
+                Xoa Mon
+              </button>
+              <button className="btn" onClick={handleShowModifyDialog}>
+                Sua Mon
+              </button>
+              {showModal && <Modal onClose={handleHideModal} />}
+              {showModifyDialog && (
+                <ModifyDialog
+                  onClose={handleHideModifyDialog}
+                  drink={selectedDrink}
+                />
+              )}
+            </div>
           </div>
           <Box className="cardDrink" sx={{ display: "flex" }}>
             <DrinkCard
@@ -335,32 +412,23 @@ const MenuPage = () => {
               </div>
             </div>
             <div className="button">
-              <button className="add-to-payment" onClick={handlePrint}>
+              <button
+                className="add-to-payment"
+                onClick={handlePrint}
+                disabled={billItems.length === 0}
+              >
                 Print Bill
               </button>
             </div>
-            {isVisible && (
-              <div ref={componentRef}>
-                <div className="container">
-                  <div className="JavaJoy">
-                    <h1>Java Joy</h1>
-                  </div>
-                  <div className="HoaDon"> Hoá Đơn Thanh Toán</div>
-                  <div className="MaHoaDon">
-                    Mã Hoá Đơn: {savedBill && savedBill._id}
-                  </div>
-                  <div className="date">
-                    Ngày: {savedBill && savedBill.createdAt}
-                  </div>
-                  <div className="tableNumber">
-                    Bàn số: {savedBill && savedBill.TableNo}
-                  </div>
-                  <div className="staffName">
-                    Nhân viên: {savedBill && Name}
-                  </div>
-                </div>
-              </div>
-            )}
+            <div ref={componentRef}>
+              {shouldRenderPrintSection && (
+                <PrintSection
+                  shouldRenderPrintSection={shouldRenderPrintSection}
+                  Name={Name}
+                  savedBill={savedBillDetails}
+                />
+              )}
+            </div>
           </div>
         </div>
       </Box>
