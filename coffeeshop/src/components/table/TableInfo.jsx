@@ -51,10 +51,13 @@ const TableInfo = ({ selectedTable }) => {
         if (response.ok) {
           const data = await response.json();
           console.log(data);
+          let dateString = data.bookingDate;
+          let parts = dateString.split("T");
+          let formattedDate = parts[0];
           setTable({
             customerName: data.customerName,
             tableNumber: data.tableNumber,
-            bookingDate: data.bookingDate,
+            bookingDate: formattedDate,
             bookingTime: data.bookingTime,
             numberOfPeople: data.numberOfPeople,
             phoneNumberBooking: data.phoneNumberBooking,
@@ -162,12 +165,10 @@ const TableInfo = ({ selectedTable }) => {
       </div>
       <div className="customerContainer" style={{ marginBottom: "20px" }}></div>
 
-
       <button className="btnE" onClick={openModal}>
         Sửa
       </button>
       <FormTable isOpen={isOpen} onClose={closeModal} id={selectedTable} />
-
     </div>
   );
 };
