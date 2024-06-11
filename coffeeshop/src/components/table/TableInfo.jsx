@@ -11,6 +11,7 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import FormTable from "./modalTable";
 import { useSelector } from "react-redux";
 import Gachchan from "./gachchan";
+import { format, formatters } from "date-fns";
 
 const TableInfo = ({ selectedTable }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,9 +52,12 @@ const TableInfo = ({ selectedTable }) => {
         if (response.ok) {
           const data = await response.json();
           console.log(data);
-          let dateString = data.bookingDate;
-          let parts = dateString.split("T");
-          let formattedDate = parts[0];
+          let formattedDate = "";
+          if (data.bookingDate !== undefined) {
+            let dateString = data.bookingDate;
+            let parts = dateString.split("T");
+            formattedDate = parts[0];
+          }
           setTable({
             customerName: data.customerName,
             tableNumber: data.tableNumber,
