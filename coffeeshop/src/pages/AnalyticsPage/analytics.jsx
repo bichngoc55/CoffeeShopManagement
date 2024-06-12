@@ -10,8 +10,7 @@ import { Chart as ChartJS,
    CategoryScale,
    LinearScale
 } from 'chart.js';
-import { Pie, Bar } from 'react-chartjs-2'; 
-import { BorderColorOutlined } from '@mui/icons-material';
+import { Pie, Bar } from 'react-chartjs-2';
 
 ChartJS.register(
   ArcElement,
@@ -89,7 +88,9 @@ const Analytics = () => {
 
   const barOptions1={}
   const options ={
-
+    legend: {
+      position: 'left'
+    }
   }
 
   const options2 ={
@@ -115,14 +116,14 @@ const Analytics = () => {
           <TabPanel value={value} index={0} className='content'>
             <div className='justify-between' style={{display: 'flex' ,flexDirection: 'row'}}>
               <div className='squareCard card'>
-                <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Quantity of drinks</a>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Quantity of drinks</a>
                 <Pie 
                   data={data}
                   options= {options}
                 />
               </div>
               <div className='squareCard card'>
-                <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Price per drink</a>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Price per drink</a>
                 <Pie 
                   data={data2}   
                   options={options2}   
@@ -130,15 +131,15 @@ const Analytics = () => {
               </div>
               <div className='flex' style={{ flexDirection: 'column', justifyContent: 'space-between', width:  '20%'}}>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: ''}}>Revenue</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: ''}}>Revenue</a>
                   <a className='normal_text' >10.000.000</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Customers</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Customers</a>
                   <a className='normal_text' style={{  }}>100</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='small_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
                   <a className='normal_text' style={{  }}>100</a>
                 </div>
               </div>
@@ -152,11 +153,85 @@ const Analytics = () => {
               </div>
             </div>
           </TabPanel>
-          <TabPanel value={value} index={1}>
-            <Typography>Item Two Content</Typography>
+          <TabPanel value={value} index={1} className='content'>
+            <div className='justify-between' style={{display: 'flex' ,flexDirection: 'row'}}>
+              <div className='squareCard card'>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Quantity of drinks</a>
+                <Pie 
+                  data={data}
+                  options= {options}
+                />
+              </div>
+              <div className='squareCard card'>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Price per drink</a>
+                <Pie 
+                  data={data2}   
+                  options={options2}   
+                />
+              </div>
+              <div className='flex' style={{ flexDirection: 'column', justifyContent: 'space-between', width:  '20%'}}>
+                <div className='smallRectangleCard card'> 
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: ''}}>Revenue</a>
+                  <a className='normal_text' >10.000.000</a>
+                </div>
+                <div className='smallRectangleCard card'> 
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Customers</a>
+                  <a className='normal_text' style={{  }}>100</a>
+                </div>
+                <div className='smallRectangleCard card'> 
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
+                  <a className='normal_text' style={{  }}>100</a>
+                </div>
+              </div>
+            </div>
+            <div className='justify-between' style={{display: 'flex' ,flexDirection: 'row', marginTop: '10px',}}>
+              <div className='bigRectangleCard card'>
+                <Bar data={barData} options={barOptions} />
+              </div>
+              <div className='bigRectangleCard card'>
+                <Bar data={barData1} options={barOptions1} />
+              </div>
+            </div>
           </TabPanel>
-          <TabPanel value={value} index={2}>
-            <Typography>Item Three Content</Typography>
+          <TabPanel value={value} index={2} className='content'>
+            <div className='justify-between' style={{display: 'flex' ,flexDirection: 'row'}}>
+              <div className='squareCard card'>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Quantity of drinks</a>
+                <Pie 
+                  data={data}
+                  options= {options}
+                />
+              </div>
+              <div className='squareCard card'>
+                <a className='label_text' style={{alignSelf: 'flex-start', }}>Price per drink</a>
+                <Pie 
+                  data={data2}   
+                  options={options2}   
+                />
+              </div>
+              <div className='flex' style={{ flexDirection: 'column', justifyContent: 'space-between', width:  '20%'}}>
+                <div className='smallRectangleCard card'> 
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: ''}}>Revenue</a>
+                  <a className='normal_text' >10.000.000</a>
+                </div>
+                <div className='smallRectangleCard card'> 
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Customers</a>
+                  <a className='normal_text' style={{  }}>100</a>
+                </div>
+                <div className='smallRectangleCard card'> 
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
+                  <a className='normal_text' style={{  }}>100</a>
+                </div>
+              </div>
+            </div>
+            <div className='justify-between' style={{display: 'flex' ,flexDirection: 'row', marginTop: '10px',}}>
+              <div className='bigRectangleCard card'>
+                <Bar data={barData} options={barOptions} />
+              </div>
+              <div className='bigRectangleCard card'>
+                <Bar data={barData1} options={barOptions1} />
+              </div>
+            </div>
           </TabPanel>
         </div>
       </div>

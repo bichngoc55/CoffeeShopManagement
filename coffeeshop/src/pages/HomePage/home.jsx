@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 
-import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
-import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
+import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded';
+import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
 
 import DashBoard from "../../components/dashBoard/dashBoard";
 import { Box } from "@mui/material";
@@ -12,6 +15,7 @@ import SearchBar from "../../components/searchBar/searchbar";
 import { SearchResultsList } from "../../components/searchBar/searchResultList";
 
 const HomePage = () => {
+  const [isEditing, setIsEditing] = useState([false, false, false]);
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [isNotificationShown, setNotificationShown] = useState(false);
   const [results, setResults] = useState([]);
@@ -24,6 +28,20 @@ const HomePage = () => {
     setNotificationShown(!isNotificationShown);
   };
 
+  const toggleIsEditing = (index) => {
+    return () => {
+      setIsEditing((prevIsEditing) => {
+        const newIsEditing = [...prevIsEditing];
+        newIsEditing[index] = !newIsEditing[index];
+        return newIsEditing;
+      });
+    };
+  };
+
+  
+  
+
+
   return (
     <Box sx={{ display: "flex", maxWidth: "100vw" }}>
       <DashBoard />
@@ -33,13 +51,8 @@ const HomePage = () => {
           style={{ marginTop: "2.15%", flexDirection: "row" }}
         >
           <div className=" font-semibold medium_text">Home Page</div>
-          <div className=" bg-white " style={{ width: "27.08%" }}>
-            {/* <input type="text" className="search-input" placeholder="Search..." /> */}
-            <SearchBar
-              type="text"
-              setResults={setResults}
-              placeholder="Search..."
-            />
+          <div className=" bg-white " style={{ width: '27.08%'}}>
+            <SearchBar type="text" setResults={setResults} placeholder="Search..." />
             {results && results.length > 0 && (
               <SearchResultsList results={results} />
             )}
@@ -84,18 +97,27 @@ const HomePage = () => {
           </a>
           <div className="line" />
 
-          <div className="">
-            <a className="title"> Welcome to JavaJoy! </a>
-            <br />
-            <br />
-            <div style={{ marginLeft: "2%" }}>
-              <a className="small_text">
-                We have been eagerly awaiting this moment to meet and work
-                together. JavaJoy is thrilled to welcome each new member to our
-                family. Let's create unforgettable experiences and build an
-                amazing work environment together.
-                <br /> Be ready to explore, innovate, and achieve remarkable
-                success.Welcome to our team! <br /> Best regards, <br /> JavaJoy
+          <div className=''>
+            {/* <a className='title'> Welcome to JavaJoy! </a> */}
+            <div style={{ display: 'flex',flexDirection: 'row', justifyContent: 'space-between'}}>
+              <a className='title'> Welcome to JavaJoy! </a>
+              <button onClick={toggleIsEditing(0)} className='icon' style={{ justifySelf: 'flex-end' }}>
+                {isEditing[0] ? (
+                <div>
+                  <SaveRoundedIcon style={{  }} />
+                  <DisabledByDefaultRoundedIcon />
+                </div>
+                ) : <EditRoundedIcon/>}
+              </button>
+            </div>
+            <br/>
+            <div style={{marginLeft: '2%'}}>
+              <a className='small_text'> 
+                We have been eagerly awaiting this moment to meet and work together.
+                JavaJoy is thrilled to welcome each new member to our family. Let's
+                create unforgettable experiences and build an amazing work
+                environment together.<br/> Be ready to explore, innovate, and achieve
+                remarkable success.Welcome to our team! <br/> Best regards, <br/> JavaJoy
               </a>
             </div>
           </div>
@@ -103,16 +125,20 @@ const HomePage = () => {
 
           <div className="">
             {/* Regulations and Terms */}
-            <div className="title" style={{ flexDirection: "row" }}>
-              <a> Regulations and Terms </a>
-              <button onClick={handleToggleClick} className="icon">
-                {isContentVisible ? (
-                  <ArrowDropDownRoundedIcon />
-                ) : (
-                  <ArrowDropDownRoundedIcon
-                    style={{ transform: "rotate(-90deg)" }}
-                  />
-                )}
+            <div className='title' style={{ display: 'flex',flexDirection: 'row',}}>
+              <div>
+                <a > Regulations and Terms  </a>
+                <button onClick={handleToggleClick} className='icon'>
+                  {isContentVisible ? <ArrowDropDownRoundedIcon /> : <ArrowDropDownRoundedIcon style={{ transform: 'rotate(-90deg)' }}/>}
+                </button>
+              </div>
+              <button onClick={toggleIsEditing(1)} className='icon' style={{ marginLeft: 'auto' }}>
+                {isEditing[1] ? (
+                <div>
+                  <SaveRoundedIcon style={{  }} />
+                  <DisabledByDefaultRoundedIcon />
+                </div>
+                ) : <EditRoundedIcon/>}
               </button>
             </div>
             <br />
@@ -189,10 +215,20 @@ const HomePage = () => {
           </div>
           <div className="line" />
 
-          <div className="">
-            <a className="title">Work Schedule</a>
-            <div style={{ marginTop: "3%" }}>
-              <WorkScheduleTable />
+          <div className=''> 
+            <div style={{ display: 'flex',flexDirection: 'row', justifyContent: 'space-between'}}>
+              <a className='title'>Work Schedule</a>
+              <button onClick={toggleIsEditing(2)} className='icon' style={{ justifySelf: 'flex-end' }}>
+                {isEditing[2] ? (
+                <div>
+                  <SaveRoundedIcon style={{  }} />
+                  <DisabledByDefaultRoundedIcon />
+                </div>
+                ) : <EditRoundedIcon/>}
+              </button>
+            </div>
+            <div style={{marginTop: '3%',}}>
+              <WorkScheduleTable/>
             </div>
           </div>
         </div>

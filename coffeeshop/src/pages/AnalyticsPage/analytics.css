@@ -17,6 +17,11 @@ html {
   text-transform: none;
 }
 
+.label_text {
+  font-size: 0.8rem;
+  /* white-space: nowrap; */
+}
+
 p {
   font-size: 1rem;
 }
@@ -68,7 +73,7 @@ p {
 .card {
   border-radius: 10px;
   padding: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Tạo bóng phía dưới */
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4); /* Tạo bóng phía dưới */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,6 +90,7 @@ p {
   width:  35%;
   height: 35%;
   /* background-color: #714534; */
+  flex-direction: column;
   
 }
 
@@ -92,6 +98,7 @@ p {
   display: flex;
   height: 30%;
   width:  100%;
+  flex-direction: column;
 }
 
 .bigRectangleCard {

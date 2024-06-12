@@ -1,0 +1,42 @@
+/* text */
+
+html {
+    font-size: 14px; /* Đặt kích thước cơ sở là 16px */
+}
+
+.medium_text {
+    font-size: 2rem; /* Kích thước chữ là 2 lần kích thước cơ sở */
+}
+
+.large_text {
+  font-size: 3rem;
+}
+
+.small_text {
+  font-size: 1rem;
+  margin-top: 1.86%;
+  margin-bottom: 1.86% ;
+}
+
+p {
+  font-size: 1rem;
+}
+
+.title {
+  font-size: 1.8rem;
+  color: #714534;
+  font-weight: 550
+}
+  
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 4%;
+  margin-left: 2.64%;
+  margin-right: 2.64%;
+}
+
+.search-input::placeholder {
+    font-size: 1rem;
+}
