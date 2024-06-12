@@ -11,6 +11,13 @@ import "./booking.css";
 
 const Booking = () => {
   const [table, setTable] = useState([]);
+  const [availableTables, setAvailableTables] = useState(0);
+  const [occupiedTables, setOccupiedTables] = useState(0);
+  const [bookedTables, setBookedTables] = useState(0);
+
+  const [selectedTable, setSelectedTable] = useState(
+    "661ffb050f8b90fbff1b40ce"
+  );
 
   const { token } = useSelector((state) => state.auths);
 
@@ -28,6 +35,14 @@ const Booking = () => {
         if (response.ok) {
           const data = await response.json();
           setTable(data);
+          const statusCount = data.reduce((count, item) => {
+            count[item.status] = (count[item.status] || 0) + 1;
+            return count;
+          }, {});
+
+          setAvailableTables(statusCount.available || 0);
+          setOccupiedTables(statusCount.occupied || 0);
+          setBookedTables(statusCount.booked || 0);
         } else {
           console.error("Request failed with status:", response.status);
         }
@@ -54,15 +69,15 @@ const Booking = () => {
         <div className="number">
           <div className="emptyheader">
             <CheckCircleIcon />
-            <label>Bàn trống: 06</label>
+            <label>Bàn trống: {availableTables}</label>
           </div>
           <div className="workheader">
             <LocalCafeIcon />
-            <label>Bàn có khách: 06</label>
+            <label>Bàn có khách: {occupiedTables}</label>
           </div>
           <div className="bookheader">
             <CalendarMonthIcon />
-            <label>Bàn đã đặt: 06</label>
+            <label>Bàn đã đặt: {bookedTables}</label>
           </div>
         </div>
         <div
@@ -73,16 +88,16 @@ const Booking = () => {
           }}
         >
           <div className="containerGrid">
-            {table.map((table) => {
+            {table.map((item) => {
               let containerColor = "";
               let iconComponent;
-              if (table.status === "available") {
+              if (item.status === "available") {
                 containerColor = "#38cf36";
                 iconComponent = <CheckCircleIcon />;
-              } else if (table.status === "occupied") {
+              } else if (item.status === "occupied") {
                 containerColor = "#d63c3c";
                 iconComponent = <LocalCafeIcon />;
-              } else if (table.status === "booked") {
+              } else if (item.status === "booked") {
                 containerColor = "black";
                 iconComponent = <CalendarMonthIcon />;
               }
@@ -90,11 +105,15 @@ const Booking = () => {
               return (
                 <button
                   className="containercard"
-                  key={table._id}
+                  key={item._id}
                   style={{ color: containerColor }}
+                  onClick={() => {
+                    console.log("table click");
+                    setSelectedTable(item._id);
+                  }}
                 >
                   <TableRestaurantIcon />
-                  <label className="tableNumber">Bàn {table.tableNumber}</label>
+                  <label className="tableNumber">Bàn {item.tableNumber}</label>
                 </button>
               );
             })}
@@ -103,7 +122,7 @@ const Booking = () => {
       </div>
 
       <div>
-        <TableInfo />
+        <TableInfo selectedTable={selectedTable} />
       </div>
     </Box>
   );

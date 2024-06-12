@@ -1,16 +1,24 @@
 .container {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
   height: auto;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+@media (max-width: 768px) {
+  .drink-card {
+    flex-basis: 100%;
+    max-width: none;
+  }
 }
 .drink-card {
-  width: 48%;
+  width: 45%;
   margin-bottom: 20px;
   border-radius: 20px;
 
+  transition: background-color 0.3s ease;
+  background-color: aqua;
   transition: background-color 0.3s ease;
 }
 .drink-card:hover {
@@ -21,6 +29,15 @@
     width: 100%;
   }
 }
+@media (max-width: 768px) {
+  .drink-card {
+    width: 48%; /* Now it's 48% even on smaller screens */
+  }
+}
+.drink-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .image {
   width: 50%;
   height: 200px;

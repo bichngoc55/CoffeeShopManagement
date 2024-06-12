@@ -1,8 +1,9 @@
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import User from "../models/User.js";
 import express from "express";
+import argon2 from "argon2";
 import nodemailer from "nodemailer";
 const app = express();
 app.use(cookieParser());
@@ -23,9 +24,9 @@ export const register = async (req, res) => {
       gender,
     } = req.body;
 
-    const salt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(password, salt);
-
+    // const salt = await bcrypt.genSalt();
+    // const passwordHash = await bcrypt.hash(password, salt);
+    const passwordHash = await argon2.hash(password, hashOptions);
     const newUser = new User({
       Name,
       email,
@@ -51,7 +52,8 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email: email });
     if (!user) return res.status(400).json({ status: "User does not exist. " });
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    // const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await argon2.verify(user.password, password);
     if (!isMatch)
       return res.status(400).json({ status: "Invalid credentials. " });
 
@@ -62,7 +64,7 @@ export const login = async (req, res) => {
     refreshTokens.push(refreshToken);
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       path: "/",
       sameSite: "strict",
     });
@@ -77,7 +79,13 @@ export const login = async (req, res) => {
 export const refresh = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email: email });
-  const refreshToken = req.cookie.refreshToken;
+  //const refreshToken = req.cookie.refreshToken;
+  //const refreshToken = req.header("token");
+  const refreshToken = req.headers.cookie
+    .split("; ")
+    .find((cookie) => cookie.startsWith("refreshToken="))
+    ?.split("=")[1];
+
   if (!refreshToken) {
     return res.status(401).json({ msg: "No token, chua dang nhap" });
   }
@@ -100,7 +108,7 @@ export const refresh = async (req, res) => {
     refreshTokens.push(newRefreshToken);
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       path: "/",
       sameSite: "strict",
     });
