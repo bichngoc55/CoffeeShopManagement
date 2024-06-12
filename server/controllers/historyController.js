@@ -2,7 +2,21 @@ import Bill from "../models/Bill.js";
 // Get all orders
 export const getAllOrder = async (req, res) => {
   try {
-    const orders = await Bill.find();
+    const { startDate, endDate } = req.query;
+
+    let filter = {};
+    if (startDate && endDate) {
+      filter = {
+        createdAt: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        },
+      };
+    }
+
+    const orders = await Bill.find(filter);
+    const count = await Bill.countDocuments(filter);
+
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ error: "Failed to get orders" });
@@ -14,8 +28,9 @@ export const getDetailOrder = async (req, res) => {
   try {
     if (req.params.id === "undefined") return;
     const order = await Bill.findById(req.params.id)
-      .populate("items.Drinks")
-      .populate("TableNo");
+      .populate("items.drink")
+      .populate("TableNo")
+      .populate("Staff");
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }

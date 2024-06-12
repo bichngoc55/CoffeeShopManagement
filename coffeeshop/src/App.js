@@ -6,7 +6,7 @@ import { createTheme } from "@mui/material/styles";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import LoginPage from "./pages/LoginPage/Login";
-
+import History from "./pages/HistoryPage/history";
 import Booking from "./pages/BookingPage/booking";
 import Staff from "./pages/StaffPage/staff";
 import Home from "./pages/HomePage/home";
@@ -42,7 +42,10 @@ function App() {
               path="/booking"
               element={isAuth ? <Booking /> : <Navigate to="/login" />}
             />
-
+            <Route
+              path="/history"
+              element={isAuth ? <History /> : <Navigate to="/login" />}
+            />
             {/* <Route
               path="/"
               element={isAuth ? <Inventory /> : <Navigate to="/login" />}
