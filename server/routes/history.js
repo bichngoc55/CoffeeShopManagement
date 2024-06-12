@@ -11,15 +11,15 @@ import {
 const router = express.Router();
 
 /* READ */
-router.get("/", verifyToken, getAllOrder);
+router.get("/", getAllOrder);
 
 /* READ */
-router.get("/:id", verifyToken, getDetailOrder);
+router.get("/:id", getDetailOrder);
 /* CREATE */
 router.post("/add", createBill);
 /* UPDATE */
-router.patch("/:id", verifyToken, updateBill);
+router.patch("/:id", updateBill);
 
 /* DELETE */
-router.delete("/:id", verifyToken, deleteBill);
+router.delete("/:id", deleteBill);
 export default router;

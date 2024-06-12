@@ -44,10 +44,37 @@ const updateIngredient = async (req, res) => {
 // create an ingredient
 const createIngredient = async (req, res) => {
   try {
-    const ingredient = new Ingredient(req.body);
+    const {
+      name,
+      quantity,
+      BaoQuan,
+      StaffName,
+      unit,
+      price,
+      ExpiryDate,
+      NgayNhapKho,
+    } = req.body;
+
+    // Validate required fields
+    if (!name || !quantity || !unit || !price || !NgayNhapKho) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const ingredient = new Ingredient({
+      name,
+      quantity,
+      BaoQuan,
+      StaffName,
+      unit,
+      price,
+      ExpiryDate,
+      NgayNhapKho,
+    });
+
     await ingredient.save();
     res.status(201).json(ingredient);
   } catch (error) {
+    console.error("Error creating ingredient:", error);
     res.status(500).json({ error: "Failed to create Ingredient" });
   }
 };

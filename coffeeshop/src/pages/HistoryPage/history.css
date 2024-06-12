@@ -1,0 +1,27 @@
+.headerBooking {
+  font-size: 20px;
+  font-weight: bold;
+  position: sticky;
+  top: 0px;
+  padding: 16px;
+  background-color: #f9f8fb;
+
+  text-align: left;
+  width: 600px;
+}
+.time_tabs {
+  background-color: #88736b;
+  /* opacity: 0.6; Giá trị opacity để làm mờ màu */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Tạo bóng phía dưới */
+  align-self: center;
+  border-radius: 10px;
+  padding: 2px;
+  display: inline-block;
+}
+
+.MuiTab-root.Mui-selected {
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: 600;
+}

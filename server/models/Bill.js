@@ -5,7 +5,7 @@ const billSchema = new mongoose.Schema(
   {
     items: [
       {
-        Drinks: {
+        drink: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Drinks",
           required: true,
@@ -37,6 +37,11 @@ const billSchema = new mongoose.Schema(
     totalAmount: {
       type: Number,
       required: true,
+    },
+    PaymentMethod: {
+      type: String,
+      required: true,
+      enum: ["Cash", "Card", "Digital"],
     },
     TableNo: {
       type: Schema.Types.ObjectId,

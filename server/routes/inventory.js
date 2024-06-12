@@ -16,7 +16,7 @@ router.get("/:ingredientId", verifyToken, getDetailIngredient);
 /* CREATE */
 router.post("/add", createIngredient);
 /* UPDATE */
-router.patch("/:id", verifyToken, updateIngredient);
+router.patch("/:id", updateIngredient);
 /* DELETE */
 router.delete("/:id", verifyToken, deleteIngredient);
 export default router;

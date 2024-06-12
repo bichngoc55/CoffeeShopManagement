@@ -5,6 +5,18 @@ const ingredientSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  price: {
+    type: Number,
+    required: true,
+  },
+  unit: {
+    type: String,
+    required: true,
+  },
+  StaffName: {
+    type: String,
+    required: true,
+  },
   quantity: {
     type: Number,
     required: true,
