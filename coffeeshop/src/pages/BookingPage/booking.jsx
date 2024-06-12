@@ -11,6 +11,9 @@ import "./booking.css";
 
 const Booking = () => {
   const [table, setTable] = useState([]);
+  const [availableTables, setAvailableTables] = useState(0);
+  const [occupiedTables, setOccupiedTables] = useState(0);
+  const [bookedTables, setBookedTables] = useState(0);
 
   const [selectedTable, setSelectedTable] = useState(
     "661ffb050f8b90fbff1b40ce"
@@ -32,6 +35,14 @@ const Booking = () => {
         if (response.ok) {
           const data = await response.json();
           setTable(data);
+          const statusCount = data.reduce((count, item) => {
+            count[item.status] = (count[item.status] || 0) + 1;
+            return count;
+          }, {});
+
+          setAvailableTables(statusCount.available || 0);
+          setOccupiedTables(statusCount.occupied || 0);
+          setBookedTables(statusCount.booked || 0);
         } else {
           console.error("Request failed with status:", response.status);
         }
@@ -58,15 +69,15 @@ const Booking = () => {
         <div className="number">
           <div className="emptyheader">
             <CheckCircleIcon />
-            <label>Bàn trống: 06</label>
+            <label>Bàn trống: {availableTables}</label>
           </div>
           <div className="workheader">
             <LocalCafeIcon />
-            <label>Bàn có khách: 06</label>
+            <label>Bàn có khách: {occupiedTables}</label>
           </div>
           <div className="bookheader">
             <CalendarMonthIcon />
-            <label>Bàn đã đặt: 06</label>
+            <label>Bàn đã đặt: {bookedTables}</label>
           </div>
         </div>
         <div
