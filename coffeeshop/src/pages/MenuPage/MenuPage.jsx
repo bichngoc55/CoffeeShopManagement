@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { Box, Typography } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
 import DrinkCard from "../../components/drinkCard/drinkCard";
-import Modal from "../../components/modal/modal";
+import Modal2 from "../../components/modal/modal";
 import DrinkTypeCard from "../../components/drinkType/DrinkType";
 import EmojiFoodBeverageOutlinedIcon from "@mui/icons-material/EmojiFoodBeverageOutlined";
 import FreeBreakfastOutlinedIcon from "@mui/icons-material/FreeBreakfastOutlined";
@@ -44,6 +44,21 @@ const MenuPage = () => {
   const [savedBillDetails, setSavedBillDetails] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [showModifyDialog, setShowModifyDialog] = useState(false);
+  const [payment, setPayment] = useState("");
+
+  //payment
+  const handlePayment = async (type) => {
+    if (type === "cash") {
+      setPayment("Cash");
+    } else if (type === "bank") {
+      setPayment("Card");
+    } else {
+      setPayment("Digital");
+    }
+  };
+  const selectedPaymentStyle = {
+    border: "1px solid red",
+  };
 
   //print function
   const componentRef = useRef();
@@ -124,7 +139,7 @@ const MenuPage = () => {
   };
   const saveBillToDatabase = async () => {
     const items = billItems.map((item) => ({
-      Drinks: item.drink._id,
+      drink: item.drink._id,
       quantity: item.quantity,
       percentOfSugar: item.sugar,
       size: item.size,
@@ -135,6 +150,7 @@ const MenuPage = () => {
     const postData = {
       items,
       totalAmount: totalPirce,
+      PaymentMethod: payment,
       TableNo: tableNo,
       Staff: user._id,
       PhuThu: 0,
@@ -145,7 +161,6 @@ const MenuPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(postData),
       });
@@ -155,7 +170,7 @@ const MenuPage = () => {
       }
 
       const data = await response.json();
-      //updateTableStatus(availableTables[0]._id);
+      updateTableStatus(availableTables[0]._id);
       //   console.log("data: ", JSON.stringify(data, null, 2));
       return data._id;
     } catch (error) {
@@ -322,18 +337,23 @@ const MenuPage = () => {
             </Typography>
             <div className="ButtonComponent">
               <button className="btn" onClick={handleAddDrink}>
-                Them Mon
+                Thêm Món
               </button>
+              <Modal2
+                open={showModal}
+                onClose={handleShowModal}
+                handleAddDrink={handleAddDrink}
+              />
               <button
                 className="btn"
                 onClick={() => handleDeleteDrink(selectedDrink._id)}
               >
-                Xoa Mon
+                Xoá Món
               </button>
               <button className="btn" onClick={handleShowModifyDialog}>
-                Sua Mon
+                Sửa Món
               </button>
-              {showModal && <Modal onClose={handleHideModal} />}
+              {showModal && <Modal2 onClose={handleHideModal} />}
               {showModifyDialog && (
                 <ModifyDialog
                   onClose={handleHideModifyDialog}
@@ -342,7 +362,7 @@ const MenuPage = () => {
               )}
             </div>
           </div>
-          <Box className="cardDrink" sx={{ display: "flex" }}>
+          <Box className="cardDrink">
             <DrinkCard
               items={drinksData}
               searchItems={results}
@@ -395,17 +415,27 @@ const MenuPage = () => {
               Payment Method
             </Typography>
             <div className="PaymentMethod">
-              <div className="momo">
-                <IconButton>
+              <div
+                className="momo"
+                style={payment === "Digital" ? selectedPaymentStyle : {}}
+              >
+                <IconButton onClick={() => handlePayment("momo")}>
                   <WalletOutlinedIcon />
                 </IconButton>
               </div>
-              <div className="cash">
-                <IconButton>
+              <div
+                className="cash"
+                style={payment === "Cash" ? selectedPaymentStyle : {}}
+              >
+                <IconButton onClick={() => handlePayment("cash")}>
                   <LocalAtmOutlinedIcon />
                 </IconButton>
               </div>
-              <div className="bank">
+              <div
+                className="bank"
+                onClick={() => handlePayment("bank")}
+                style={payment === "Card" ? selectedPaymentStyle : {}}
+              >
                 <IconButton>
                   <AccountBalanceOutlinedIcon />
                 </IconButton>
