@@ -18,7 +18,7 @@ function App() {
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
-  const isAuth = Boolean(useSelector((state) => state.auths.token));
+  const token = useSelector((state) => state.auths.token);
 
   return (
     <div className="App">
@@ -30,21 +30,21 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route
               path="/home"
-              element={isAuth ? <Home /> : <Navigate to="/login" />}
+              element={token ? <Home /> : <Navigate to="/login" />}
             />
             <Route
               path="/inventory"
-              element={isAuth ? <Inventory /> : <Navigate to="/login" />}
+              element={token ? <Inventory /> : <Navigate to="/login" />}
             />
             <Route path="/staff" element={<Staff />} />
             {/* <Route path="/menu" element={<Menu />} /> */}
             <Route
               path="/booking"
-              element={isAuth ? <Booking /> : <Navigate to="/login" />}
+              element={token ? <Booking /> : <Navigate to="/login" />}
             />
             <Route
               path="/history"
-              element={isAuth ? <History /> : <Navigate to="/login" />}
+              element={token ? <History /> : <Navigate to="/login" />}
             />
             {/* <Route
               path="/"
@@ -52,11 +52,11 @@ function App() {
             /> */}
             <Route
               path="/analytics"
-              element={isAuth ? <Analytics /> : <Navigate to="/login" />}
+              element={token ? <Analytics /> : <Navigate to="/login" />}
             />
             <Route
               path="/menu"
-              element={isAuth ? <MenuPage /> : <Navigate to="/login" />}
+              element={token ? <MenuPage /> : <Navigate to="/login" />}
             />
           </Routes>
         </ThemeProvider>

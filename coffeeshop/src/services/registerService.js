@@ -1,18 +1,21 @@
-import axios from "axios";
-import {
-  registerStart,
-  registerFail,
-  registerSuccess,
-} from "../redux/authSlice";
+// import axios from "axios";
+
 const registerUser = async (user, dispatch, navigate) => {
-  dispatch(registerStart());
   try {
-    const res = await axios.post("http://localhost:3005/auth/register", user);
-    dispatch(registerSuccess(res.data));
-    navigate("/staff");
-  } catch (err) {
-    console.log(err);
-    dispatch(registerFail());
+    const response = await fetch("http:/localhost:3005/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+
+    if (!response.ok) {
+      throw new Error("Something went wrong during registration.");
+    }
+    navigate("/home");
+  } catch (error) {
+    console.error("Registration error:", error);
   }
 };
 export { registerUser };
