@@ -4,13 +4,15 @@ import "./Loginpage.css";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../../services/loginService.js";
+// import { loginUser } from "../../services/loginService.js";
+import { loginUser } from "../../redux/authSlice.js";
+import { useSelector } from "react-redux";
 
 const LoginPage = () => {
   const [emailInput, setUsername] = useState("");
   const [passwordInput, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  // const isAuth = Boolean(useSelector((state) => state.auths.token));
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -18,11 +20,12 @@ const LoginPage = () => {
     e.preventDefault();
     const newUser = { email: emailInput, password: passwordInput };
     try {
-      const result = await loginUser(newUser, dispatch, navigate);
-      if (result && result.success) {
-        navigate("/stuff");
+      const result = await dispatch(loginUser(newUser));
+      console.log("result trong login : ", result);
+      if (result.error) {
+        setErrorMessage("Invalid username or password");
       } else {
-        setErrorMessage(" *Not found user, incorrect email or password");
+        navigate("/home");
       }
     } catch (err) {
       // Xử lý lỗi nếu có
@@ -64,7 +67,7 @@ const LoginPage = () => {
               Username
             </label>
             <input
-              placeHolder="Enter your username"
+              placeholder="Enter your username"
               className={`inputText ${errorMessage ? "error" : ""}`}
               type="text"
               id="username"

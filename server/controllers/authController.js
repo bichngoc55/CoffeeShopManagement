@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import User from "../models/User.js";
 import express from "express";
 import argon2 from "argon2";
+import validator from "validator";
+
 import nodemailer from "nodemailer";
 const app = express();
 app.use(cookieParser());
@@ -26,7 +28,30 @@ export const register = async (req, res) => {
 
     // const salt = await bcrypt.genSalt();
     // const passwordHash = await bcrypt.hash(password, salt);
+    const hashOptions = {
+      type: argon2.argon2id,
+      memoryCost: 2 ** 16,
+      timeCost: 5,
+      parallelism: 1,
+      saltLength: 16,
+    };
     const passwordHash = await argon2.hash(password, hashOptions);
+    const isValidEmail = validator.isEmail(email);
+
+    if (!isValidEmail) {
+      return res
+        .status(400)
+        .json({ msg: "Please provide a valid Gmail email address" });
+    }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ msg: "User already exists" });
+    }
+    if (password.length < 6) {
+      return res
+        .status(400)
+        .json({ msg: "Password must be at least 6 characters" });
+    }
     const newUser = new User({
       Name,
       email,
@@ -38,6 +63,7 @@ export const register = async (req, res) => {
       location,
       gender,
     });
+
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (err) {
@@ -53,11 +79,14 @@ export const login = async (req, res) => {
     if (!user) return res.status(400).json({ status: "User does not exist. " });
 
     // const isMatch = await bcrypt.compare(password, user.password);
+    console.log("user.password", user.password); // "$argon2id$v=19$m=4096,t=3,p=1$..."
     const isMatch = await argon2.verify(user.password, password);
     if (!isMatch)
       return res.status(400).json({ status: "Invalid credentials. " });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "60m",
+    });
     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH, {
       expiresIn: "365d",
     });
@@ -125,11 +154,10 @@ export const forgotPassword = async (req, res) => {
       expiresIn: "30m",
     });
     oldUser.resetToken = resetToken;
-    oldUser.resetTokenExpiration = Date.now() + 30 * 60 * 1000; // 30 minutes
+    oldUser.resetTokenExpiration = Date.now() + 30 * 60 * 1000;
     await oldUser.save();
     const newPassword = "12345678";
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    const hashedPassword = await argon2.hash(newPassword);
     await User.updateOne(
       {
         _id: oldUser._id,
