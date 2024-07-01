@@ -14,6 +14,9 @@ import { useState, useEffect } from "react";
 import TableBarOutlinedIcon from "@mui/icons-material/TableBarOutlined";
 import { BreakfastDiningOutlined } from "@mui/icons-material";
 //import { Switch } from "@mui/material";
+import { logoutUser } from "../../redux/authSlice.js";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./dashBoard.css";
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -39,13 +42,24 @@ const DashBoard = () => {
   const [selected, setSelected] = useState("");
   const [isAdmin, setAdmin] = useState(false);
   const { Ava, Name, Position } = useSelector((state) => state.auths.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSelected("Home");
     if (Position === "admin") setAdmin(true);
     else setAdmin(false);
   }, [Position]);
+  const handleLogout = async () => {
+    try {
+      console.log("Trong hanle log out: ");
+      await dispatch(logoutUser()).unwrap();
 
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   return (
     <Sidebar
       className="sidebar-container"
@@ -182,19 +196,24 @@ const DashBoard = () => {
           />
           <Item
             title="Thống Kê"
-            to= "/analytics"
+            to="/analytics"
             icon={<PieChartOutlineOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
           />
         </Box>
-        <Box mt="30px" paddingLeft={isCollapsed ? undefined : "10%"}>
+        <Box
+          onClick={handleLogout}
+          mt="30px"
+          paddingLeft={isCollapsed ? undefined : "10%"}
+        >
           <Item
             title="Đăng Xuất"
             to="/login"
             icon={<LogoutOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
+            onClick={handleLogout}
           />
         </Box>
       </Menu>
