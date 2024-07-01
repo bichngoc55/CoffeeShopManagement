@@ -38,9 +38,15 @@ const HomePage = () => {
     };
   };
 
-  
-  
-
+  const [workSchedule, setWorkSchedule] = useState([
+    [["Ngọc", "Uyên", "Nga"], ["", "", ""], ["Mạnh UEL", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+  ]);
 
   return (
     <Box sx={{ display: "flex", maxWidth: "100vw" }}>
@@ -228,7 +234,7 @@ const HomePage = () => {
               </button>
             </div>
             <div style={{marginTop: '3%',}}>
-              <WorkScheduleTable/>
+            <WorkScheduleTable isEditing={isEditing[2]} workSchedule={workSchedule} setWorkSchedule={setWorkSchedule} />
             </div>
           </div>
         </div>
