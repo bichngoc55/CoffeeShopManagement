@@ -8,9 +8,13 @@ import StaffInfo from "../../components/StaffInfo/StaffInfo";
 import "./staff.css";
 import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteUser } from "../../services/deleteStaffService";
 import PopupStaff from "../../components/table/popupEdit";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 function useFocus() {
   const ref = useRef(null);
 
@@ -23,6 +27,17 @@ function useFocus() {
   return [ref, setFocus];
 }
 const Stuff = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event, userId) => {
+    setAnchorEl(event.currentTarget);
+    setCurrentUserId(userId);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const { token } = useSelector((state) => state.auths);
   const [users, setUsers] = useState([]);
   const [inputRef, setInputFocus] = useFocus();
   const dispatch = useDispatch();
@@ -45,14 +60,27 @@ const Stuff = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  const deleteStaff = useCallback((user) => {
+  const deleteStaff = async (id) => {
     console.log("delete staff");
+    handleClose();
     try {
-      deleteUser(user.token, dispatch, user._id, navigate);
+      const response = await fetch(`http://localhost:3005/staff/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        axios
+          .get(`http://localhost:3005/staff/`)
+          .then((response) => setUsers(response.data.staff))
+          .catch((err) => console.error(err));
+      }
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  };
 
   const items = [
     {
@@ -84,14 +112,41 @@ const Stuff = () => {
                     />
                   )}
 
-                  <button
-                    className="buttonD"
-                    onClick={() => {
-                      deleteStaff(user);
-                    }}
-                  >
-                    Delete
-                  </button>
+                  <div>
+                    <button
+                      className="buttonD"
+                      onClick={(e) => handleClick(e, user._id)}
+                    >
+                      Delete
+                    </button>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                      sx={{
+                        "& .MuiPaper-root": {
+                          color: "black",
+                          borderRadius: 2,
+                          minWidth: "150px",
+                          marginTop: "10px",
+                        },
+                      }}
+                    >
+                      <MenuItem
+                        onClick={() => deleteStaff(currentUserId)}
+                        sx={{ fontSize: "15px" }}
+                      >
+                        Sure
+                      </MenuItem>
+                      <MenuItem onClick={handleClose} sx={{ fontSize: "15px" }}>
+                        Cancel
+                      </MenuItem>
+                    </Menu>
+                  </div>
                 </div>
               </div>
             );

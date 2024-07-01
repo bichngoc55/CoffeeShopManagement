@@ -45,7 +45,7 @@ const AddStaffComponent = () => {
   // const [dateOfBirthInput, setDateOfBirth] = React.useState();
   // const [passwordInput, setPassword] = React.useState();
   // const [locationInput, setLocation] = React.useState();
-  const [nameInput, setName] = useState();
+  const [nameInput, setName] = useState("");
   const [positionInput, setPosition] = useState();
   const [genderInput, setGender] = useState();
   const [emailInput, setEmail] = useState();
@@ -59,10 +59,10 @@ const AddStaffComponent = () => {
     setDateOfBirth(selectedDate);
   };
   const [image, setImage] = React.useState();
+  const [file, setFile] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleUpload = async () => {
-    showToast();
     const formdata = new FormData();
     console.log("da vao handle upload");
     formdata.append("file", image);
@@ -93,8 +93,10 @@ const AddStaffComponent = () => {
         Phone: phoneInput,
         dateOfBirth: dateOfBirthInput,
         location: locationInput,
-        Ava: image,
+        Ava: file,
+        password: passwordInput,
       };
+      showToast();
       registerUser(updatedUserData, dispatch, navigate);
     } catch (err) {
       console.log(err);
@@ -103,7 +105,7 @@ const AddStaffComponent = () => {
   const showToast = () => {
     toast.success("Add successfully!", {
       position: "top-center",
-      autoClose: 5000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -142,7 +144,7 @@ const AddStaffComponent = () => {
       >
         <div style={{ textAlign: "center" }}>
           <button className="image-con">
-            <img src={image} alt="User" />
+            <img src={file} alt="User" />
           </button>
           <Button
             component="label"
@@ -157,6 +159,7 @@ const AddStaffComponent = () => {
               type="file"
               onChange={(e) => {
                 setImage(e.target.files[0]);
+                setFile(URL.createObjectURL(e.target.files[0]));
               }}
             />
           </Button>
