@@ -1,3 +1,4 @@
+import { DataObjectOutlined } from "@mui/icons-material";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const refreshAccessToken = createAsyncThunk(
@@ -71,6 +72,34 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+export const updateUserInfo = createAsyncThunk(
+  "auth/updateUserInfo",
+  async ({ user, id }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3005/auth/updateUser/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update user info");
+      }
+
+      const data = await response.json();
+      localStorage.setItem("user", JSON.stringify(data));
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -120,6 +149,19 @@ export const authSlice = createSlice({
       .addCase(refreshAccessToken.fulfilled, (state, action) => {
         console.log("action paylod ne: ", action.payload);
         state.token = action.payload;
+      })
+      .addCase(updateUserInfo.pending, (state) => {
+        state.isFetching = true;
+        state.error = null;
+      })
+      .addCase(updateUserInfo.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isFetching = false;
+        state.error = null;
+      })
+      .addCase(updateUserInfo.rejected, (state, action) => {
+        state.isFetching = false;
+        state.error = action.payload;
       });
   },
 });

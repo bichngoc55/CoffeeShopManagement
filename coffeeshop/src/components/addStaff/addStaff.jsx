@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import userImage from "../../asset/user.jpg";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import WcIcon from "@mui/icons-material/Wc";
@@ -21,6 +20,9 @@ import "./addStaff.css";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/registerService";
+import { format, parseISO } from "date-fns";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Diversity1Outlined } from "@mui/icons-material";
 const AddStaffComponent = () => {
   const VisuallyHiddenInput = styled("input")({
@@ -43,59 +45,83 @@ const AddStaffComponent = () => {
   // const [dateOfBirthInput, setDateOfBirth] = React.useState();
   // const [passwordInput, setPassword] = React.useState();
   // const [locationInput, setLocation] = React.useState();
-  const [nameInput, setName] = React.useState("");
-  const [positionInput, setPosition] = React.useState("");
-  const [genderInput, setGender] = React.useState("");
-  const [emailInput, setEmail] = React.useState("");
-  const [phoneInput, setPhone] = React.useState("");
-  const [dateOfBirthInput, setDateOfBirth] = React.useState("");
-  const [passwordInput, setPassword] = React.useState("");
-  const [locationInput, setLocation] = React.useState("");
-  const [newUser, setNewUser] = React.useState({
-    Name: "",
-    Position: "",
-    gender: "",
-    email: "",
-    Phone: "",
-    dateOfBirth: "",
-    location: "",
-    password: "",
-    Ava: "",
-  });
+  const [nameInput, setName] = useState();
+  const [positionInput, setPosition] = useState();
+  const [genderInput, setGender] = useState();
+  const [emailInput, setEmail] = useState();
+  const [phoneInput, setPhone] = useState();
+  const [dateOfBirthInput, setDateOfBirth] = useState();
+  const [passwordInput, setPassword] = useState();
+  const [locationInput, setLocation] = useState("VietNam");
+
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
     setDateOfBirth(selectedDate);
   };
   const [image, setImage] = React.useState();
-  const [file, setFile] = React.useState(userImage);
-  useEffect(() => {
-    // Cleanup function to revoke the object URL
-    return () => URL.revokeObjectURL(file);
-  }, [file]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleUpload = (event) => {
-    event.preventDefault();
+  const handleUpload = async () => {
+    showToast();
     const formdata = new FormData();
+    console.log("da vao handle upload");
     formdata.append("file", image);
-    axios
-      .post("http://localhost:3005/upload", formdata)
-      .then((res) => {
-        console.log(res);
-        setNewUser({
-          Name: nameInput,
-          Position: positionInput,
-          gender: genderInput,
-          email: emailInput,
-          Phone: phoneInput,
-          dateOfBirth: dateOfBirthInput,
-          location: locationInput,
-          password: passwordInput,
-          Ava: res.data.originalname,
-        });
-        registerUser(newUser, dispatch, navigate);
-      })
-      .catch((err) => console.log(err));
+    formdata.append("upload_preset", "Searn-musicapp");
+    formdata.append("cloud_name", "dzdso60ms");
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
+        formdata,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(response.data.url);
+      setImage(response.data.url);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+    try {
+      const updatedUserData = {
+        Name: nameInput,
+        Position: positionInput,
+        gender: genderInput,
+        email: emailInput,
+        Phone: phoneInput,
+        dateOfBirth: dateOfBirthInput,
+        location: locationInput,
+        Ava: image,
+      };
+      registerUser(updatedUserData, dispatch, navigate);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const showToast = () => {
+    toast.success("Add successfully!", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+  const resetAllStates = () => {
+    console.log("Resetting all states...");
+    setName("");
+    setPosition();
+    setGender();
+    setEmail();
+    setPhone();
+    setDateOfBirth();
+    setLocation();
+    setImage();
   };
 
   return (
@@ -107,6 +133,7 @@ const AddStaffComponent = () => {
         textAlign: "left",
       }}
     >
+      <ToastContainer />
       <div
         style={{
           display: "flex",
@@ -115,7 +142,7 @@ const AddStaffComponent = () => {
       >
         <div style={{ textAlign: "center" }}>
           <button className="image-con">
-            <img src={file} alt="User" />
+            <img src={image} alt="User" />
           </button>
           <Button
             component="label"
@@ -130,7 +157,6 @@ const AddStaffComponent = () => {
               type="file"
               onChange={(e) => {
                 setImage(e.target.files[0]);
-                setFile(URL.createObjectURL(e.target.files[0]));
               }}
             />
           </Button>
@@ -147,6 +173,7 @@ const AddStaffComponent = () => {
               <input
                 className="username"
                 type="text"
+                value={nameInput}
                 placeholder="Nhập họ tên"
                 onChange={(event) => setName(event.target.value)}
               />
@@ -167,6 +194,7 @@ const AddStaffComponent = () => {
                 <input
                   className="email"
                   type="text"
+                  value={emailInput}
                   placeholder="Nhập email"
                   onChange={(event) => setEmail(event.target.value)}
                 />
@@ -180,6 +208,7 @@ const AddStaffComponent = () => {
                 <input
                   className="phone"
                   type="text"
+                  value={phoneInput}
                   placeholder="Nhập số điện thoại"
                   onChange={(event) => setPhone(event.target.value)}
                 />
@@ -215,6 +244,9 @@ const AddStaffComponent = () => {
               type="date"
               id="date"
               className="datePick"
+              value={
+                dateOfBirthInput ? format(dateOfBirthInput, "yyyy-MM-dd") : ""
+              }
               onChange={handleDateChange}
             />
           </div>
@@ -234,6 +266,7 @@ const AddStaffComponent = () => {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             onChange={(event) => setGender(event.target.value)}
+            value={genderInput}
             style={{
               height: "35px",
               borderRadius: "10px",
@@ -267,6 +300,7 @@ const AddStaffComponent = () => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               onChange={(event) => setPosition(event.target.value)}
+              value={positionInput}
               style={{
                 height: "35px",
                 borderRadius: "10px",
@@ -289,6 +323,7 @@ const AddStaffComponent = () => {
             className="address"
             type="text"
             placeholder="Nhập địa chỉ"
+            value={locationInput}
             onChange={(event) => setLocation(event.target.value)}
           />
         </div>
@@ -306,14 +341,20 @@ const AddStaffComponent = () => {
           <label className="labelUsername">Mật khẩu</label>
           <input
             className="password"
-            type="text"
+            type="password"
             placeholder="Nhập mật khẩu"
+            //value={passwordInput}
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
         <div>
           <label className="labelUsername">Xác nhận mật khẩu</label>
-          <input className="password" type="text" placeholder="Nhập mật khẩu" />
+          <input
+            className="password"
+            type="password"
+            placeholder="Nhập mật khẩu"
+            //value={passwordInput}
+          />
         </div>
       </div>
 
@@ -326,8 +367,10 @@ const AddStaffComponent = () => {
           justifyContent: "flex-end",
         }}
       >
-        <button className="buttonCancel">Quay lại</button>
-        <button className="buttonAdd" onClick={handleUpload}>
+        <button className="buttonCancel" onClick={() => resetAllStates()}>
+          Quay lại
+        </button>
+        <button className="buttonAdd" onClick={() => handleUpload()}>
           Thêm
         </button>
       </div>

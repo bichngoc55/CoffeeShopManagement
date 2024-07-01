@@ -67,6 +67,7 @@ export const register = async (req, res) => {
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -194,6 +195,21 @@ export const forgotPassword = async (req, res) => {
     res.json({ status: "Check your new passworn in email" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log("User updated: " + user);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 

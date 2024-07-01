@@ -14,8 +14,14 @@ import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { format, parseISO } from "date-fns";
+import { updateUser } from "../../services/updateUserService";
 import axios from "axios";
 import "./StaffInfo.css";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { updateAccessToken } from "../../redux/authSlice";
 
 const StaffInfoComponent = () => {
   const VisuallyHiddenInput = styled("input")({
@@ -30,6 +36,7 @@ const StaffInfoComponent = () => {
     width: 1,
   });
   const {
+    _id,
     Ava,
     Name,
     Position,
@@ -50,26 +57,74 @@ const StaffInfoComponent = () => {
     parseISO(dateOfBirth)
   );
   const [locationInput, setLocation] = React.useState(location);
-  const [image, setImage] = React.useState();
-  const [file, setFile] = React.useState(`http://localhost:3005/assets/${Ava}`);
+  const [image, setImage] = React.useState(Ava);
+  const [newUser, setNewUser] = useState();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   console.log(typeof dateOfBirth);
-  useEffect(() => {
-    // Cleanup function to revoke the object URL
-    return () => URL.revokeObjectURL(file);
-  }, [file]);
-  const handleUpload = useCallback(
-    (event) => {
-      const formdata = new FormData();
-      formdata.append("file", image);
-      axios
-        .post("http://localhost:3005/upload", formdata)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => console.log(err));
-    },
-    [image]
-  );
+  const handleUpload = async () => {
+    showToast();
+    const formdata = new FormData();
+    console.log("da vao handle upload");
+    formdata.append("file", image);
+    formdata.append("upload_preset", "Searn-musicapp");
+    formdata.append("cloud_name", "dzdso60ms");
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
+        formdata,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(response.data.url);
+      setImage(response.data.url);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+    try {
+      const updatedUserData = {
+        Name: nameInput,
+        Position: positionInput,
+        gender: genderInput,
+        email: emailInput,
+        Phone: phoneInput,
+        dateOfBirth: dateOfBirthInput,
+        location: locationInput,
+        Ava: image,
+      };
+      console.log(updatedUserData);
+      await updateUser(updatedUserData, _id, navigate, dispatch);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const showToast = () => {
+    toast.success("Update successfully!", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+  const resetAllStates = () => {
+    setName(Name);
+    setPosition(Position);
+    setGender(gender);
+    setEmail(email);
+    setPhone(Phone);
+    setDateOfBirth(parseISO(dateOfBirth));
+    setLocation(location);
+    setImage(Ava);
+  };
+
   return (
     <div
       style={{
@@ -79,6 +134,7 @@ const StaffInfoComponent = () => {
         textAlign: "left",
       }}
     >
+      <ToastContainer />
       <div
         style={{
           display: "flex",
@@ -87,7 +143,7 @@ const StaffInfoComponent = () => {
       >
         <div style={{ textAlign: "center" }}>
           <button className="image-con">
-            <img src={file} alt="User" />
+            <img src={Ava} alt="User" />
           </button>
           <Button
             component="label"
@@ -102,7 +158,6 @@ const StaffInfoComponent = () => {
               type="file"
               onChange={(e) => {
                 setImage(e.target.files[0]);
-                setFile(URL.createObjectURL(e.target.files[0]));
               }}
             />
           </Button>
@@ -310,8 +365,10 @@ const StaffInfoComponent = () => {
           justifyContent: "flex-end",
         }}
       >
-        <button className="buttonCancel">Hủy thay đổi</button>
-        <button className="buttonAdd" onClick={handleUpload}>
+        <button className="buttonCancel" onClick={() => resetAllStates()}>
+          Hủy thay đổi
+        </button>
+        <button className="buttonAdd" onClick={() => handleUpload()}>
           Lưu thay đổi
         </button>
       </div>

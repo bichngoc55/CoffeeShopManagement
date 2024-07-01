@@ -2,7 +2,7 @@ import React from "react";
 import DashBoard from "../../components/dashBoard/dashBoard";
 import TabStaff from "../../components/TabStaff/TabStaff";
 import AddStaffComponent from "../../components/addStaff/addStaff";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 import StaffInfo from "../../components/StaffInfo/StaffInfo";
 import "./staff.css";
@@ -11,9 +11,20 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteUser } from "../../services/deleteStaffService";
 import PopupStaff from "../../components/table/popupEdit";
+function useFocus() {
+  const ref = useRef(null);
 
+  const setFocus = () => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  };
+
+  return [ref, setFocus];
+}
 const Stuff = () => {
   const [users, setUsers] = useState([]);
+  const [inputRef, setInputFocus] = useFocus();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [openPopupId, setOpenPopupId] = useState(null);
@@ -26,6 +37,8 @@ const Stuff = () => {
     setOpenPopupId(null);
   };
   useEffect(() => {
+    setInputFocus();
+    console.log("setInputFocus");
     axios
       .get(`http://localhost:3005/staff/`)
       .then((response) => setUsers(response.data.staff))
@@ -50,10 +63,7 @@ const Stuff = () => {
             return (
               <div className="container-card">
                 <div className="image-container">
-                  <img
-                    src={`http://localhost:3005/assets/${user.Ava}`}
-                    alt="User"
-                  />
+                  <img src={user.Ava} alt="User" />
                 </div>
 
                 <div className="inforContainer">
@@ -107,7 +117,7 @@ const Stuff = () => {
     },
   ];
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box ref={inputRef} sx={{ display: "flex" }}>
       <DashBoard />
       <div style={{ backgroundColor: "#f9f8fb", width: "100%" }}>
         <p className="Header">
