@@ -1,4 +1,4 @@
-// import bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import User from "../models/User.js";
@@ -52,10 +52,10 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email: email });
     if (!user) return res.status(400).json({ status: "User does not exist. " });
 
-    // const isMatch = await bcrypt.compare(password, user.password);
-    const isMatch = await argon2.verify(user.password, password);
+    const isMatch = await bcrypt.compare(password, user.password);
+    //const isMatch = await argon2.verify(user.password, password);
     if (!isMatch)
-      return res.status(400).json({ status: "Invalid credentials. " });
+      return res.status(400).json({ status: "Sai mat khau " + argon2.hash(password)});
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH, {
