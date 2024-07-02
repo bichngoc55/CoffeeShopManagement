@@ -88,7 +88,9 @@ export const updateUserInfo = createAsyncThunk(
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update user info");
+        throw new Error(
+          "Failed to update user info: " + JSON.stringify(response)
+        );
       }
 
       const data = await response.json();

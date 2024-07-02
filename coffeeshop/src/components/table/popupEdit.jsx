@@ -76,7 +76,6 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
     password: "",
   });
   useEffect(() => {
-    showToast();
     const fetchData = async () => {
       try {
         console.log("Fetching data");

@@ -58,7 +58,8 @@ const AddStaffComponent = () => {
     const selectedDate = event.target.value;
     setDateOfBirth(selectedDate);
   };
-  const [image, setImage] = React.useState();
+  const [image, setImage] = useState();
+  const [isShow, setIsShow] = useState(false);
   const [file, setFile] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ const AddStaffComponent = () => {
         Ava: file,
         password: passwordInput,
       };
+      setIsShow(true);
       showToast();
       registerUser(updatedUserData, dispatch, navigate);
     } catch (err) {
@@ -135,7 +137,7 @@ const AddStaffComponent = () => {
         textAlign: "left",
       }}
     >
-      <ToastContainer />
+      {isShow && <ToastContainer />}
       <div
         style={{
           display: "flex",

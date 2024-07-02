@@ -53,51 +53,71 @@ const StaffInfoComponent = () => {
   const [genderInput, setGender] = React.useState(gender);
   const [emailInput, setEmail] = React.useState(email);
   const [phoneInput, setPhone] = React.useState(Phone);
+  const [isUpdateAva, setIsUpdateAva] = useState(false);
   const [dateOfBirthInput, setDateOfBirth] = React.useState(
     parseISO(dateOfBirth)
   );
   const [locationInput, setLocation] = React.useState(location);
   const [image, setImage] = React.useState(Ava);
+  const [isShowToast, setIsShowToast] = useState(false);
+  const [file, setFile] = useState(Ava);
   const [newUser, setNewUser] = useState();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   console.log(typeof dateOfBirth);
   const handleUpload = async () => {
+    setIsShowToast(true);
     showToast();
-    const formdata = new FormData();
-    console.log("da vao handle upload");
-    formdata.append("file", image);
-    formdata.append("upload_preset", "Searn-musicapp");
-    formdata.append("cloud_name", "dzdso60ms");
-    try {
-      const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
-        formdata,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      console.log(response.data.url);
-      setImage(response.data.url);
-    } catch (error) {
-      console.error("Error uploading image:", error);
+    if (isUpdateAva) {
+      const formdata = new FormData();
+      console.log("da vao handle upload");
+      formdata.append("file", image);
+      formdata.append("upload_preset", "Searn-musicapp");
+      formdata.append("cloud_name", "dzdso60ms");
+      try {
+        const response = await axios.post(
+          "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
+          formdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(response.data.url);
+        setFile(response.data.url);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
     }
     try {
-      const updatedUserData = {
-        Name: nameInput,
-        Position: positionInput,
-        gender: genderInput,
-        email: emailInput,
-        Phone: phoneInput,
-        dateOfBirth: dateOfBirthInput,
-        location: locationInput,
-        Ava: image,
-      };
-      console.log(updatedUserData);
-      await updateUser(updatedUserData, _id, navigate, dispatch);
+      if (isUpdateAva) {
+        console.log("AVA MOI: " + file);
+        const updatedUserData = {
+          Name: nameInput,
+          Position: positionInput,
+          gender: genderInput,
+          email: emailInput,
+          Phone: phoneInput,
+          dateOfBirth: dateOfBirthInput,
+          location: locationInput,
+          Ava: file,
+        };
+        console.log(updatedUserData);
+        await updateUser(updatedUserData, _id, navigate, dispatch);
+      } else {
+        const updatedUserData = {
+          Name: nameInput,
+          Position: positionInput,
+          gender: genderInput,
+          email: emailInput,
+          Phone: phoneInput,
+          dateOfBirth: dateOfBirthInput,
+          location: locationInput,
+        };
+        console.log(updatedUserData);
+        await updateUser(updatedUserData, _id, navigate, dispatch);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -105,7 +125,7 @@ const StaffInfoComponent = () => {
   const showToast = () => {
     toast.success("Update successfully!", {
       position: "top-center",
-      autoClose: 5000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -143,7 +163,7 @@ const StaffInfoComponent = () => {
       >
         <div style={{ textAlign: "center" }}>
           <button className="image-con">
-            <img src={Ava} alt="User" />
+            <img src={file} alt="User" />
           </button>
           <Button
             component="label"
@@ -157,7 +177,10 @@ const StaffInfoComponent = () => {
             <VisuallyHiddenInput
               type="file"
               onChange={(e) => {
+                // setImage(e.target.files[0]);
+                setIsUpdateAva(true);
                 setImage(e.target.files[0]);
+                setFile(URL.createObjectURL(e.target.files[0]));
               }}
             />
           </Button>
