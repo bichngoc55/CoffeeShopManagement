@@ -19,9 +19,11 @@
 //         res.status(500).json({ error: 'Internal server error' });
 //     }
 // };
+import User from "../models/User.js";
 export const checkAdmin = async (req, res, next) => {
   try {
-    const user = req.user;
+    const { id } = req.user;
+    const user = await User.findById(id);
     if (!user || user.Position !== "admin") {
       return res.status(403).json({
         error: "Forbidden: You dont have permission to access this resource",

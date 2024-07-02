@@ -119,7 +119,7 @@ const DashBoard = () => {
                 alt="profile-user"
                 width="80%" // Adjust the width as desired
                 height="auto" // Adjust the height as desired
-                src={`http://localhost:3005/assets/${Ava}`}
+                src={Ava}
                 style={{
                   cursor: "pointer",
                   borderRadius: "50%",
