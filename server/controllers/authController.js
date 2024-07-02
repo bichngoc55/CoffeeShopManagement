@@ -1,4 +1,4 @@
-// import bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import User from "../models/User.js";
@@ -83,7 +83,7 @@ export const login = async (req, res) => {
     console.log("user.password", user.password); // "$argon2id$v=19$m=4096,t=3,p=1$..."
     const isMatch = await argon2.verify(user.password, password);
     if (!isMatch)
-      return res.status(400).json({ status: "Invalid credentials. " });
+      return res.status(400).json({ status: "Sai mat khau " + argon2.hash(password)});
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "60m",
