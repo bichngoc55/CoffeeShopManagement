@@ -59,6 +59,7 @@ const AddStaffComponent = () => {
     setDateOfBirth(selectedDate);
   };
   const [image, setImage] = useState();
+  const [link, setLink] = useState("");
   const [isShow, setIsShow] = useState(false);
   const [file, setFile] = useState();
   const dispatch = useDispatch();
@@ -70,7 +71,7 @@ const AddStaffComponent = () => {
     formdata.append("upload_preset", "Searn-musicapp");
     formdata.append("cloud_name", "dzdso60ms");
     try {
-      const response = await axios.post(
+      const responseCloud = await axios.post(
         "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
         formdata,
         {
@@ -80,28 +81,29 @@ const AddStaffComponent = () => {
         }
       );
 
-      console.log(response.data.url);
-      setImage(response.data.url);
+      console.log(responseCloud.data.url);
+      if (responseCloud.data.url) {
+        try {
+          const updatedUserData = {
+            Name: nameInput,
+            Position: positionInput,
+            gender: genderInput,
+            email: emailInput,
+            Phone: phoneInput,
+            dateOfBirth: dateOfBirthInput,
+            location: locationInput,
+            Ava: responseCloud.data.url,
+            password: passwordInput,
+          };
+          setIsShow(true);
+          showToast();
+          registerUser(updatedUserData, dispatch, navigate);
+        } catch (err) {
+          console.log(err);
+        }
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
-    }
-    try {
-      const updatedUserData = {
-        Name: nameInput,
-        Position: positionInput,
-        gender: genderInput,
-        email: emailInput,
-        Phone: phoneInput,
-        dateOfBirth: dateOfBirthInput,
-        location: locationInput,
-        Ava: file,
-        password: passwordInput,
-      };
-      setIsShow(true);
-      showToast();
-      registerUser(updatedUserData, dispatch, navigate);
-    } catch (err) {
-      console.log(err);
     }
   };
   const showToast = () => {
@@ -161,6 +163,7 @@ const AddStaffComponent = () => {
               type="file"
               onChange={(e) => {
                 setImage(e.target.files[0]);
+                console.log("image" + image);
                 setFile(URL.createObjectURL(e.target.files[0]));
               }}
             />

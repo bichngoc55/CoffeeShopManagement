@@ -85,41 +85,41 @@ const StaffInfoComponent = () => {
           }
         );
         console.log(response.data.url);
-        setFile(response.data.url);
+        if (response.data.url) {
+          try {
+            if (isUpdateAva) {
+              const updatedUserData = {
+                Name: nameInput,
+                Position: positionInput,
+                gender: genderInput,
+                email: emailInput,
+                Phone: phoneInput,
+                dateOfBirth: dateOfBirthInput,
+                location: locationInput,
+                Ava: response.data.url,
+              };
+              console.log(updatedUserData);
+              await updateUser(updatedUserData, _id, navigate, dispatch);
+            } else {
+              const updatedUserData = {
+                Name: nameInput,
+                Position: positionInput,
+                gender: genderInput,
+                email: emailInput,
+                Phone: phoneInput,
+                dateOfBirth: dateOfBirthInput,
+                location: locationInput,
+              };
+              console.log(updatedUserData);
+              await updateUser(updatedUserData, _id, navigate, dispatch);
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
       } catch (error) {
         console.error("Error uploading image:", error);
       }
-    }
-    try {
-      if (isUpdateAva) {
-        console.log("AVA MOI: " + file);
-        const updatedUserData = {
-          Name: nameInput,
-          Position: positionInput,
-          gender: genderInput,
-          email: emailInput,
-          Phone: phoneInput,
-          dateOfBirth: dateOfBirthInput,
-          location: locationInput,
-          Ava: file,
-        };
-        console.log(updatedUserData);
-        await updateUser(updatedUserData, _id, navigate, dispatch);
-      } else {
-        const updatedUserData = {
-          Name: nameInput,
-          Position: positionInput,
-          gender: genderInput,
-          email: emailInput,
-          Phone: phoneInput,
-          dateOfBirth: dateOfBirthInput,
-          location: locationInput,
-        };
-        console.log(updatedUserData);
-        await updateUser(updatedUserData, _id, navigate, dispatch);
-      }
-    } catch (err) {
-      console.log(err);
     }
   };
   const showToast = () => {
