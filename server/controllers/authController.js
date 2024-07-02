@@ -83,7 +83,9 @@ export const login = async (req, res) => {
     console.log("user.password", user.password); // "$argon2id$v=19$m=4096,t=3,p=1$..."
     const isMatch = await argon2.verify(user.password, password);
     if (!isMatch)
-      return res.status(400).json({ status: "Sai mat khau " + argon2.hash(password)});
+      return res
+        .status(400)
+        .json({ status: "Sai mat khau " + argon2.hash(password) });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "60m",
@@ -116,6 +118,7 @@ export const refresh = async (req, res) => {
     .find((cookie) => cookie.startsWith("refreshToken="))
     ?.split("=")[1];
 
+  console.log(`Refresh token: ${refreshToken}`);
   if (!refreshToken) {
     return res.status(401).json({ msg: "No token, chua dang nhap" });
   }
