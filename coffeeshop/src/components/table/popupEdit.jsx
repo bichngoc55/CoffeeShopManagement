@@ -52,7 +52,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-const PopupStaff = ({ isOpen, onClose, id }) => {
+const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
   const [updateAva, setUpdateAva] = useState(false);
   const [image, setImage] = useState();
   const [file, setFile] = useState("");
@@ -173,7 +173,7 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
         throw new Error("Failed to update user info");
       } else {
         console.log(user);
-        onClose();
+        onCloseUpdate();
       }
     } catch (err) {
       console.log(err);

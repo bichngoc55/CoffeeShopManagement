@@ -48,9 +48,18 @@ const Stuff = () => {
     setOpenPopupId(index);
   };
 
+  const closeModalAndUpdate = () => {
+    setOpenPopupId(null);
+    console.log("update hehe");
+    axios
+      .get(`http://localhost:3005/staff/`)
+      .then((response) => setUsers(response.data.staff))
+      .catch((err) => console.error(err));
+  };
   const closeModal = () => {
     setOpenPopupId(null);
   };
+
   useEffect(() => {
     setInputFocus();
     console.log("setInputFocus");
@@ -107,7 +116,8 @@ const Stuff = () => {
                   {openPopupId === index && (
                     <PopupStaff
                       isOpen={true}
-                      onClose={closeModal}
+                      onClose={() => closeModal()}
+                      onCloseUpdate={() => closeModalAndUpdate()}
                       id={user._id}
                     />
                   )}
@@ -158,7 +168,7 @@ const Stuff = () => {
       title: "Thêm nhân viên",
       content: (
         <div>
-          <AddStaffComponent />
+          <AddStaffComponent onCloseUpdate={closeModalAndUpdate} />
         </div>
       ),
     },

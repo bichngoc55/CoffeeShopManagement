@@ -100,18 +100,6 @@ const StaffInfoComponent = () => {
               };
               console.log(updatedUserData);
               await updateUser(updatedUserData, _id, navigate, dispatch);
-            } else {
-              const updatedUserData = {
-                Name: nameInput,
-                Position: positionInput,
-                gender: genderInput,
-                email: emailInput,
-                Phone: phoneInput,
-                dateOfBirth: dateOfBirthInput,
-                location: locationInput,
-              };
-              console.log(updatedUserData);
-              await updateUser(updatedUserData, _id, navigate, dispatch);
             }
           } catch (err) {
             console.log(err);
@@ -120,6 +108,18 @@ const StaffInfoComponent = () => {
       } catch (error) {
         console.error("Error uploading image:", error);
       }
+    } else {
+      const updatedUserData = {
+        Name: nameInput,
+        Position: positionInput,
+        gender: genderInput,
+        email: emailInput,
+        Phone: phoneInput,
+        dateOfBirth: dateOfBirthInput,
+        location: locationInput,
+      };
+      console.log(updatedUserData);
+      await updateUser(updatedUserData, _id, navigate, dispatch);
     }
   };
   const showToast = () => {
