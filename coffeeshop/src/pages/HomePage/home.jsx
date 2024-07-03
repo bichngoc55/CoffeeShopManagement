@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
+import { useSelector } from "react-redux";
+import axios from "axios";
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded';
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -15,6 +17,8 @@ import SearchBar from "../../components/searchBar/searchbar";
 import { SearchResultsList } from "../../components/searchBar/searchResultList";
 
 const HomePage = () => {
+  const { token } = useSelector((state) => state.auths);
+
   const [isEditing, setIsEditing] = useState([false, false, false]);
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [isNotificationShown, setNotificationShown] = useState(false);
@@ -39,7 +43,7 @@ const HomePage = () => {
   };
 
   const [workSchedule, setWorkSchedule] = useState([
-    [["Ngọc", "Uyên", "Nga"], ["", "", ""], ["Mạnh UEL", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
     [["", "", ""], ["", "", ""], ["", "", ""]],
     [["", "", ""], ["", "", ""], ["", "", ""]],
     [["", "", ""], ["", "", ""], ["", "", ""]],
@@ -47,6 +51,144 @@ const HomePage = () => {
     [["", "", ""], ["", "", ""], ["", "", ""]],
     [["", "", ""], ["", "", ""], ["", "", ""]],
   ]);
+
+  // State để lưu trữ workSchedule gốc
+  const [originalWorkSchedule, setOriginalWorkSchedule] = useState([
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+    [["", "", ""], ["", "", ""], ["", "", ""]],
+  ]);
+
+  const handleSaveChanges = () => {
+    // Lưu thay đổi vào cơ sở dữ liệu
+    // Cập nhật originalWorkSchedule
+    setOriginalWorkSchedule(JSON.parse(JSON.stringify(workSchedule))); // Deep copy
+    setIsEditing((prevIsEditing) => {
+      const newIsEditing = [...prevIsEditing];
+      newIsEditing[2] = false;
+      return newIsEditing;
+    });
+    if (token) 
+      updateWorkSchedule()
+  };
+
+  const handleCancelChanges = () => {
+    console.log('Original Work Schedule:', originalWorkSchedule);
+    if (originalWorkSchedule && Array.isArray(originalWorkSchedule) && originalWorkSchedule.length > 0) {
+      setWorkSchedule(JSON.parse(JSON.stringify(originalWorkSchedule))); // Deep copy
+    } else {
+      console.error('Original work schedule is not in the expected format');
+      // Có thể set một lịch trống ở đây
+      setWorkSchedule([
+        [["", "", ""], ["", "", ""], ["", "", ""]],
+        [["", "", ""], ["", "", ""], ["", "", ""]],
+        [["", "", ""], ["", "", ""], ["", "", ""]],
+        [["", "", ""], ["", "", ""], ["", "", ""]],
+        [["", "", ""], ["", "", ""], ["", "", ""]],
+        [["", "", ""], ["", "", ""], ["", "", ""]],
+        [["", "", ""], ["", "", ""], ["", "", ""]],
+      ]);
+    }
+    setIsEditing((prevIsEditing) => {
+      const newIsEditing = [...prevIsEditing];
+      newIsEditing[2] = false;
+      return newIsEditing;
+    });
+  };
+
+  const fetchStaffNameById = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3005/staff/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,  // Đảm bảo rằng bạn đã có `token` ở đâu đó trong mã của bạn
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        return data.Name;  // Giả sử API trả về đối tượng nhân viên có thuộc tính `name`
+      } else {
+        console.error("Request failed with status:", response.status);
+        return null;
+      }
+    } catch (error) {
+      console.error("Request failed with error:", error);
+      return null;
+    }
+  };
+
+  // Hàm update từ lịch đã lựa chọn thêm nhân viên vào database
+  const updateWorkSchedule = async () => {
+    try {
+      // Lấy dữ liệu lịch làm việc mới từ state `workSchedule`
+      const daysOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+      const newWorkSchedule = {};
+
+      daysOfWeek.forEach((day, index) => {
+        newWorkSchedule[day] = workSchedule[index];
+      });
+
+      // Gửi yêu cầu PATCH đến API để lưu lịch làm việc mới
+      const response = await fetch(`http://localhost:3005/workSchedule/668340b96e98e308621d3175/week`, {  // Chú ý: scheduleId là ID của lịch làm việc cần cập nhật
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Đảm bảo rằng bạn đã có `token` ở đâu đó trong mã của bạn
+        },
+        body: JSON.stringify(newWorkSchedule),
+      });
+
+      if (response.ok) {
+        console.log('Lịch làm việc đã được cập nhật thành công');
+        // Cập nhật lại `originalWorkSchedule` để lưu trữ trạng thái ban đầu
+        setOriginalWorkSchedule(JSON.parse(JSON.stringify(newWorkSchedule))); 
+      } else {
+        console.error('Không thể cập nhật lịch làm việc', response.status);
+      }
+    } catch (error) {
+      console.error('Lỗi khi cập nhật lịch làm việc', error);
+    }
+  };
+  
+  // Hàm lấy workSchedule từ database và cập nhật với tên nhân viên
+  const fetchWorkSchedule = async () => {
+    try {
+      const response = await axios.get('http://localhost:3005/workSchedule/');
+      if (response.data && response.data.length > 0) {
+        const schedule = response.data[0];
+        const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+        const newWorkSchedule = await Promise.all(days.map(async (day) => {
+          if (schedule[day])
+            if (schedule[day]) {
+              return await Promise.all(schedule[day].map(async (shift) => {
+                return await Promise.all(shift.map(async (id) => {
+                  if (id) {
+                    const name = await fetchStaffNameById(id);
+                    return name || id;
+                  }
+                  return "";
+                }));
+              }));
+            }
+          return [["", "", ""], ["", "", ""], ["", "", ""]];
+        }));
+        setWorkSchedule(newWorkSchedule);
+        setOriginalWorkSchedule(JSON.parse(JSON.stringify(newWorkSchedule))); // Deep copy
+      }
+    } catch (error) {
+      console.error('Failed to fetch work schedule', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkSchedule();
+  }, []);
 
   return (
     <Box sx={{ display: "flex", maxWidth: "100vw" }}>
@@ -224,14 +366,28 @@ const HomePage = () => {
           <div className=''> 
             <div style={{ display: 'flex',flexDirection: 'row', justifyContent: 'space-between'}}>
               <a className='title'>Work Schedule</a>
-              <button onClick={toggleIsEditing(2)} className='icon' style={{ justifySelf: 'flex-end' }}>
+              {/* <button onClick={toggleIsEditing(2)} className='icon' style={{ justifySelf: 'flex-end' }}>
                 {isEditing[2] ? (
                 <div>
                   <SaveRoundedIcon style={{  }} />
                   <DisabledByDefaultRoundedIcon />
                 </div>
                 ) : <EditRoundedIcon/>}
-              </button>
+              </button> */}
+              {isEditing[2] ? (
+                <div>
+                  <button onClick={handleSaveChanges} className='icon' style={{ marginRight: '10px' }}>
+                    <SaveRoundedIcon />
+                  </button>
+                  <button onClick={handleCancelChanges} className='icon'>
+                    <DisabledByDefaultRoundedIcon />
+                  </button>
+                </div>
+              ) : (
+                <button onClick={toggleIsEditing(2)} className='icon' style={{ justifySelf: 'flex-end' }}>
+                  <EditRoundedIcon/>
+                </button>
+              )}
             </div>
             <div style={{marginTop: '3%',}}>
             <WorkScheduleTable isEditing={isEditing[2]} workSchedule={workSchedule} setWorkSchedule={setWorkSchedule} />
