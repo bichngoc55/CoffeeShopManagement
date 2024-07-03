@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
@@ -53,6 +54,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
+  const navigate = useNavigate();
   const [updateAva, setUpdateAva] = useState(false);
   const [image, setImage] = useState();
   const [file, setFile] = useState("");
@@ -72,7 +74,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
     email: "",
     Phone: "",
     dateOfBirth: new Date().toISOString(),
-    location: "",
+    location: "Ho Chi Minh",
     password: "",
   });
   useEffect(() => {
@@ -101,6 +103,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
             password: data.password,
           });
           setFile(data.Ava);
+          console.log("user.location" + user);
         } else {
           console.error("Request failed with status:", response.status);
         }
@@ -170,6 +173,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         body: JSON.stringify(user),
       });
       if (!response.ok) {
+        navigate("/login");
         throw new Error("Failed to update user info");
       } else {
         console.log(user);
@@ -341,8 +345,8 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
             placeholder="Nhập địa chỉ"
             name="location"
             className="slocation"
-            defaultValue={user.location}
-            onChange={handleChange}
+            value={user.location || "unknown"}
+            onChange={(e) => handleChange(e)}
           />
         </div>
       </div>

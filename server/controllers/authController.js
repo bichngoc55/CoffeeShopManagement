@@ -160,7 +160,9 @@ export const forgotPassword = async (req, res) => {
     oldUser.resetToken = resetToken;
     oldUser.resetTokenExpiration = Date.now() + 30 * 60 * 1000;
     await oldUser.save();
-    const newPassword = "12345678";
+    const newPassword = Math.floor(
+      10000000 + Math.random() * 90000000
+    ).toString();
     const hashedPassword = await argon2.hash(newPassword);
     await User.updateOne(
       {
@@ -184,7 +186,7 @@ export const forgotPassword = async (req, res) => {
       from: "coffeeshopxh@gmail.com",
       to: oldUser.email,
       subject: "Reset Password",
-      text: "Your new password: 12345678. You can change it later.",
+      text: `Your new password: ${newPassword}. Please keep it secret.`,
     };
 
     transporter.sendMail(mailOptions, function (err, info) {
