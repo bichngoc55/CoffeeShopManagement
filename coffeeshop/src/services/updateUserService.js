@@ -7,6 +7,7 @@ const updateUser = async (user, id, navigate, dispatch) => {
     if (updateUserInfo.fulfilled.match(resultAction)) {
       navigate("/staff");
     } else if (updateUserInfo.rejected.match(resultAction)) {
+      navigate("/login");
       console.error("Update failed:", resultAction.payload);
       // Hiển thị thông báo lỗi cho người dùng nếu cần
     }

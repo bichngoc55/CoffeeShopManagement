@@ -11,6 +11,10 @@ const registerUser = async (user, dispatch, navigate) => {
     });
 
     if (!response.ok) {
+      if (response.status === 500) {
+        alert("Lỗi kết nối đến máy chủ");
+        navigate("/login");
+      }
       throw new Error("Something went wrong during registration.");
     }
     // navigate("/home");
