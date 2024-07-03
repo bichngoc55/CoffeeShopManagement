@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import userImage from "../../asset/user.jpg";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import WcIcon from "@mui/icons-material/Wc";
 import Button from "@mui/material/Button";
 import CakeIcon from "@mui/icons-material/Cake";
 import BadgeIcon from "@mui/icons-material/Badge";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import InputAdornment from "@mui/material/InputAdornment";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -21,8 +16,10 @@ import "./addStaff.css";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/registerService";
-import { Diversity1Outlined } from "@mui/icons-material";
-const AddStaffComponent = () => {
+import { format } from "date-fns";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+const AddStaffComponent = ({ onCloseUpdate }) => {
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
@@ -34,68 +31,102 @@ const AddStaffComponent = () => {
     whiteSpace: "nowrap",
     width: 1,
   });
-
-  // const [nameInput, setName] = React.useState();
-  // const [positionInput, setPosition] = React.useState();
-  // const [genderInput, setGender] = React.useState();
-  // const [emailInput, setEmail] = React.useState();
-  // const [phoneInput, setPhone] = React.useState();
-  // const [dateOfBirthInput, setDateOfBirth] = React.useState();
-  // const [passwordInput, setPassword] = React.useState();
-  // const [locationInput, setLocation] = React.useState();
-  const [nameInput, setName] = React.useState("");
-  const [positionInput, setPosition] = React.useState("");
-  const [genderInput, setGender] = React.useState("");
-  const [emailInput, setEmail] = React.useState("");
-  const [phoneInput, setPhone] = React.useState("");
-  const [dateOfBirthInput, setDateOfBirth] = React.useState("");
-  const [passwordInput, setPassword] = React.useState("");
-  const [locationInput, setLocation] = React.useState("");
-  const [newUser, setNewUser] = React.useState({
-    Name: "",
-    Position: "",
-    gender: "",
-    email: "",
-    Phone: "",
-    dateOfBirth: "",
-    location: "",
-    password: "",
-    Ava: "",
-  });
+  const [nameInput, setName] = useState("");
+  const [positionInput, setPosition] = useState();
+  const [genderInput, setGender] = useState();
+  const [emailInput, setEmail] = useState("");
+  const [phoneInput, setPhone] = useState("");
+  const [dateOfBirthInput, setDateOfBirth] = useState();
+  const [passwordInput, setPassword] = useState("");
+  const [locationInput, setLocation] = useState("VietNam");
+  const [password2Input, setPassword2] = useState("");
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
     setDateOfBirth(selectedDate);
   };
-  const [image, setImage] = React.useState();
-  const [file, setFile] = React.useState(userImage);
-  useEffect(() => {
-    // Cleanup function to revoke the object URL
-    return () => URL.revokeObjectURL(file);
-  }, [file]);
+  const [image, setImage] = useState();
+  const [errors, setErrors] = useState({});
+  const [isShow, setIsShow] = useState(false);
+  const [file, setFile] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleUpload = (event) => {
-    event.preventDefault();
-    const formdata = new FormData();
-    formdata.append("file", image);
-    axios
-      .post("http://localhost:3005/upload", formdata)
-      .then((res) => {
-        console.log(res);
-        setNewUser({
-          Name: nameInput,
-          Position: positionInput,
-          gender: genderInput,
-          email: emailInput,
-          Phone: phoneInput,
-          dateOfBirth: dateOfBirthInput,
-          location: locationInput,
-          password: passwordInput,
-          Ava: res.data.originalname,
-        });
-        registerUser(newUser, dispatch, navigate);
-      })
-      .catch((err) => console.log(err));
+  const validateInputs = () => {
+    let tempErrors = {};
+    if (!image) tempErrors.image = true;
+    if (!nameInput) tempErrors.name = true;
+    if (!emailInput) tempErrors.email = true;
+    if (!phoneInput) tempErrors.phone = true;
+    if (!dateOfBirthInput) tempErrors.dateOfBirth = true;
+    if (!genderInput) tempErrors.gender = true;
+    if (!positionInput) tempErrors.position = true;
+    if (!locationInput) tempErrors.location = true;
+    if (!passwordInput) tempErrors.password = true;
+    if (!password2Input) tempErrors.password2 = true;
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+  const handleUpload = async () => {
+    if (validateInputs()) {
+      const formdata = new FormData();
+      console.log("da vao handle upload");
+      formdata.append("file", image);
+      formdata.append("upload_preset", "Searn-musicapp");
+      formdata.append("cloud_name", "dzdso60ms");
+      try {
+        const responseCloud = await axios.post(
+          "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
+          formdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(responseCloud.data.url);
+        if (responseCloud.data.url) {
+          try {
+            const updatedUserData = {
+              Name: nameInput,
+              Position: positionInput,
+              gender: genderInput,
+              email: emailInput,
+              Phone: phoneInput,
+              dateOfBirth: dateOfBirthInput,
+              location: locationInput,
+              Ava: responseCloud.data.url,
+              password: passwordInput,
+            };
+            registerUser(updatedUserData, dispatch, navigate);
+            handleClick();
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
+  };
+  const resetAllStates = () => {
+    console.log("Resetting all states...");
+    setName("");
+    setEmail("");
+    setPhone("");
+    setDateOfBirth(new Date());
+    setPassword("");
+  };
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
 
   return (
@@ -107,6 +138,21 @@ const AddStaffComponent = () => {
         textAlign: "left",
       }}
     >
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={open}
+        autoHideDuration={1500}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%", fontSize: "14px", backgroundColor: "#4BB543" }}
+        >
+          Add successfully!
+        </Alert>
+      </Snackbar>
       <div
         style={{
           display: "flex",
@@ -129,11 +175,19 @@ const AddStaffComponent = () => {
             <VisuallyHiddenInput
               type="file"
               onChange={(e) => {
+                setErrors({ ...errors, image: false });
                 setImage(e.target.files[0]);
                 setFile(URL.createObjectURL(e.target.files[0]));
               }}
             />
           </Button>
+          {errors.image && (
+            <label
+              style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+            >
+              *Please pick a image
+            </label>
+          )}
         </div>
         <div className="infoRight">
           <div
@@ -141,16 +195,29 @@ const AddStaffComponent = () => {
               justifyContent: "space-between",
             }}
           >
-            <label className="labelUsername">Họ và tên</label>
+            <label className="labelUsername">Fullname</label>
             <div className="input-container">
               <AccountCircleIcon className="email-icon" />
               <input
-                className="username"
+                className={`username ${errors.name ? "error-input" : ""}`}
                 type="text"
-                placeholder="Nhập họ tên"
-                onChange={(event) => setName(event.target.value)}
+                value={nameInput}
+                placeholder="Enter full name"
+                onChange={(event) => {
+                  setName(event.target.value);
+                  if (errors.name) {
+                    setErrors({ ...errors, name: false });
+                  }
+                }}
               />
             </div>
+            {errors.name && (
+              <label
+                style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+              >
+                *Please fill out the name
+              </label>
+            )}
           </div>
 
           <div
@@ -165,25 +232,51 @@ const AddStaffComponent = () => {
               <div className="input-container">
                 <EmailIcon className="email-icon" />
                 <input
-                  className="email"
+                  className={`email ${errors.email ? "error-input" : ""}`}
                   type="text"
+                  value={emailInput}
                   placeholder="Nhập email"
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    if (errors.email) {
+                      setErrors({ ...errors, email: false });
+                    }
+                  }}
                 />
               </div>
+              {errors.email && (
+                <label
+                  style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+                >
+                  *Please fill out the email
+                </label>
+              )}
             </div>
 
             <div>
-              <label className="labelUsername">Số điện thoại</label>
+              <label className="labelUsername">Phone Number</label>
               <div className="input-container">
                 <PhoneIphoneIcon className="email-icon" />
                 <input
-                  className="phone"
+                  className={`phone ${errors.phone ? "error-input" : ""}`}
                   type="text"
-                  placeholder="Nhập số điện thoại"
-                  onChange={(event) => setPhone(event.target.value)}
+                  value={phoneInput}
+                  placeholder="Enter phone number"
+                  onChange={(event) => {
+                    setPhone(event.target.value);
+                    if (errors.phone && phoneInput.length >= 9) {
+                      setErrors({ ...errors, phone: false });
+                    }
+                  }}
                 />
               </div>
+              {errors.phone && (
+                <label
+                  style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+                >
+                  *Please fill out the phone number
+                </label>
+              )}
             </div>
           </div>
         </div>
@@ -214,10 +307,20 @@ const AddStaffComponent = () => {
             <input
               type="date"
               id="date"
-              className="datePick"
+              className={`datePick ${errors.dateOfBirth ? "error-input" : ""}`}
+              value={
+                dateOfBirthInput ? format(dateOfBirthInput, "yyyy-MM-dd") : ""
+              }
               onChange={handleDateChange}
             />
           </div>
+          {/* {errors.dateOfBirth && (
+            <label
+              style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+            >
+              *Please choose a date
+            </label>
+          )} */}
         </div>
 
         <div
@@ -233,17 +336,31 @@ const AddStaffComponent = () => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            onChange={(event) => setGender(event.target.value)}
+            onChange={(event) => {
+              setGender(event.target.value);
+              if (errors.position) {
+                setErrors({ ...errors, gender: false });
+              }
+            }}
+            value={genderInput}
             style={{
               height: "35px",
               borderRadius: "10px",
               outline: "none",
               width: "90px",
+              border: errors.gender ? "1px solid red" : "none",
             }}
           >
             <MenuItem value={"nam"}>Nam</MenuItem>
             <MenuItem value={"nu"}>Nữ</MenuItem>
           </Select>
+          {/* {errors.gender && (
+            <label
+              style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+            >
+              *Please choose a gender
+            </label>
+          )} */}
         </div>
 
         <div
@@ -266,12 +383,19 @@ const AddStaffComponent = () => {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              onChange={(event) => setPosition(event.target.value)}
+              onChange={(event) => {
+                setPosition(event.target.value);
+                if (errors.position) {
+                  setErrors({ ...errors, position: false });
+                }
+              }}
+              value={positionInput}
               style={{
                 height: "35px",
                 borderRadius: "10px",
                 outline: "none",
                 width: "250px",
+                border: errors.position ? "1px solid red" : "none",
               }}
             >
               <MenuItem value={"admin"}>Admin</MenuItem>
@@ -282,16 +406,27 @@ const AddStaffComponent = () => {
       </div>
 
       <div style={{ marginTop: "30px" }}>
-        <label className="labelUsername">Địa chỉ</label>
+        <label className="labelUsername">Location</label>
         <div className="input-container">
           <LocationOnIcon className="email-icon" />
           <input
-            className="address"
+            className={`address ${errors.location ? "error-input" : ""}`}
             type="text"
-            placeholder="Nhập địa chỉ"
-            onChange={(event) => setLocation(event.target.value)}
+            placeholder="Enter Location"
+            value={locationInput}
+            onChange={(event) => {
+              setLocation(event.target.value);
+              if (errors.location) {
+                setErrors({ ...errors, location: false });
+              }
+            }}
           />
         </div>
+        {errors.location && (
+          <label style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}>
+            *Please fill out the location
+          </label>
+        )}
       </div>
 
       <div
@@ -300,20 +435,52 @@ const AddStaffComponent = () => {
           width: "900px",
           justifyContent: "space-between",
           marginTop: "30px",
+          marginBottom: "30px",
         }}
       >
         <div>
           <label className="labelUsername">Mật khẩu</label>
           <input
-            className="password"
-            type="text"
+            className={`passwordInput ${errors.password ? "error-input" : ""}`}
+            type="password"
             placeholder="Nhập mật khẩu"
-            onChange={(event) => setPassword(event.target.value)}
+            //value={passwordInput}
+            onChange={(event) => {
+              setPassword(event.target.value);
+              if (errors.password && passwordInput.length >= 7) {
+                setErrors({ ...errors, password: false });
+              }
+            }}
           />
+          {errors.password && (
+            <label
+              style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+            >
+              *Please fill out the password at least 8 characters
+            </label>
+          )}
         </div>
         <div>
           <label className="labelUsername">Xác nhận mật khẩu</label>
-          <input className="password" type="text" placeholder="Nhập mật khẩu" />
+          <input
+            className={`passwordInput ${errors.password2 ? "error-input" : ""}`}
+            type="password"
+            placeholder="Nhập mật khẩu"
+            onChange={(event) => {
+              setPassword2(event.target.value);
+              if (errors.password2 && password2Input === passwordInput) {
+                setErrors({ ...errors, password2: false });
+              }
+            }}
+            //value={passwordInput}
+          />
+          {errors.password2 && (
+            <label
+              style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+            >
+              *Please fill out the password confirmation
+            </label>
+          )}
         </div>
       </div>
 
@@ -326,8 +493,10 @@ const AddStaffComponent = () => {
           justifyContent: "flex-end",
         }}
       >
-        <button className="buttonCancel">Quay lại</button>
-        <button className="buttonAdd" onClick={handleUpload}>
+        <button className="buttonCancel" onClick={() => resetAllStates()}>
+          Quay lại
+        </button>
+        <button className="buttonAdd" onClick={() => handleUpload()}>
           Thêm
         </button>
       </div>

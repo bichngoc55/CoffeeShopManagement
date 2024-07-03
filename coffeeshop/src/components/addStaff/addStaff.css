@@ -79,11 +79,11 @@
   position: relative;
   padding-left: 35px;
 }
-.password {
+.passwordInput {
   outline: none;
   border-radius: 10px;
   font-size: 14px;
-  margin-bottom: 30px;
+  /* margin-bottom: 5px; */
   width: 430px;
   height: 35px;
 }
@@ -126,4 +126,9 @@
 }
 .buttonAdd:hover {
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.error-input {
+  border: 1px solid red;
+  z-index: auto !important;
+  position: static !important;
 }

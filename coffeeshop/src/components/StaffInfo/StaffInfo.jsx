@@ -14,8 +14,14 @@ import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { format, parseISO } from "date-fns";
+import { updateUser } from "../../services/updateUserService";
 import axios from "axios";
 import "./StaffInfo.css";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { updateAccessToken } from "../../redux/authSlice";
 
 const StaffInfoComponent = () => {
   const VisuallyHiddenInput = styled("input")({
@@ -30,6 +36,7 @@ const StaffInfoComponent = () => {
     width: 1,
   });
   const {
+    _id,
     Ava,
     Name,
     Position,
@@ -40,36 +47,123 @@ const StaffInfoComponent = () => {
     location,
     gender,
   } = useSelector((state) => state.auths.user);
-  const formattedDate = format(new Date(dateOfBirth), "dd/MM/yyyy");
   const [nameInput, setName] = React.useState(Name);
   const [positionInput, setPosition] = React.useState(Position);
   const [genderInput, setGender] = React.useState(gender);
   const [emailInput, setEmail] = React.useState(email);
   const [phoneInput, setPhone] = React.useState(Phone);
+  const [isUpdateAva, setIsUpdateAva] = useState(false);
   const [dateOfBirthInput, setDateOfBirth] = React.useState(
     parseISO(dateOfBirth)
   );
   const [locationInput, setLocation] = React.useState(location);
-  const [image, setImage] = React.useState();
-  const [file, setFile] = React.useState(`http://localhost:3005/assets/${Ava}`);
+  const [passwordInput, setPassword] = useState(password);
+  const [password2Input, setPassword2] = useState(password);
+  const [image, setImage] = React.useState(Ava);
+  const [file, setFile] = useState(Ava);
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   console.log(typeof dateOfBirth);
-  useEffect(() => {
-    // Cleanup function to revoke the object URL
-    return () => URL.revokeObjectURL(file);
-  }, [file]);
-  const handleUpload = useCallback(
-    (event) => {
-      const formdata = new FormData();
-      formdata.append("file", image);
-      axios
-        .post("http://localhost:3005/upload", formdata)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => console.log(err));
-    },
-    [image]
-  );
+  const handleUpload = async () => {
+    if (validateInputs()) {
+      if (password2Input === passwordInput) {
+        showToast();
+        if (isUpdateAva) {
+          const formdata = new FormData();
+          console.log("da vao handle upload");
+          formdata.append("file", image);
+          formdata.append("upload_preset", "Searn-musicapp");
+          formdata.append("cloud_name", "dzdso60ms");
+          try {
+            const response = await axios.post(
+              "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
+              formdata,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            console.log(response.data.url);
+            if (response.data.url) {
+              try {
+                if (isUpdateAva) {
+                  const updatedUserData = {
+                    Name: nameInput,
+                    Position: positionInput,
+                    gender: genderInput,
+                    email: emailInput,
+                    Phone: phoneInput,
+                    dateOfBirth: dateOfBirthInput,
+                    location: locationInput,
+                    Ava: response.data.url,
+                  };
+                  console.log(updatedUserData);
+                  await updateUser(updatedUserData, _id, navigate, dispatch);
+                }
+              } catch (err) {
+                console.log(err);
+              }
+            }
+          } catch (error) {
+            console.error("Error uploading image:", error);
+          }
+        } else {
+          const updatedUserData = {
+            Name: nameInput,
+            Position: positionInput,
+            gender: genderInput,
+            email: emailInput,
+            Phone: phoneInput,
+            dateOfBirth: dateOfBirthInput,
+            location: locationInput,
+          };
+          console.log(updatedUserData);
+          await updateUser(updatedUserData, _id, navigate, dispatch);
+        }
+      } else {
+        setErrors({ ...errors, password2: true });
+      }
+    }
+  };
+  const showToast = () => {
+    toast.success("Update successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+  const resetAllStates = () => {
+    setName(Name);
+    setPosition(Position);
+    setGender(gender);
+    setEmail(email);
+    setPhone(Phone);
+    setDateOfBirth(parseISO(dateOfBirth));
+    setLocation(location);
+    setImage(Ava);
+  };
+  const validateInputs = () => {
+    let tempErrors = {};
+    if (!nameInput) tempErrors.name = true;
+    if (!emailInput) tempErrors.email = true;
+    if (!phoneInput) tempErrors.phone = true;
+    if (!dateOfBirthInput) tempErrors.dateOfBirth = true;
+    if (!genderInput) tempErrors.gender = true;
+    if (!positionInput) tempErrors.position = true;
+    if (!locationInput) tempErrors.location = true;
+    if (!passwordInput) tempErrors.password = true;
+    if (!password2Input) tempErrors.password2 = true;
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   return (
     <div
       style={{
@@ -79,6 +173,7 @@ const StaffInfoComponent = () => {
         textAlign: "left",
       }}
     >
+      <ToastContainer />
       <div
         style={{
           display: "flex",
@@ -101,6 +196,8 @@ const StaffInfoComponent = () => {
             <VisuallyHiddenInput
               type="file"
               onChange={(e) => {
+                // setImage(e.target.files[0]);
+                setIsUpdateAva(true);
                 setImage(e.target.files[0]);
                 setFile(URL.createObjectURL(e.target.files[0]));
               }}
@@ -113,17 +210,29 @@ const StaffInfoComponent = () => {
               justifyContent: "space-between",
             }}
           >
-            <label className="labelUsername">Họ và tên</label>
+            <label className="labelUsername">Full name</label>
             <div className="input-container">
               <AccountCircleIcon className="email-icon" />
               <input
-                className="username"
+                className={`username ${errors.name ? "error-input" : ""}`}
                 type="text"
-                placeholder="Nhập họ tên"
+                placeholder="Enter your username"
                 value={nameInput}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(event) => {
+                  setName(event.target.value);
+                  if (errors.name) {
+                    setErrors({ ...errors, name: false });
+                  }
+                }}
               />
             </div>
+            {errors.name && (
+              <label
+                style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+              >
+                *Please fill out the name
+              </label>
+            )}
           </div>
 
           <div
@@ -138,27 +247,51 @@ const StaffInfoComponent = () => {
               <div className="input-container">
                 <EmailIcon className="email-icon" />
                 <input
-                  className="email"
+                  className={`email ${errors.email ? "error-input" : ""}`}
                   type="text"
-                  placeholder="Nhập email"
+                  placeholder="Enter your email"
                   value={emailInput}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    if (errors.email) {
+                      setErrors({ ...errors, email: false });
+                    }
+                  }}
                 />
               </div>
+              {errors.email && (
+                <label
+                  style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+                >
+                  *Please fill out the email
+                </label>
+              )}
             </div>
 
             <div>
-              <label className="labelUsername">Số điện thoại</label>
+              <label className="labelUsername">Phone Number</label>
               <div className="input-container">
                 <PhoneIphoneIcon className="email-icon" />
                 <input
-                  className="phone"
+                  className={`phone ${errors.phone ? "error-input" : ""}`}
                   type="text"
-                  placeholder="Nhập số điện thoại"
+                  placeholder="Enter your phone number"
                   value={phoneInput}
-                  onChange={(event) => setPhone(event.target.value)}
+                  onChange={(event) => {
+                    setPhone(event.target.value);
+                    if (errors.phone && phoneInput.length >= 9) {
+                      setErrors({ ...errors, phone: false });
+                    }
+                  }}
                 />
               </div>
+              {errors.phone && (
+                <label
+                  style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+                >
+                  *Please fill out the phone number
+                </label>
+              )}
             </div>
           </div>
         </div>
@@ -184,12 +317,12 @@ const StaffInfoComponent = () => {
           <div className="iconContainer">
             <CakeIcon />
           </div>
-          <label className="label">Ngày sinh: </label>
+          <label className="label">Birthday: </label>
           <div className="date-picker">
             <input
               type="date"
               id="date"
-              className="datePick"
+              className={`datePick ${errors.dateOfBirth ? "error-input" : ""}`}
               value={format(dateOfBirthInput, "yyyy-MM-dd")}
               onChange={(event) => setDateOfBirth(parseISO(event.target.value))}
             />
@@ -205,12 +338,17 @@ const StaffInfoComponent = () => {
           <div className="iconContainer">
             <WcIcon />
           </div>
-          <label className="label">Giới tính: </label>
+          <label className="label">Gender: </label>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={genderInput}
-            onChange={(event) => setGender(event.target.value)}
+            onChange={(event) => {
+              setGender(event.target.value);
+              if (errors.position) {
+                setErrors({ ...errors, gender: false });
+              }
+            }}
             style={{
               height: "35px",
               borderRadius: "10px",
@@ -232,7 +370,7 @@ const StaffInfoComponent = () => {
           <div className="iconContainer">
             <BadgeIcon />
           </div>
-          <label className="label">Chức vụ: </label>
+          <label className="label">Position: </label>
           <div
             style={{
               width: "100px",
@@ -244,7 +382,12 @@ const StaffInfoComponent = () => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={positionInput}
-              onChange={(event) => setPosition(event.target.value)}
+              onChange={(event) => {
+                setPosition(event.target.value);
+                if (errors.position) {
+                  setErrors({ ...errors, position: false });
+                }
+              }}
               style={{
                 height: "35px",
                 borderRadius: "10px",
@@ -260,17 +403,27 @@ const StaffInfoComponent = () => {
       </div>
 
       <div style={{ marginTop: "30px" }}>
-        <label className="labelUsername">Địa chỉ</label>
+        <label className="labelUsername">Location</label>
         <div className="input-container">
           <LocationOnIcon className="email-icon" />
           <input
-            className="address"
+            className={`address ${errors.location ? "error-input" : ""}`}
             type="text"
-            placeholder="Nhập địa chỉ"
+            placeholder="Enter Location"
             value={locationInput}
-            onChange={(event) => setLocation(event.target.value)}
+            onChange={(event) => {
+              setLocation(event.target.value);
+              if (errors.location) {
+                setErrors({ ...errors, location: false });
+              }
+            }}
           />
         </div>
+        {errors.location && (
+          <label style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}>
+            *Please fill out the location
+          </label>
+        )}
       </div>
 
       <div
@@ -282,22 +435,48 @@ const StaffInfoComponent = () => {
         }}
       >
         <div>
-          <label className="labelUsername">Mật khẩu</label>
+          <label className="labelUsername">Password</label>
           <input
-            className="password"
-            type="text"
-            placeholder="Nhập mật khẩu"
-            value={password}
+            className={`password ${errors.password ? "error-input" : ""}`}
+            type="password"
+            placeholder="Enter your password"
+            value={passwordInput}
+            onChange={(event) => {
+              setPassword(event.target.value);
+              if (errors.password && passwordInput.length >= 7) {
+                setErrors({ ...errors, password: false });
+              }
+            }}
           />
+          {errors.password && (
+            <label
+              style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+            >
+              *Please fill out the password at least 8 characters
+            </label>
+          )}
         </div>
         <div>
-          <label className="labelUsername">Xác nhận mật khẩu</label>
+          <label className="labelUsername">Confirm Password</label>
           <input
-            className="password"
-            type="text"
-            placeholder="Nhập mật khẩu"
-            value={password}
+            className={`password ${errors.password2 ? "error-input" : ""}`}
+            type="password"
+            placeholder="Enter password"
+            value={password2Input}
+            onChange={(event) => {
+              setPassword2(event.target.value);
+              if (password2Input === passwordInput) {
+                setErrors({ ...errors, password2: false });
+              }
+            }}
           />
+          {errors.password2 && (
+            <label
+              style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
+            >
+              *Please fill out the password confirmation
+            </label>
+          )}
         </div>
       </div>
 
@@ -308,10 +487,13 @@ const StaffInfoComponent = () => {
           display: "flex",
           textAlign: "right",
           justifyContent: "flex-end",
+          marginTop: "30px",
         }}
       >
-        <button className="buttonCancel">Hủy thay đổi</button>
-        <button className="buttonAdd" onClick={handleUpload}>
+        <button className="buttonCancel" onClick={() => resetAllStates()}>
+          Hủy thay đổi
+        </button>
+        <button className="buttonAdd" onClick={() => handleUpload()}>
           Lưu thay đổi
         </button>
       </div>

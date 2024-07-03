@@ -2,7 +2,7 @@
 
 const registerUser = async (user, dispatch, navigate) => {
   try {
-    const response = await fetch("http:/localhost:3005/auth/register", {
+    const response = await fetch("http://localhost:3005/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -11,9 +11,13 @@ const registerUser = async (user, dispatch, navigate) => {
     });
 
     if (!response.ok) {
+      if (response.status === 500) {
+        alert("Lỗi kết nối đến máy chủ");
+        navigate("/login");
+      }
       throw new Error("Something went wrong during registration.");
     }
-    navigate("/home");
+    // navigate("/home");
   } catch (error) {
     console.error("Registration error:", error);
   }
