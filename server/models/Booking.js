@@ -30,7 +30,6 @@ const bookingSchema = new mongoose.Schema({
       status: {
         type: String,
         enum: ["available", "occupied", "booked"],
-        required: true,
       },
     },
   ],
