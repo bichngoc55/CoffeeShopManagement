@@ -4,7 +4,6 @@ import {
   register,
   refresh,
   forgotPassword,
-  updateUser,
 } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -15,7 +14,7 @@ router.post("/login", login);
 // REFRESH
 router.post("/refresh", refresh);
 router.post("/forgotPassword", forgotPassword);
-router.patch("/updateUser/:id", updateUser);
+// router.patch("/updateUser/:id", updateUser);
 
 export default router;
 // MVC
