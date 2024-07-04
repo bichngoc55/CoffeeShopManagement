@@ -11,7 +11,7 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import FormTable from "./modalTable";
 import { useSelector } from "react-redux";
 import Gachchan from "./gachchan";
-import { format, formatters } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 const TableInfo = ({ selectedTable }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +34,7 @@ const TableInfo = ({ selectedTable }) => {
     note: "",
     status: "",
   });
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -69,6 +70,10 @@ const TableInfo = ({ selectedTable }) => {
             status: data.status,
           });
         } else {
+          if (response.status === 500) {
+            alert("Lỗi kết nối đến máy chủ");
+            navigate("/login");
+          }
           console.error("Request failed with status:", response.status);
         }
       } catch (error) {

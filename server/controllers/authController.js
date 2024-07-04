@@ -1,4 +1,4 @@
-// import bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import User from "../models/User.js";
@@ -67,6 +67,7 @@ export const register = async (req, res) => {
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -82,7 +83,9 @@ export const login = async (req, res) => {
     console.log("user.password", user.password); // "$argon2id$v=19$m=4096,t=3,p=1$..."
     const isMatch = await argon2.verify(user.password, password);
     if (!isMatch)
-      return res.status(400).json({ status: "Invalid credentials. " });
+      return res
+        .status(400)
+        .json({ status: "Sai mat khau " + argon2.hash(password) });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "60m",
@@ -115,6 +118,7 @@ export const refresh = async (req, res) => {
     .find((cookie) => cookie.startsWith("refreshToken="))
     ?.split("=")[1];
 
+  console.log(`Refresh token: ${refreshToken}`);
   if (!refreshToken) {
     return res.status(401).json({ msg: "No token, chua dang nhap" });
   }
@@ -156,7 +160,9 @@ export const forgotPassword = async (req, res) => {
     oldUser.resetToken = resetToken;
     oldUser.resetTokenExpiration = Date.now() + 30 * 60 * 1000;
     await oldUser.save();
-    const newPassword = "12345678";
+    const newPassword = Math.floor(
+      10000000 + Math.random() * 90000000
+    ).toString();
     const hashedPassword = await argon2.hash(newPassword);
     await User.updateOne(
       {
@@ -180,7 +186,7 @@ export const forgotPassword = async (req, res) => {
       from: "coffeeshopxh@gmail.com",
       to: oldUser.email,
       subject: "Reset Password",
-      text: "Your new password: 12345678. You can change it later.",
+      text: `Your new password: ${newPassword}. Please keep it secret.`,
     };
 
     transporter.sendMail(mailOptions, function (err, info) {
@@ -194,6 +200,21 @@ export const forgotPassword = async (req, res) => {
     res.json({ status: "Check your new passworn in email" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log("User updated: " + user);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 

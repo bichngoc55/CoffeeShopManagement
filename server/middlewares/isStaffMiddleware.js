@@ -21,6 +21,7 @@ import User from "../models/User.js";
 //         res.status(500).json({ error: 'Internal server error' });
 //     }
 // };
+import User from "../models/User.js";
 export const checkAdmin = async (req, res, next) => {
   try {
     const { id } = req.user;

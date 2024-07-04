@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
@@ -14,6 +15,8 @@ import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { useSelector } from "react-redux";
 import { format, parseISO } from "date-fns";
 import "./popupEdit.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const modalStyles = {
   content: {
@@ -50,7 +53,9 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-const PopupStaff = ({ isOpen, onClose, id }) => {
+const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
+  const navigate = useNavigate();
+  const [updateAva, setUpdateAva] = useState(false);
   const [image, setImage] = useState();
   const [file, setFile] = useState("");
   useEffect(() => {
@@ -69,9 +74,8 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
     email: "",
     Phone: "",
     dateOfBirth: new Date().toISOString(),
-    location: "",
+    location: "Ho Chi Minh",
     password: "",
-    Ava: "",
   });
   useEffect(() => {
     const fetchData = async () => {
@@ -87,6 +91,7 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log("Fecth data" + data.Ava);
           setUser({
             Name: data.Name,
             Position: data.Position,
@@ -96,9 +101,9 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
             dateOfBirth: data.dateOfBirth,
             location: data.location,
             password: data.password,
-            Ava: data.Ava,
           });
-          setFile(`http://localhost:3005/assets/${data.Ava}`);
+          setFile(data.Ava);
+          console.log("user.location" + user);
         } else {
           console.error("Request failed with status:", response.status);
         }
@@ -111,29 +116,85 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
   }, []);
 
   useEffect(() => {
-    return () => URL.revokeObjectURL(file);
-  }, [file]);
-  
+    console.log("user.Ava updated:", user.Ava);
+  }, [user.Ava]);
+
   const handleChange = (event) => {
+    console.log("handleChange called", event.target.name, event.target.value);
     const { name, value } = event.target;
     setUser((prevUser) => ({
       ...prevUser,
       [name]: value,
     }));
   };
-  const handleUpload = useCallback(
-    (event) => {
+  const handleDateChange = (event) => {
+    console.log("handleChange called", event.target.name, event.target.value);
+    const { name, value } = event.target;
+    setUser((prevUser) => ({
+      ...prevUser,
+      [name]: new Date(value).toISOString(),
+    }));
+  };
+  const handleUpload = async () => {
+    if (updateAva) {
       const formdata = new FormData();
       formdata.append("file", image);
-      axios
-        .post("http://localhost:3005/upload", formdata)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => console.log(err));
-    },
-    [image]
-  );
+      formdata.append("upload_preset", "Searn-musicapp");
+      formdata.append("cloud_name", "dzdso60ms");
+      const responseCloud = await axios.post(
+        "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
+        formdata,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      const avanew = { Ava: responseCloud.data.url };
+      const response1 = await fetch(`http://localhost:3005/staff/${id}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(avanew),
+      });
+      if (!response1.ok) {
+        console.log("Lỗi up Ava" + response1);
+      }
+    }
+    try {
+      const response = await fetch(`http://localhost:3005/staff/${id}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      if (!response.ok) {
+        navigate("/login");
+        throw new Error("Failed to update user info");
+      } else {
+        console.log(user);
+        onCloseUpdate();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const showToast = () => {
+    toast.success("Update successfully!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose} style={modalStyles}>
       <div className="sbtnt">
@@ -160,6 +221,7 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
             <VisuallyHiddenInput
               type="file"
               onChange={(e) => {
+                setUpdateAva(true);
                 setImage(e.target.files[0]);
                 setFile(URL.createObjectURL(e.target.files[0]));
               }}
@@ -174,8 +236,10 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
               <input
                 type="text"
                 placeholder="Nhập họ tên"
+                name="Name"
                 className="susername"
                 defaultValue={user.Name}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -188,7 +252,9 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
                 type="text"
                 placeholder="Nhập email"
                 className="semail"
+                name="email"
                 defaultValue={user.email}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -201,7 +267,9 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
                 type="text"
                 placeholder="Nhập sdt"
                 className="sphonea"
+                name="Phone"
                 defaultValue={user.Phone}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -213,7 +281,9 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
           <input
             type="date"
             className="sdatepick"
-            value={format(parseISO(user.dateOfBirth), "yyyy-MM-dd")}
+            name="dateOfBirth"
+            onChange={handleDateChange}
+            defaultValue={format(parseISO(user.dateOfBirth), "yyyy-MM-dd")}
           />
         </div>
       </div>
@@ -222,6 +292,12 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
           <label className="slabelGender">Giới tính</label>
           <Select
             value={user.gender}
+            name="gender"
+            onChange={(e) =>
+              handleChange({
+                target: { name: "gender", value: e.target.value },
+              })
+            }
             style={{
               height: "35px",
               borderRadius: "10px",
@@ -237,7 +313,13 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <label className="slabelGender">Chức vụ</label>
           <Select
+            name="Position"
             value={user.Position}
+            onChange={(e) =>
+              handleChange({
+                target: { name: "Position", value: e.target.value },
+              })
+            }
             style={{
               height: "35px",
               borderRadius: "10px",
@@ -261,8 +343,10 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
           <input
             type="text"
             placeholder="Nhập địa chỉ"
+            name="location"
             className="slocation"
-            defaultValue={user.location}
+            value={user.location || "unknown"}
+            onChange={(e) => handleChange(e)}
           />
         </div>
       </div>
@@ -277,7 +361,9 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
           <input
             type="password"
             placeholder="Nhập mật khẩu"
+            name="password"
             className="spass1"
+            onChange={handleChange}
           />
         </div>
       </div>
@@ -306,7 +392,9 @@ const PopupStaff = ({ isOpen, onClose, id }) => {
           marginTop: "30px",
         }}
       >
-        <button className="sbtnCN">Cập nhập</button>
+        <button className="sbtnCN" onClick={() => handleUpload()}>
+          Cập nhập
+        </button>
       </div>
     </Modal>
   );
