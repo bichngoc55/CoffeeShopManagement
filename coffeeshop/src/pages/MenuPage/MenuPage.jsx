@@ -62,20 +62,41 @@ const MenuPage = () => {
 
   //print function
   const componentRef = useRef();
+  // const handlePrint = useReactToPrint({
+  //   content: () => componentRef.current,
+  //   onBeforePrint: async () => {
+  //     if (billItems.length > 0) {
+  //       const billId = await saveBillToDatabase();
+  //       const savedBillDetails = await fetchBillDetails(billId);
+  //       console.log(
+  //         "savedBillDetails: ",
+  //         JSON.stringify(savedBillDetails, null, 2)
+  //       );
+  //       setSavedBillDetails(savedBillDetails);
+  //       setIsVisible(true);
+  //     } else {
+  //       alert("Nothing to print in the bill!");
+  //     }
+  //   },
+  // });
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-    onBeforePrint: async () => {
+    onBeforeGetContent: async () => {
       if (billItems.length > 0) {
         const billId = await saveBillToDatabase();
         const savedBillDetails = await fetchBillDetails(billId);
-        // console.log(
-        //   "savedBillDetails: ",
-        //   JSON.stringify(savedBillDetails, null, 2)
-        // );
         setSavedBillDetails(savedBillDetails);
         setIsVisible(true);
+
+        // Wait for state to update
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, 500);
+        });
       } else {
         alert("Nothing to print in the bill!");
+        return false;
       }
     },
   });
@@ -105,6 +126,7 @@ const MenuPage = () => {
       });
 
       const data = await response.json();
+      // console.log("table data: ", data);
       const availableData = data.filter(
         (table) => table.status === "available"
       );
@@ -138,15 +160,19 @@ const MenuPage = () => {
     }
   };
   const saveBillToDatabase = async () => {
+    // console.log("billItems,", billItems);
     const items = billItems.map((item) => ({
       drink: item.drink._id,
       quantity: item.quantity,
+      price: item.drink.Price,
       percentOfSugar: item.sugar,
       size: item.size,
       hotOrCold: item.mood,
       percentOfIce: item.ice,
     }));
+    // console.log("items:", items);
     const tableNo = availableTables[0]._id;
+    // console.log(tableNo);
     const postData = {
       items,
       totalAmount: totalPirce,
@@ -155,7 +181,7 @@ const MenuPage = () => {
       Staff: user._id,
       PhuThu: 0,
     };
-
+    // console.log("postData: ", postData);
     try {
       const response = await fetch("http://localhost:3005/history/add", {
         method: "POST",
@@ -187,6 +213,38 @@ const MenuPage = () => {
   useEffect(() => {
     fetchAvailableTables();
   }, []);
+  const handleDrinkModify = (drinkModify) => {
+    setSelectedDrink(drinkModify);
+  };
+  const handleUpdateChange = async (modifiedDrink) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3005/menu/${selectedDrink._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(modifiedDrink),
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+      setDrinksData((prevDrinks) =>
+        prevDrinks.map((drink) =>
+          drink._id === selectedDrink._id ? { ...drink, ...data } : drink
+        )
+      );
+      const updatedDrinks = await getDrinkInformation();
+      setDrinksData(updatedDrinks);
+
+      setShowModifyDialog(false);
+      setSelectedDrink(null);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   const handleDrinkClick = (
     drink,
     selectedMood,
@@ -194,7 +252,17 @@ const MenuPage = () => {
     selectedIce,
     selectedSugar
   ) => {
+    if (
+      selectedMood === "" ||
+      selectedSize === "" ||
+      selectedIce === "" ||
+      selectedSugar === ""
+    ) {
+      alert("Please choose a mood, size, ice, and sugar percentage");
+      return;
+    }
     setClickCount(clickCount + 1);
+    console.log("den day r");
     setSelectedDrink(drink);
     setMood(selectedMood);
     setSize(selectedSize);
@@ -257,6 +325,8 @@ const MenuPage = () => {
   };
   const handleShowModifyDialog = () => {
     setShowModifyDialog(true);
+    // if(selectedDrink)
+    console.log("Drink of selected: ", selectedDrink);
   };
   const handleHideModifyDialog = () => {
     setShowModifyDialog(false);
@@ -353,11 +423,11 @@ const MenuPage = () => {
               <button className="btn" onClick={handleShowModifyDialog}>
                 Sửa Món
               </button>
-              {showModal && <Modal2 onClose={handleHideModal} />}
               {showModifyDialog && (
                 <ModifyDialog
                   onClose={handleHideModifyDialog}
                   drink={selectedDrink}
+                  handleUpdateChange={handleUpdateChange}
                 />
               )}
             </div>
@@ -367,6 +437,7 @@ const MenuPage = () => {
               items={drinksData}
               searchItems={results}
               onDrinkClick={handleDrinkClick}
+              onDrinkSelected={handleDrinkModify}
               selectedDrinkType={selectedDrinkType}
             />
           </Box>
@@ -450,7 +521,7 @@ const MenuPage = () => {
                 Print Bill
               </button>
             </div>
-            <div ref={componentRef}>
+            {/* <div ref={componentRef}>
               {shouldRenderPrintSection && (
                 <PrintSection
                   shouldRenderPrintSection={shouldRenderPrintSection}
@@ -458,6 +529,18 @@ const MenuPage = () => {
                   savedBill={savedBillDetails}
                 />
               )}
+            </div> */}
+            <div style={{ display: "none" }}>
+              <div ref={componentRef}>
+                <PrintSection
+                  shouldRenderPrintSection={shouldRenderPrintSection}
+                  Name={Name}
+                  savedBill={savedBillDetails}
+                  billItems={billItems}
+                  totalPrice={totalPirce}
+                  payment={payment}
+                />
+              </div>
             </div>
           </div>
         </div>

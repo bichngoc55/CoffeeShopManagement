@@ -1,3 +1,5 @@
+import User from "../models/User.js";
+
 // export const isStaffMiddleware = async (req, res, next) => {
 //     try {
 //         // Get the user ID from the request object

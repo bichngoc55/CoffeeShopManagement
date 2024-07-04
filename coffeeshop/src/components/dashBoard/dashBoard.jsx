@@ -191,14 +191,6 @@ const DashBoard = () => {
             setSelected={setSelected}
           />
           <Item
-            title="Settings"
-            to="/settings"
-            icon={<SettingsOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
-
-          <Item
             title="Booking"
             to="/booking"
             icon={<TableBarOutlinedIcon />}

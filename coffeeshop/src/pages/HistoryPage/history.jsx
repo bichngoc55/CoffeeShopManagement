@@ -293,7 +293,7 @@ const History = () => {
         </Box>
 
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <Table style={{ width: 1150 }} aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell
@@ -370,10 +370,33 @@ const History = () => {
                 <StyledTableCell align="center">Option</StyledTableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {billData.map((bill) => (
-                <BillRow data={bill} handleDelete={handleDelete} />
-              ))}
+            <TableBody
+              style={{
+                width: "100%",
+              }}
+            >
+              {billData.length > 0 ? (
+                billData.map((bill) => (
+                  <BillRow
+                    key={bill._id}
+                    data={bill}
+                    handleDelete={handleDelete}
+                  />
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} align="center">
+                    <Typography
+                      marginLeft="3%"
+                      color="#412D26"
+                      fontSize="1.2em"
+                      fontWeight="bold"
+                    >
+                      No data available for this period
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
