@@ -14,22 +14,9 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
-import styled from "styled-components";
-
-// import { withStyles } from "@material-ui/core/styles";
 
 import CloseIcon from "@mui/icons-material/Close";
 
-const WhiteBorderTextField = styled(TextField)`
-  & label.Mui-focused {
-    color: white;
-  }
-  & .MuiOutlinedInput-root {
-    &.Mui-focused fieldset {
-      border-color: white;
-    }
-  }
-`;
 const ModifyDialog = ({ onClose, drink, handleUpdateChange }) => {
   const [modifiedDrink, setModifiedDrink] = useState({
     Name: "",
