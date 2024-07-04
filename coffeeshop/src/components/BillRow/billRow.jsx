@@ -77,7 +77,7 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
         <StyledTableCell align="center">{data._id}</StyledTableCell>
         <StyledTableCell align="center">{data.items.length}</StyledTableCell>
         <StyledTableCell align="center">
-          {data.TableNo.tableNumber}
+          {data.TableNo?.tableNumber || ""}
         </StyledTableCell>
         <StyledTableCell align="center">{data.Staff.Name}</StyledTableCell>
         <StyledTableCell align="center">{data.totalAmount}</StyledTableCell>
