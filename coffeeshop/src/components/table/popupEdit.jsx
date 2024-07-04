@@ -105,6 +105,10 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
           setFile(data.Ava);
           console.log("user.location" + user);
         } else {
+          if (response.status === 500) {
+            alert("Lỗi kết nối đến máy chủ");
+            navigate("/login");
+          }
           console.error("Request failed with status:", response.status);
         }
       } catch (error) {
@@ -173,7 +177,10 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         body: JSON.stringify(user),
       });
       if (!response.ok) {
-        navigate("/login");
+        if (response.status === 500) {
+          alert("Lỗi kết nối đến máy chủ");
+          navigate("/login");
+        }
         throw new Error("Failed to update user info");
       } else {
         console.log(user);

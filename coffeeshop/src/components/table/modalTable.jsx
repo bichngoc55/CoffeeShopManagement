@@ -4,8 +4,9 @@ import "./modalTable.css";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { format, parseISO } from "date-fns";
+import { parseISO, format, isAfter, startOfToday } from "date-fns";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // Đặt các style cho Modal
 const modalStyles = {
@@ -27,8 +28,10 @@ const modalStyles = {
 };
 
 // Component PopupDialog
-const FormTable = ({ isOpen, onClose, id }) => {
+const FormTable = ({ isOpen, onClose, onCloseAndUpdate, id }) => {
+  const [errors, setErrors] = useState({});
   const { token } = useSelector((state) => state.auths);
+  const navigate = useNavigate();
   const [table, setTable] = useState({
     customerName: "",
     tableNumber: 0,
@@ -39,18 +42,49 @@ const FormTable = ({ isOpen, onClose, id }) => {
     note: "",
     status: "",
   });
+  const validateInputs = () => {
+    let tempErrors = {};
+    if (!table.customerName) tempErrors.customerName = true;
+    if (!table.tableNumber) tempErrors.tableNumber = true;
+    if (!table.bookingDate) tempErrors.bookingDate = true;
+    if (!table.bookingTime) tempErrors.tableNumber = true;
+    if (!table.numberOfPeople) tempErrors.numberOfPeople = true;
+    if (!table.phoneNumberBooking) tempErrors.phoneNumberBooking = true;
+    if (!table.note) tempErrors.note = true;
+    if (!table.status) tempErrors.status = true;
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+  // const handleChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setTable((prevUser) => ({
+  //     ...prevUser,
+  //     [name]: value,
+  //   }));
+  // };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setTable((prevUser) => ({
-      ...prevUser,
-      [name]: value,
-    }));
+    if (name === "bookingDate") {
+      const selectedDate = parseISO(value);
+      const today = startOfToday();
+
+      setTable((prevTable) => ({
+        ...prevTable,
+        [name]: value,
+        status: isAfter(selectedDate, today) ? "booked" : "available",
+      }));
+    } else {
+      setTable((prevTable) => ({
+        ...prevTable,
+        [name]: value,
+      }));
+    }
   };
 
   const capNhat = async () => {
-    try {
-      console.log("Update data");
+    if (table.status === "available") {
+      const today = startOfToday();
       const response = await fetch(`http://localhost:3005/booking/${id}`, {
         method: "PATCH",
         headers: {
@@ -58,24 +92,51 @@ const FormTable = ({ isOpen, onClose, id }) => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          customerName: table.customerName,
-          tableNumber: table.tableNumber,
-          bookingDate: table.bookingDate,
-          bookingTime: table.bookingTime,
-          numberOfPeople: table.numberOfPeople,
-          phoneNumberBooking: table.phoneNumberBooking,
-          note: table.note,
-          status: table.status,
+          customerName: "",
+          bookingDate: new Date().toISOString(),
+          bookingTime: "",
+          numberOfPeople: 0,
+          phoneNumberBooking: "",
+          note: "",
+          status: "available",
         }),
       });
-
       if (response.ok) {
-        response.json().then((data) => {
-          alert("Cập nhật thành công, load lại trang nhé");
-        });
+        onCloseAndUpdate();
+      } else if (response.status === 500) {
+        alert("Bạn đã hết thời gian");
+        navigate("/login");
       }
-    } catch (error) {
-      console.error("Request failed with error:", error);
+    } else {
+      if (validateInputs()) {
+        try {
+          console.log("Update data");
+
+          const response = await fetch(`http://localhost:3005/booking/${id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              customerName: table.customerName,
+              tableNumber: table.tableNumber,
+              bookingDate: table.bookingDate,
+              bookingTime: table.bookingTime,
+              numberOfPeople: table.numberOfPeople,
+              phoneNumberBooking: table.phoneNumberBooking,
+              note: table.note,
+              status: table.status,
+            }),
+          });
+
+          if (response.ok) {
+            onCloseAndUpdate();
+          }
+        } catch (error) {
+          console.error("Request failed with error:", error);
+        }
+      }
     }
   };
   useEffect(() => {
@@ -138,9 +199,14 @@ const FormTable = ({ isOpen, onClose, id }) => {
             type="text"
             placeholder="Nhập họ tên"
             name="customerName"
-            className="input2"
-            defaultValue={table.customerName}
-            onChange={(e) => handleChange(e)}
+            className={`input2 ${errors.customerName ? "error-input" : ""}`}
+            value={table.customerName}
+            onChange={(e) => {
+              handleChange(e);
+              if (errors.customerName) {
+                setErrors({ ...errors, customerName: false });
+              }
+            }}
           />
         </div>
 
@@ -151,22 +217,34 @@ const FormTable = ({ isOpen, onClose, id }) => {
               type="date"
               id="date"
               name="bookingDate"
-              className="date-picker1"
+              className={`date-picker1 ${
+                errors.bookingDate ? "error-input" : ""
+              }`}
               value={
                 table.bookingDate
                   ? format(parseISO(table.bookingDate), "yyyy-MM-dd")
                   : ""
               }
-              onChange={(e) => handleChange(e)}
+              onChange={(e) => {
+                handleChange(e);
+                if (errors.bookingDate) {
+                  setErrors({ ...errors, bookingDate: false });
+                }
+              }}
             />
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
             <label style={{ fontWeight: "bold" }}>Giờ đặt: </label>
             <input
               type="time"
-              className="time"
+              className={`time ${errors.bookingTime ? "error-input" : ""}`}
               name="bookingTime"
-              onChange={(e) => handleChange(e)}
+              onChange={(e) => {
+                handleChange(e);
+                if (errors.bookingTime) {
+                  setErrors({ ...errors, bookingTime: false });
+                }
+              }}
             />
           </div>
         </div>
@@ -176,11 +254,18 @@ const FormTable = ({ isOpen, onClose, id }) => {
             <label style={{ fontWeight: "bold" }}>SDT: </label>
             <input
               type="text"
-              className="SDT"
+              className={`SDT ${
+                errors.phoneNumberBooking ? "error-input" : ""
+              }`}
               name="phoneNumberBooking"
               placeholder="Nhập số điện thoại"
-              onChange={(e) => handleChange(e)}
-              defaultValue={table.phoneNumberBooking}
+              onChange={(e) => {
+                handleChange(e);
+                if (errors.phoneNumberBooking) {
+                  setErrors({ ...errors, phoneNumberBooking: false });
+                }
+              }}
+              value={table.phoneNumberBooking}
             />
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -191,9 +276,16 @@ const FormTable = ({ isOpen, onClose, id }) => {
               name="numberOfPeople"
               max="100"
               step="1"
-              className="NumberCount"
-              onChange={(e) => handleChange(e)}
-              defaultValue={table.numberOfPeople}
+              className={`NumberCount ${
+                errors.numberOfPeople ? "error-input" : ""
+              }`}
+              onChange={(e) => {
+                handleChange(e);
+                if (errors.numberOfPeople) {
+                  setErrors({ ...errors, numberOfPeople: false });
+                }
+              }}
+              value={table.numberOfPeople}
             />
           </div>
         </div>
@@ -202,10 +294,15 @@ const FormTable = ({ isOpen, onClose, id }) => {
         </label>
         <RadioGroup
           row
-          className="RadioGroup"
+          className={`RadioGroup ${errors.status ? "error-input" : ""}`}
           name="status"
-          defaultValue={table.status}
-          onChange={(e) => handleChange(e)}
+          value={table.status}
+          onChange={(e) => {
+            handleChange(e);
+            if (errors.status) {
+              setErrors({ ...errors, status: false });
+            }
+          }}
         >
           <FormControlLabel
             value="available"
@@ -229,9 +326,14 @@ const FormTable = ({ isOpen, onClose, id }) => {
             type="text"
             placeholder="Nhập ghi chú"
             name="note"
-            className="input3"
-            defaultValue={table.note}
-            onChange={(e) => handleChange(e)}
+            className={`input3 ${errors.note ? "error-input" : ""}`}
+            value={table.note}
+            onChange={(e) => {
+              handleChange(e);
+              if (errors.note) {
+                setErrors({ ...errors, note: false });
+              }
+            }}
           />
         </div>
         <button className="btnCN" onClick={() => capNhat()}>

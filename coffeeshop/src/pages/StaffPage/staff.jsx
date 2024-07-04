@@ -7,12 +7,8 @@ import axios from "axios";
 import StaffInfo from "../../components/StaffInfo/StaffInfo";
 import "./staff.css";
 import { Box } from "@mui/material";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { deleteUser } from "../../services/deleteStaffService";
 import PopupStaff from "../../components/table/popupEdit";
-import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 function useFocus() {
@@ -40,8 +36,6 @@ const Stuff = () => {
   const { token } = useSelector((state) => state.auths);
   const [users, setUsers] = useState([]);
   const [inputRef, setInputFocus] = useFocus();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [openPopupId, setOpenPopupId] = useState(null);
 
   const openModal = (index) => {

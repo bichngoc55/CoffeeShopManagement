@@ -114,3 +114,8 @@
   margin-top: 30px;
   margin-left: 100px;
 }
+.error-input {
+  border: 1px solid red;
+  z-index: auto !important;
+  position: static !important;
+}

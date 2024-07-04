@@ -8,7 +8,10 @@ import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import { useSelector } from "react-redux";
 import TableInfo from "../../components/table/TableInfo";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 import "./booking.css";
+import CalendarTable from "../../components/table/calendar";
+import zIndex from "@mui/material/styles/zIndex";
 
 const Booking = () => {
   const [table, setTable] = useState([]);
@@ -18,9 +21,17 @@ const Booking = () => {
   const [selectedTable, setSelectedTable] = useState(
     "661ffb050f8b90fbff1b40ce"
   );
-
+  const navigate = useNavigate();
   const { token } = useSelector((state) => state.auths);
+  const [isOpen, setIsOpen] = useState(false);
 
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
   const AddTable = async () => {
     const newTable = {
       tableNumber: table.length + 1,
@@ -74,6 +85,10 @@ const Booking = () => {
         setBookedTables(statusCount.booked || 0);
       } else {
         console.error("Request failed with status:", response.status);
+        if (response.status === 500) {
+          alert("Lỗi kết nối đến máy chủ");
+          navigate("/login");
+        }
       }
     } catch (error) {
       console.error("Request failed with error:", error);
@@ -177,6 +192,21 @@ const Booking = () => {
           </Button>
           <Button
             sx={{
+              color: "white",
+              backgroundColor: "#704332",
+              fontSize: 14,
+              fontWeight: 600,
+              width: "30%",
+              borderRadius: "20px",
+              borderColor: "#704332",
+            }}
+            variant="filled"
+            onClick={() => DeleteTable(table[table.length - 1]._id)}
+          >
+            Delete Table
+          </Button>
+          <Button
+            sx={{
               color: "#704332",
               fontSize: 14,
               fontWeight: 600,
@@ -185,15 +215,20 @@ const Booking = () => {
               borderColor: "#704332",
             }}
             variant="outlined"
-            onClick={() => DeleteTable(table[table.length - 1]._id)}
+            onClick={() => openModal()}
           >
-            Delete Table
+            View Calendar
           </Button>
         </div>
+        <CalendarTable
+          isOpen={isOpen}
+          onClose={closeModal}
+          sx={{ zIndex: "9999 !important" }}
+        />
       </div>
 
       <div>
-        <TableInfo selectedTable={selectedTable} />
+        <TableInfo selectedTable={selectedTable} update={fetchData} />
       </div>
     </Box>
   );
