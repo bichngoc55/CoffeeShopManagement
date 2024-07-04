@@ -11,7 +11,6 @@
   background-color: #f9f8fb;
 
   text-align: left;
-  width: 600px;
 }
 
 .number {
@@ -69,4 +68,12 @@
 .containercard:hover {
   color: #704332 !important;
   background-color: #d0d0d0 !important;
+}
+.bookinglist {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: "##BBE9FF" !important;
 }

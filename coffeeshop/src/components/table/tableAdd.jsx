@@ -28,24 +28,24 @@ const modalStyles = {
 };
 
 // Component PopupDialog
-const FormTable = ({
-  isOpen,
-  onClose,
-  onCloseAndUpdate,
-  data,
+const TableAdd = ({
+  isOpenAdd,
+  onCloseAdd,
+  onCloseAndUpdateAdd,
   tableNumber,
 }) => {
   const [errors, setErrors] = useState({});
   const { token } = useSelector((state) => state.auths);
   const navigate = useNavigate();
   const [table, setTable] = useState({
-    customerName: data.customerName,
-    bookingDate: data.bookingDate,
-    bookingTime: data.bookingTime,
-    numberOfPeople: data.numberOfPeople,
-    phoneNumberBooking: data.phoneNumberBooking,
-    note: data.note,
-    status: "booked",
+    customerName: "",
+    tableNumber: tableNumber,
+    bookingDate: new Date().toISOString(),
+    bookingTime: "",
+    numberOfPeople: 0,
+    phoneNumberBooking: "",
+    note: "",
+    status: "",
   });
   const validateInputs = () => {
     let tempErrors = {};
@@ -55,16 +55,10 @@ const FormTable = ({
     if (!table.numberOfPeople) tempErrors.numberOfPeople = true;
     if (!table.phoneNumberBooking) tempErrors.phoneNumberBooking = true;
     if (!table.note) tempErrors.note = true;
+    if (!table.status) tempErrors.status = true;
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
-  // const handleChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setTable((prevUser) => ({
-  //     ...prevUser,
-  //     [name]: value,
-  //   }));
-  // };
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -86,11 +80,12 @@ const FormTable = ({
   };
 
   const capNhat = async () => {
+    console.log("da vao");
     if (validateInputs()) {
       try {
         console.log("Update data");
         const response = await fetch(
-          `http://localhost:3005/booking/${tableNumber}/${data._id}`,
+          `http://localhost:3005/booking/add/${tableNumber}`,
           {
             method: "PATCH",
             headers: {
@@ -99,7 +94,6 @@ const FormTable = ({
             },
             body: JSON.stringify({
               customerName: table.customerName,
-              tableNumber: table.tableNumber,
               bookingDate: table.bookingDate,
               bookingTime: table.bookingTime,
               numberOfPeople: table.numberOfPeople,
@@ -108,34 +102,44 @@ const FormTable = ({
             }),
           }
         );
+        console.log(response.data);
 
         if (response.ok) {
-          onCloseAndUpdate();
+          setTable({
+            customerName: "",
+            tableNumber: tableNumber,
+            bookingDate: new Date().toISOString(),
+            bookingTime: "",
+            numberOfPeople: 0,
+            phoneNumberBooking: "",
+            note: "",
+            status: "",
+          });
+          onCloseAndUpdateAdd();
+        } else {
+          console.log("failed");
         }
       } catch (error) {
+        alert(error.message);
         console.error("Request failed with error:", error);
       }
     } else {
       console.log(errors);
     }
   };
+
   return (
-    <Modal isOpen={isOpen} onRequestClose={onClose} style={modalStyles}>
+    <Modal isOpen={isOpenAdd} onRequestClose={onCloseAdd} style={modalStyles}>
       <div className="closebtn">
         <label>Thông tin đặt bàn</label>
-        <button className="buttonx" onClick={onClose}>
+        <button className="buttonx" onClick={onCloseAdd}>
           x
         </button>
       </div>
       <div style={{ marginLeft: "5px", marginRight: "5px" }}>
         <div className="label-Input">
           <label style={{ fontWeight: "bold" }}>Mã bàn: </label>
-          <input
-            type="text"
-            placeholder="Nhập mã bàn"
-            className="inputH"
-            value={tableNumber}
-          />
+          <input type="text" className="inputH" value={tableNumber} />
         </div>
 
         <div className="label-Input">
@@ -148,7 +152,6 @@ const FormTable = ({
             value={table.customerName}
             onChange={(e) => {
               handleChange(e);
-              console.log(errors);
               if (errors.customerName) {
                 setErrors({ ...errors, customerName: false });
               }
@@ -185,9 +188,9 @@ const FormTable = ({
               type="time"
               className={`time ${errors.bookingTime ? "error-input" : ""}`}
               name="bookingTime"
-              value={table.bookingTime}
               onChange={(e) => {
                 handleChange(e);
+                console.log(errors);
                 if (errors.bookingTime) {
                   setErrors({ ...errors, bookingTime: false });
                 }
@@ -283,12 +286,12 @@ const FormTable = ({
             }}
           />
         </div>
-        <button className="btnCN" onClick={() => capNhat()}>
-          Cập nhật
+        <button className="btnCN" onClick={capNhat}>
+          ADD SCHEDULE
         </button>
       </div>
     </Modal>
   );
 };
 
-export default FormTable;
+export default TableAdd;

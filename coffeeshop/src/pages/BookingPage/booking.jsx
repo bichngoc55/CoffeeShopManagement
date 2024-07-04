@@ -11,16 +11,40 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import "./booking.css";
 import CalendarTable from "../../components/table/calendar";
-import zIndex from "@mui/material/styles/zIndex";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import TableAdd from "../../components/table/tableAdd";
+import FormTable from "../../components/table/modalTable";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 const Booking = () => {
   const [table, setTable] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const [availableTables, setAvailableTables] = useState(0);
   const [occupiedTables, setOccupiedTables] = useState(0);
-  const [bookedTables, setBookedTables] = useState(0);
+  const [bookedTables, setBookedTables] = useState(1);
   const [selectedTable, setSelectedTable] = useState(
-    "661ffb050f8b90fbff1b40ce"
+    "6686b13771a3ca0ad2ed537c"
   );
+  const [selectedTableBookings, setSelectedTableBookings] = useState([]);
+  const [selectedNumber, setSelectedNumber] = useState(1);
   const navigate = useNavigate();
   const { token } = useSelector((state) => state.auths);
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +55,32 @@ const Booking = () => {
 
   const closeModal = () => {
     setIsOpen(false);
+  };
+  const [isOpenAdd, setIsOpenAdd] = useState(false);
+
+  const openModalAdd = () => {
+    setIsOpenAdd(true);
+  };
+
+  const closeModalAdd = () => {
+    setIsOpenAdd(false);
+  };
+  const onCloseAndUpdate = () => {
+    setIsOpenAdd(false);
+    setEditingBooking(null);
+    fetchData();
+    fetchBookings();
+  };
+  //const [isOpenEdit, setIsOpenEdit] = useState(false);
+
+  const [editingBooking, setEditingBooking] = useState(null);
+
+  const openModalEdit = (booking) => {
+    setEditingBooking(booking);
+  };
+
+  const closeModalEdit = () => {
+    setEditingBooking(null);
   };
   const AddTable = async () => {
     const newTable = {
@@ -60,6 +110,24 @@ const Booking = () => {
     if (!response.ok) {
       throw new Error(`Error delete table: ${response}`);
     } else fetchData();
+  };
+  const deleteBooking = async (booking) => {
+    const response = await fetch(
+      `http://localhost:3005/booking/${selectedNumber}/${booking._id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Error delete table: ${response}`);
+    } else {
+      fetchData();
+      fetchBookings();
+    }
   };
 
   const fetchData = async () => {
@@ -94,9 +162,34 @@ const Booking = () => {
       console.error("Request failed with error:", error);
     }
   };
+  const fetchBookings = async () => {
+    if (selectedTable) {
+      try {
+        const response = await fetch(
+          `http://localhost:3005/booking/${selectedTable}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setSelectedTableBookings(data.Booking || []);
+        } else {
+          console.error("Failed to fetch bookings");
+        }
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
+    }
+  };
 
   useEffect(() => {
     fetchData();
+    fetchBookings();
   }, []);
 
   return (
@@ -105,7 +198,7 @@ const Booking = () => {
 
       <div
         style={{
-          paddingLeft: "16px",
+          //paddingLeft: "16px",
           textAlign: "left",
         }}
       >
@@ -125,6 +218,7 @@ const Booking = () => {
             <label>Bàn đã đặt: {bookedTables}</label>
           </div>
         </div>
+
         <div
           style={{
             display: "flex",
@@ -153,8 +247,9 @@ const Booking = () => {
                   key={item._id}
                   style={{ color: containerColor }}
                   onClick={() => {
-                    console.log("table click");
                     setSelectedTable(item._id);
+                    setSelectedNumber(item.tableNumber);
+                    fetchBookings();
                   }}
                 >
                   <TableRestaurantIcon />
@@ -164,6 +259,7 @@ const Booking = () => {
             })}
           </div>
         </div>
+
         <div
           style={{
             width: "100%",
@@ -220,15 +316,123 @@ const Booking = () => {
             View Calendar
           </Button>
         </div>
-        <CalendarTable
-          isOpen={isOpen}
-          onClose={closeModal}
-          sx={{ zIndex: "9999 !important" }}
-        />
+        <CalendarTable isOpen={isOpen} onClose={closeModal} />
       </div>
 
-      <div>
-        <TableInfo selectedTable={selectedTable} update={fetchData} />
+      <div
+        style={{
+          flex: 1,
+          backgroundColor: "white",
+          borderRadius: "20px",
+          marginTop: "20px",
+          marginBottom: "20px",
+          marginRight: "20px",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        <div className="bookinglist">
+          <label style={{ fontSize: "14px", fontWeight: "bold" }}>
+            Table {selectedNumber}
+          </label>
+          <Button
+            sx={{ fontSize: "14px", fontWeight: "bold" }}
+            onClick={openModalAdd}
+          >
+            <AddIcon fontSize="small" sx={{ marginRight: "5px" }} />
+            Add
+          </Button>
+          <TableAdd
+            isOpenAdd={isOpenAdd}
+            onCloseAdd={closeModalAdd}
+            onCloseAndUpdateAdd={onCloseAndUpdate}
+            tableNumber={selectedNumber}
+          />
+        </div>
+        <TableContainer component={Paper}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#BBE9FF" }}>
+                <TableCell sx={{ fontSize: "14px", fontWeight: "bold" }}>
+                  NO
+                </TableCell>
+                <TableCell sx={{ fontSize: "14px", fontWeight: "bold" }}>
+                  Date
+                </TableCell>
+                <TableCell sx={{ fontSize: "14px", fontWeight: "bold" }}>
+                  Time
+                </TableCell>
+                <TableCell sx={{ fontSize: "14px", fontWeight: "bold" }}>
+                  Customer
+                </TableCell>
+                <TableCell sx={{ fontSize: "14px", fontWeight: "bold" }}>
+                  Option
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {selectedTableBookings.map((booking, index) => (
+                <TableRow
+                  key={booking._id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    sx={{ fontSize: "12px" }}
+                    align="center"
+                  >
+                    {index + 1}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "12px" }} align="center">
+                    {new Date(booking.bookingDate).toLocaleDateString("vi-VN")}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "12px" }} align="center">
+                    {booking.bookingTime}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "12px" }} align="center">
+                    {booking.customerName}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "12px" }}>
+                    <Button onClick={() => openModalEdit(booking)}>
+                      <EditIcon fontSize="small" sx={{ marginRight: "5px" }} />
+                      Edit
+                    </Button>
+                    <Button onClick={handleClick}>
+                      <DeleteIcon
+                        fontSize="small"
+                        sx={{ marginRight: "5px" }}
+                      />
+                      Delete
+                    </Button>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      <MenuItem onClick={() => deleteBooking(booking)}>
+                        Sure
+                      </MenuItem>
+                      <MenuItem onClick={handleClose}>Cancel</MenuItem>
+                    </Menu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          {editingBooking && (
+            <FormTable
+              isOpen={Boolean(editingBooking)}
+              onClose={closeModalEdit}
+              data={editingBooking}
+              onCloseAndUpdate={onCloseAndUpdate}
+              tableNumber={selectedNumber}
+            />
+          )}
+        </TableContainer>
       </div>
     </Box>
   );

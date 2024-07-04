@@ -59,19 +59,19 @@ const TableInfo = ({ selectedTable, update }) => {
         console.log(data);
         let formattedDate = "";
         if (data.bookingDate !== undefined) {
-          let dateString = data.bookingDate;
+          let dateString = data.Booking.bookingDate;
           let parts = dateString.split("T");
           formattedDate = parts[0];
         }
         setTable({
-          customerName: data.customerName,
-          tableNumber: data.tableNumber,
+          customerName: data.Booking.customerName,
+          tableNumber: data.Booking.tableNumber,
           bookingDate: formattedDate,
-          bookingTime: data.bookingTime,
-          numberOfPeople: data.numberOfPeople,
-          phoneNumberBooking: data.phoneNumberBooking,
-          note: data.note,
-          status: data.status,
+          bookingTime: data.Booking.bookingTime,
+          numberOfPeople: data.Booking.numberOfPeople,
+          phoneNumberBooking: data.Booking.phoneNumberBooking,
+          note: data.Booking.note,
+          status: data.Booking.status,
         });
       } else {
         if (response.status === 500) {

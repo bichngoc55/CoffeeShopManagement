@@ -53,41 +53,49 @@ const CalendarTable = ({ isOpen, onClose }) => {
       fetchBookings();
     }
   }, [isOpen, fetchBookings]);
-  const convertToCalendarEvents = (bookings) => {
-    return bookings
-      .filter((booking) => booking.status === "booked") // Lọc chỉ lấy các booking có status là "booked"
-      .map((booking) => {
-        // Kết hợp ngày và giờ
-        const startDate = booking.bookingDate
-          ? new Date(booking.bookingDate)
-          : new Date();
-        if (booking.bookingTime) {
-          const [hours, minutes] = booking.bookingTime.split(":");
-          startDate.setHours(parseInt(hours), parseInt(minutes));
-        }
-        console.log(booking);
+  const convertToCalendarEvents = (bookingData) => {
+    // Kiểm tra xem bookingData có phải là một mảng hay không
+    if (!Array.isArray(bookingData)) {
+      bookingData = [bookingData]; // Nếu không phải mảng, chuyển đổi thành mảng có một phần tử
+    }
 
-        // Tạo ngày kết thúc (giả sử mỗi đặt bàn kéo dài 3 giờ)
-        const endDate = new Date(startDate.getTime() + 3 * 60 * 60 * 1000);
+    return bookingData
+      .filter((table) => table.status === "booked") // Lọc các bàn có status là "booked"
+      .flatMap((table) => {
+        return table.Booking.map((booking) => {
+          // Kết hợp ngày và giờ
+          const startDate = booking.bookingDate
+            ? new Date(booking.bookingDate)
+            : new Date();
+          if (booking.bookingTime) {
+            const [hours, minutes] = booking.bookingTime.includes(":")
+              ? booking.bookingTime.split(":")
+              : [booking.bookingTime.slice(0, -2), "00"]; // Xử lý cả trường hợp "7am"
+            startDate.setHours(parseInt(hours), parseInt(minutes));
+          }
 
-        return {
-          id: booking._id,
-          title: `${booking.bookingTime || "NO TIME"} - Bàn ${
-            booking.tableNumber || "N/A"
-          }`,
-          start: startDate,
-          end: endDate,
-          extendedProps: {
-            customerName: booking.CustomerName,
-            tableNumber: booking.tableNumber,
-            bookingDate: booking.bookingDate,
-            bookingTime: booking.bookingTime,
-            numberOfPeople: booking.NumberOfPeople,
-            phoneNumber: booking.PhoneNumberBooking,
-            note: booking.Note || booking.note || "",
-            status: booking.status,
-          },
-        };
+          // Tạo ngày kết thúc (giả sử mỗi đặt bàn kéo dài 3 giờ)
+          const endDate = new Date(startDate.getTime() + 3 * 60 * 60 * 1000);
+
+          return {
+            id: booking._id,
+            title: `${booking.bookingTime || "NO TIME"} - Bàn ${
+              table.tableNumber || "N/A"
+            }`,
+            start: startDate,
+            end: endDate,
+            extendedProps: {
+              customerName: booking.customerName,
+              tableNumber: table.tableNumber,
+              bookingDate: booking.bookingDate,
+              bookingTime: booking.bookingTime,
+              numberOfPeople: booking.numberOfPeople,
+              phoneNumber: booking.phoneNumberBooking,
+              note: booking.note || "",
+              status: table.status,
+            },
+          };
+        });
       });
   };
   const renderEventContent = (eventInfo) => {
