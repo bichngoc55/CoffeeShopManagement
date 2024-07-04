@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import Gachchan from "./gachchan";
 import { useNavigate } from "react-router-dom";
 
-const TableInfo = ({ selectedTable }) => {
+const TableInfo = ({ selectedTable, update }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const openModal = () => {
@@ -22,6 +22,11 @@ const TableInfo = ({ selectedTable }) => {
 
   const closeModal = () => {
     setIsOpen(false);
+  };
+  const onCloseAndUpdate = () => {
+    setIsOpen(false);
+    fetchData();
+    update();
   };
   const { token } = useSelector((state) => state.auths);
   const [table, setTable] = useState({
@@ -35,52 +40,51 @@ const TableInfo = ({ selectedTable }) => {
     status: "",
   });
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log("Fetching data table");
-        const response = await fetch(
-          `http://localhost:3005/booking/${selectedTable}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data);
-          let formattedDate = "";
-          if (data.bookingDate !== undefined) {
-            let dateString = data.bookingDate;
-            let parts = dateString.split("T");
-            formattedDate = parts[0];
-          }
-          setTable({
-            customerName: data.customerName,
-            tableNumber: data.tableNumber,
-            bookingDate: formattedDate,
-            bookingTime: data.bookingTime,
-            numberOfPeople: data.numberOfPeople,
-            phoneNumberBooking: data.phoneNumberBooking,
-            note: data.note,
-            status: data.status,
-          });
-        } else {
-          if (response.status === 500) {
-            alert("Lỗi kết nối đến máy chủ");
-            navigate("/login");
-          }
-          console.error("Request failed with status:", response.status);
+  const fetchData = async () => {
+    try {
+      console.log("Fetching data table");
+      const response = await fetch(
+        `http://localhost:3005/booking/${selectedTable}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
-      } catch (error) {
-        console.error("Request failed with error:", error);
-      }
-    };
+      );
 
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        let formattedDate = "";
+        if (data.bookingDate !== undefined) {
+          let dateString = data.Booking.bookingDate;
+          let parts = dateString.split("T");
+          formattedDate = parts[0];
+        }
+        setTable({
+          customerName: data.Booking.customerName,
+          tableNumber: data.Booking.tableNumber,
+          bookingDate: formattedDate,
+          bookingTime: data.Booking.bookingTime,
+          numberOfPeople: data.Booking.numberOfPeople,
+          phoneNumberBooking: data.Booking.phoneNumberBooking,
+          note: data.Booking.note,
+          status: data.Booking.status,
+        });
+      } else {
+        if (response.status === 500) {
+          alert("Lỗi kết nối đến máy chủ");
+          navigate("/login");
+        }
+        console.error("Request failed with status:", response.status);
+      }
+    } catch (error) {
+      console.error("Request failed with error:", error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [selectedTable]);
 
@@ -177,7 +181,12 @@ const TableInfo = ({ selectedTable }) => {
       <button className="btnE" onClick={openModal}>
         Sửa
       </button>
-      <FormTable isOpen={isOpen} onClose={closeModal} id={selectedTable} />
+      <FormTable
+        isOpen={isOpen}
+        onClose={closeModal}
+        id={selectedTable}
+        onCloseAndUpdate={onCloseAndUpdate}
+      />
     </div>
   );
 };
