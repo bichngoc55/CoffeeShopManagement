@@ -126,7 +126,7 @@ const MenuPage = () => {
       });
 
       const data = await response.json();
-      // console.log("table data: ", data);
+      console.log("table data: ", data);
       const availableData = data.filter(
         (table) => table.status === "available"
       );

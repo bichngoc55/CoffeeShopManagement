@@ -27,13 +27,13 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         default: "",
       },
-      status: {
-        type: String,
-        enum: ["available", "occupied", "booked"],
-        required: true,
-      },
     },
   ],
+  status: {
+    type: String,
+    enum: ["available", "occupied", "booked"],
+    default: "available",
+  },
 });
 
 const Booking = mongoose.model("Booking", bookingSchema);
