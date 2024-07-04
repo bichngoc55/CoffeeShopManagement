@@ -83,9 +83,9 @@ const DashBoard = () => {
               backgroundColor: "##8D817D !important",
             },
           },
-          display: "flex",
-          alignItems: "center",
-          padding: "8px 16px",
+          // display: "flex",
+          // alignItems: "center",
+          // padding: "8px 16px",
         }}
       >
         {/* LOGO AND MENU ICON */}
@@ -93,21 +93,31 @@ const DashBoard = () => {
           onClick={() => setIsCollapsed(!isCollapsed)}
           icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
           style={{
-            margin: "10px 0 20px 0",
+            margin: "10px 0 10px 0",
+            height:"auto",
+            alignItems:"center",
           }}
         >
           {!isCollapsed && (
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              ml="15px"
-            >
-              <Typography fontSize={24}>JAVA JOY</Typography>
+            <Box display="flex" flexDirection={"row"}>
+              <Box
+                display="flex"
+                flexDirection={"column"}
+                alignItems="center"
+              >
+                <img
+                  alt="logo JavaJoy"
+                  src="../../assets/logo_JavaJoy.png"
+                  className="logo-image"
+                  style={{ width: "50%",}}
+                />
+                <Typography fontSize={30} fontFamily={"NerkoOne-Regular"}>JAVA JOY</Typography>
+              </Box>
               <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                <MenuOutlinedIcon />
+                <MenuOutlinedIcon style={{alignSelf: 'flex-start',justifySelf:"right"}}/>
               </IconButton>
             </Box>
+            
           )}
         </MenuItem>
 
@@ -119,7 +129,7 @@ const DashBoard = () => {
                 alt="profile-user"
                 width="80%" // Adjust the width as desired
                 height="auto" // Adjust the height as desired
-                src={`http://localhost:3005/assets/${Ava}`}
+                src={Ava}
                 style={{
                   cursor: "pointer",
                   borderRadius: "50%",
@@ -131,19 +141,20 @@ const DashBoard = () => {
             </Box>
             <Box textAlign="center">
               <Typography
-                //color={colors.grey[100]}
+                fontFamily={"Montserrat"}
                 fontWeight="bold"
+                fontSize={17}
                 sx={{ m: "10px 0 0 0" }}
               >
                 {Name}
               </Typography>
-              <Typography>{Position}</Typography>
+              <Typography fontFamily={"Montserrat"}>{Position}</Typography>
             </Box>
           </Box>
         )}
         <Box paddingLeft={isCollapsed ? undefined : "10%"}>
           <Item
-            title="Trang Chủ"
+            title="Home"
             to="/home"
             icon={<HomeOutlinedIcon />}
             selected={selected}
@@ -157,7 +168,7 @@ const DashBoard = () => {
             setSelected={setSelected}
           />
           <Item
-            title="Lịch Sử"
+            title="History"
             to="/history"
             icon={<HistoryOutlinedIcon />}
             selected={selected}
@@ -165,7 +176,7 @@ const DashBoard = () => {
           />
           {isAdmin && (
             <Item
-              title="Nhân Viên"
+              title="Staff"
               to="/staff"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
@@ -173,22 +184,21 @@ const DashBoard = () => {
             />
           )}
           <Item
-            title="Kho Hàng"
+            title="Inventory"
             to="/inventory"
             icon={<PieChartOutlineOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
           />
-
           <Item
-            title="Đặt Bàn"
+            title="Booking"
             to="/booking"
             icon={<TableBarOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
           />
           <Item
-            title="Thống Kê"
+            title="Analytics"
             to="/analytics"
             icon={<PieChartOutlineOutlinedIcon />}
             selected={selected}
@@ -201,7 +211,7 @@ const DashBoard = () => {
           paddingLeft={isCollapsed ? undefined : "10%"}
         >
           <Item
-            title="Đăng Xuất"
+            title="Logout"
             to="/login"
             icon={<LogoutOutlinedIcon />}
             selected={selected}

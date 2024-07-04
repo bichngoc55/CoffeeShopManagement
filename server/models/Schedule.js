@@ -1,25 +1,15 @@
 import mongoose from "mongoose";
-import { Time } from "mongoose-time";
+const { Schema } = mongoose;
 
-const scheduleSchema = new mongoose.Schema({
-  day: {
-    type: Date,
-    required: true,
-  },
-  startTime: {
-    type: Time,
-    required: true,
-  },
-  endTime: {
-    type: Time,
-    required: true,
-  },
-  employeeId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Employee",
-    required: true,
-  },
+const scheduleSchema = new Schema({
+  mon: [["", "", ""], ["", "", ""], ["", "", ""]],
+  tue: [["", "", ""], ["", "", ""], ["", "", ""]],
+  wed: [["", "", ""], ["", "", ""], ["", "", ""]],
+  thu: [["", "", ""], ["", "", ""], ["", "", ""]],
+  fri: [["", "", ""], ["", "", ""], ["", "", ""]],
+  sat: [["", "", ""], ["", "", ""], ["", "", ""]],
+  sun: [["", "", ""], ["", "", ""], ["", "", ""]],
 });
 
-const Schedule = mongoose.model("Schedule", scheduleSchema);
+const Schedule = mongoose.model("workSchedule", scheduleSchema);
 export default Schedule;
