@@ -60,7 +60,12 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open2 = Boolean(anchorEl);
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    event.stopPropagation();
+    if (anchorEl) {
+      setAnchorEl(null);
+    } else {
+      setAnchorEl(event.currentTarget);
+    }
   };
 
   const handleClose = () => {
@@ -79,7 +84,9 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
         <StyledTableCell align="center">
           {data.TableNo?.tableNumber || ""}
         </StyledTableCell>
-        <StyledTableCell align="center">{data.Staff.Name}</StyledTableCell>
+        <StyledTableCell align="center">
+          {data.Staff?.Name || "N/A"}
+        </StyledTableCell>
         <StyledTableCell align="center">{data.totalAmount}</StyledTableCell>
         <StyledTableCell align="center">{data.PaymentMethod}</StyledTableCell>
         <StyledTableCell align="center">
@@ -90,17 +97,14 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
             aria-label="more"
             aria-controls="long-menu"
             aria-haspopup="true"
-            onClick={(event) => {
-              event.stopPropagation();
-              handleClick(event);
-            }}
+            onClick={handleClick}
           >
             <MoreVertIcon />
             <Menu
               id="simple-menu"
               anchorEl={anchorEl}
               keepMounted
-              open={open2}
+              open={Boolean(anchorEl)}
               onClose={handleClose}
             >
               <MenuItem

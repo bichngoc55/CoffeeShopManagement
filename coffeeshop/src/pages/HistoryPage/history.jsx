@@ -50,7 +50,10 @@ const History = () => {
       });
       const data = await response.json();
       console.log(data);
-      fetchBillData();
+      setBillData((prevBillData) =>
+        prevBillData.filter((bill) => bill._id !== id)
+      );
+      setBillCount((prevCount) => prevCount - 1);
     } catch (error) {
       console.error("Failed to fetch bill data:", error);
     }
@@ -89,7 +92,7 @@ const History = () => {
 
     const csvRows = [];
     csvRows.push(headers.join(","));
-
+    console.log("bill la : ", bills);
     bills.forEach((bill) => {
       const {
         _id,
@@ -101,7 +104,7 @@ const History = () => {
         createdAt,
       } = bill;
       const orderItems = items
-        .map((item) => `${item.name} (${item.quantity})`)
+        .map((item) => `${item.drink.Name} (${item.quantity})`)
         .join(", ");
       const row = [
         _id,

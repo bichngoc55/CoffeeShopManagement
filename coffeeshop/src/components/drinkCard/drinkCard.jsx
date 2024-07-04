@@ -20,6 +20,17 @@ const DrinkCard = ({
   const [selectedIce, setIce] = useState("");
   const [selectedSugar, setSugar] = useState("");
   const [selectedCardId, setSelectedCardId] = useState(null);
+  const calculateAdjustedPrice = (basePrice, size) => {
+    // console.log("size 3: ", size);
+    switch (size) {
+      case "M":
+        return basePrice + 5;
+      case "L":
+        return basePrice + 10;
+      default:
+        return basePrice;
+    }
+  };
 
   const resetSelections = () => {
     setMood("");
@@ -33,6 +44,7 @@ const DrinkCard = ({
       resetSelections();
     }
     setSelectedCardId(id);
+
     console.log(id);
     onDrinkSelected(item);
   };
@@ -109,7 +121,7 @@ const DrinkCard = ({
                         fontFamily="Montserrat"
                         padding-top="15%"
                       >
-                        {item.Price} VND
+                        {calculateAdjustedPrice(item.Price, selectedSize)} VND
                       </Typography>
                     </div>
                   </div>
