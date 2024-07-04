@@ -40,16 +40,21 @@ const PrintSection = ({
       {billItems.map((item, index) => (
         <Box key={index} sx={{ mb: 1 }}>
           <Typography variant="h6">{item.drink.Name}</Typography>
+
           <Typography variant="body2">
             {item.quantity} x {item.drink.Price} ={" "}
             {item.quantity * item.drink.Price} VND
           </Typography>
-          <Typography variant="body2">
-            Size: {item.size} - Mood: {item.mood}
-          </Typography>
-          <Typography variant="body2">
-            Ice: {item.ice}% - Sugar: {item.sugar}%
-          </Typography>
+          {item.drink.Price > 20 ? (
+            <>
+              <Typography variant="body2">
+                Size: {item.size} - Mood: {item.mood}
+              </Typography>
+              <Typography variant="body2">
+                Ice: {item.ice}% - Sugar: {item.sugar}%
+              </Typography>
+            </>
+          ) : null}
         </Box>
       ))}
 

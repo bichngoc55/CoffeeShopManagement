@@ -21,6 +21,7 @@ import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
 import BillCard from "../../components/billCard/billCard";
 import PrintSection from "./printSection";
 import ModifyDialog from "../../components/ModifyDialog/ModifyDialog";
+import { QRCodeDisplay } from "./QRCode";
 
 const MenuPage = () => {
   const [drinksData, setDrinksData] = useState([]);
@@ -45,7 +46,7 @@ const MenuPage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [showModifyDialog, setShowModifyDialog] = useState(false);
   const [payment, setPayment] = useState("");
-
+  const [showQRCode, setShowQRCode] = useState(false);
   //payment
   const handlePayment = async (type) => {
     if (type === "cash") {
@@ -87,7 +88,7 @@ const MenuPage = () => {
         const savedBillDetails = await fetchBillDetails(billId);
         setSavedBillDetails(savedBillDetails);
         setIsVisible(true);
-
+        setShowQRCode(true);
         // Wait for state to update
         return new Promise((resolve) => {
           setTimeout(() => {
@@ -252,15 +253,6 @@ const MenuPage = () => {
     selectedIce,
     selectedSugar
   ) => {
-    if (
-      selectedMood === "" ||
-      selectedSize === "" ||
-      selectedIce === "" ||
-      selectedSugar === ""
-    ) {
-      alert("Please choose a mood, size, ice, and sugar percentage");
-      return;
-    }
     setClickCount(clickCount + 1);
     console.log("den day r");
     setSelectedDrink(drink);
@@ -268,6 +260,12 @@ const MenuPage = () => {
     setSize(selectedSize);
     setIce(selectedIce);
     setSugar(selectedSugar);
+    let adjustedPrice = drink.Price;
+    if (selectedSize === "M") {
+      adjustedPrice += 5;
+    } else if (selectedSize === "L") {
+      adjustedPrice += 10;
+    }
     const existingItemIndex = billItems.findIndex(
       (item) =>
         item.drink.id === drink.id &&
@@ -282,7 +280,7 @@ const MenuPage = () => {
       setBillItems(newBillItems);
     } else {
       const newBillItem = {
-        drink: drink,
+        drink: { ...drink, Price: adjustedPrice },
         mood: selectedMood,
         size: selectedSize,
         ice: selectedIce,
@@ -315,13 +313,46 @@ const MenuPage = () => {
   const handleHideModal = () => {
     setShowModal(false);
   };
-  const handleAddDrink = (drink) => {
+  const handleAddDrink = async (drink) => {
     setShowModal(true);
+    try {
+      const response = await fetch("http://localhost:3005/menu/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(drink),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("New drink added: ", data);
+      setDrinksData((prevDrinks) => [...prevDrinks, data]);
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
-  const handleDeleteDrink = (drinkId) => {
-    const newBillItems = billItems.filter((item) => item.drink.id !== drinkId);
-    setBillItems(newBillItems);
+  const handleDeleteDrink = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3005/menu/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Deleted drink: ", data);
+      setDrinksData((prevDrinks) =>
+        prevDrinks.filter((drink) => drink._id !== id)
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
   const handleShowModifyDialog = () => {
     setShowModifyDialog(true);
@@ -407,7 +438,7 @@ const MenuPage = () => {
             </Typography>
             <div className="ButtonComponent">
               <button className="btn" onClick={handleAddDrink}>
-                Thêm Món
+                Add Drink
               </button>
               <Modal2
                 open={showModal}
@@ -418,10 +449,10 @@ const MenuPage = () => {
                 className="btn"
                 onClick={() => handleDeleteDrink(selectedDrink._id)}
               >
-                Xoá Món
+                Delete Drink
               </button>
               <button className="btn" onClick={handleShowModifyDialog}>
-                Sửa Món
+                Modify Drink
               </button>
               {showModifyDialog && (
                 <ModifyDialog
@@ -542,6 +573,12 @@ const MenuPage = () => {
                 />
               </div>
             </div>
+            {showQRCode && savedBillDetails && (
+              <QRCodeDisplay
+                billId={savedBillDetails._id}
+                onClose={() => setShowQRCode(false)}
+              />
+            )}
           </div>
         </div>
       </Box>

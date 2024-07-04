@@ -40,11 +40,12 @@ const updateMenu = async (req, res) => {
 // Add a new Menu
 const addDrink = async (req, res) => {
   try {
+    console.log("req.body : ", req.body);
     const drink = new Drinks(req.body);
     await drink.save();
     res.status(201).json(drink);
   } catch (error) {
-    res.status(500).json({ error: "Failed to add Menu" });
+    res.status(500).json({ error: error.message });
   }
 };
 

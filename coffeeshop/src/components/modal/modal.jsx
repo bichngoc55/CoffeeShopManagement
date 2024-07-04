@@ -38,13 +38,15 @@ const style = {
 };
 
 const Modal2 = ({ open, onClose, handleAddDrink }) => {
-  const [newDrink, setNewDrink] = useState({
-    name: "",
-    description: "",
-    price: "",
-    photo: null,
-    type: "",
-  });
+  const initialDrinkState = {
+    Name: "",
+    Description: "",
+    Price: "",
+    Photo: null,
+    LoaiDoUong: "",
+  };
+
+  const [newDrink, setNewDrink] = useState(initialDrinkState);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -55,17 +57,19 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
   };
 
   const handleFileChange = (event) => {
+    const file = event.target.files[0];
     setNewDrink((prevData) => ({
       ...prevData,
-      photo: event.target.files[0],
+      Photo: file,
     }));
   };
-
   const handleSubmit = (event) => {
     event.preventDefault();
+    // console.log("new drink",newDrink);
     // Handle image upload and form submission logic here
     handleAddDrink(newDrink);
     onClose();
+    setNewDrink(initialDrinkState);
   };
 
   return (
@@ -121,9 +125,9 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
             <TextField
               required
               label="Drink Name"
-              name="name"
+              name="Name"
               sx={{ ...textFieldStyles, width: "500px" }}
-              value={newDrink.name}
+              value={newDrink.Name}
               onChange={handleInputChange}
             />
           </Box>
@@ -139,9 +143,9 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
             </Typography>
             <TextField
               label="Description"
-              name="description"
+              name="Description"
               sx={{ ...textFieldStyles, width: "500px" }}
-              value={newDrink.description}
+              value={newDrink.Description}
               onChange={handleInputChange}
               multiline
               rows={3}
@@ -161,9 +165,9 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
               required
               label="Drink Price"
               sx={textFieldStyles}
-              name="price"
+              name="Price"
               type="number"
-              value={newDrink.price}
+              value={newDrink.Price}
               onChange={handleInputChange}
             />
           </Box>
@@ -197,9 +201,9 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
             <TextField
               select
               label="Type"
-              name="type"
+              name="LoaiDoUong"
               sx={{ ...textFieldStyles, width: "500px" }}
-              value={newDrink.type}
+              value={newDrink.LoaiDoUong}
               onChange={handleInputChange}
             >
               <MenuItem value="Coffee">Coffee</MenuItem>
