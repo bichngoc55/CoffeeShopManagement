@@ -44,7 +44,7 @@ const addBooking = async (req, res) => {
     await booking.save();
     res.status(201).json(booking);
   } catch (error) {
-    res.status(500).json({ error: "Failed to add booking" });
+    res.status(500).json({ error: error.message });
   }
 };
 

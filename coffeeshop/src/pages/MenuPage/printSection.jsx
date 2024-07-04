@@ -1,83 +1,73 @@
 import React from "react";
-import "./printSection.css";
-function PrintSection({ shouldRenderPrintSection, savedBill, Name }) {
+import { Typography, Box, Divider } from "@mui/material";
+
+const PrintSection = ({
+  shouldRenderPrintSection,
+  Name,
+  savedBill,
+  billItems,
+  totalPrice,
+  payment,
+}) => {
+  const currentDate = new Date().toLocaleString();
+
   return (
-    <div className="print-section">
-      {shouldRenderPrintSection && (
-        <div className="container2">
-          <div className="JavaJoy">
-            <h1>Java Joy</h1>
-          </div>
-          <div className="HoaDon">
-            Hoá Đơn Thanh Toán
-            <div className="MaHoaDon">
-              Mã Hoá Đơn:{" "}
-              {savedBill.current &&
-                savedBill.current.items &&
-                savedBill.current._id}
-            </div>
-            <div className="date">
-              Ngày:{" "}
-              {savedBill.current &&
-                new Date(savedBill.current.createdAt).toLocaleString()}
-            </div>
-            <div className="tableNumber">
-              Bàn số:{" "}
-              {savedBill.current &&
-                savedBill.current.items &&
-                savedBill.current.TableNo.tableNumber}
-            </div>
-            <div className="staffName">
-              Nhân viên: {savedBill.current && Name}
-            </div>
-          </div>
-          <div className="TableDrink">
-            <table>
-              <thead>
-                <tr>
-                  <th>STT</th>
-                  <th>Drink Name</th>
-                  <th>Notes</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {savedBill.current &&
-                  savedBill.current.items &&
-                  savedBill.current.items.map((item, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{item.Drinks.Name}</td>
-                      <td>
-                        {item.sugar} - {item.size} - {item.hotOrCold}
-                      </td>
-                      <td>{item.quantity}</td>
-                      <td>{item.Drinks.price}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="totalPrice">
-            <div className="TotalPrice">
-              Total: {savedBill.current && savedBill.current.totalAmount}
-            </div>
-            <div className="PhuThu">
-              Phụ thu: {savedBill.current && savedBill.current.PhuThu}
-            </div>
-            <div className="FinalPrice">
-              Final Total:{" "}
-              {savedBill.current &&
-                savedBill.current.totalAmount + savedBill.current.PhuThu}
-            </div>
-          </div>
-          <div className="wifi-password">Wifi: gautoi | Password: hehe</div>
-          <div className="quote">See you again</div>
-        </div>
+    <Box sx={{ padding: 2, maxWidth: "300px", margin: "auto" }}>
+      <Typography variant="h2" align="center" gutterBottom>
+        Coffee Shop Receipt
+      </Typography>
+
+      <Typography variant="body2" align="center" gutterBottom>
+        Date: {currentDate}
+      </Typography>
+
+      <Typography variant="body2" gutterBottom>
+        Staff: {Name}
+      </Typography>
+      {savedBill && (
+        <Box>
+          <Typography variant="body2">Bill ID: {savedBill._id}</Typography>
+          {/* <Typography variant="body2">Table No: {savedBill.TableNo.TableNumber}</Typography> */}
+        </Box>
       )}
-    </div>
+
+      <Divider sx={{ my: 2 }} />
+
+      <Typography variant="h4" gutterBottom>
+        Order Details:
+      </Typography>
+
+      {billItems.map((item, index) => (
+        <Box key={index} sx={{ mb: 1 }}>
+          <Typography variant="h6">{item.drink.Name}</Typography>
+          <Typography variant="body2">
+            {item.quantity} x {item.drink.Price} ={" "}
+            {item.quantity * item.drink.Price} VND
+          </Typography>
+          <Typography variant="body2">
+            Size: {item.size} - Mood: {item.mood}
+          </Typography>
+          <Typography variant="body2">
+            Ice: {item.ice}% - Sugar: {item.sugar}%
+          </Typography>
+        </Box>
+      ))}
+
+      <Divider sx={{ my: 2 }} />
+
+      <Typography variant="h6" gutterBottom>
+        Total: {totalPrice} VND
+      </Typography>
+
+      <Typography variant="body1" gutterBottom>
+        Payment Method: {payment}
+      </Typography>
+
+      <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+        Thank you for your purchase!
+      </Typography>
+    </Box>
   );
-}
+};
 
 export default PrintSection;

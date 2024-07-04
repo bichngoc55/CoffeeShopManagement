@@ -210,9 +210,6 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
             </TextField>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <Button onClick={onClose} color="primary">
-              Cancel
-            </Button>
             <Button type="submit" color="primary">
               Add
             </Button>

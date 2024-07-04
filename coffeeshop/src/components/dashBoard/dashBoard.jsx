@@ -179,13 +179,6 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
-          <Item
-            title="Cài Đặt"
-            to="/settings"
-            icon={<SettingsOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
 
           <Item
             title="Đặt Bàn"

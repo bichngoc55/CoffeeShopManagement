@@ -168,7 +168,9 @@ const Inventory = () => {
           textAlign: "left",
         }}
       >
-        <label className="headerBooking">Màn Hình Nhập Kho/Nguyên Liệu</label>
+        <label style={{ width: "100%" }} className="headerBooking">
+          Màn Hình Nhập Kho/Nguyên Liệu
+        </label>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box
             sx={{

@@ -1,3 +1,5 @@
+import User from "../models/User.js";
+
 // export const isStaffMiddleware = async (req, res, next) => {
 //     try {
 //         // Get the user ID from the request object
@@ -21,7 +23,8 @@
 // };
 export const checkAdmin = async (req, res, next) => {
   try {
-    const user = req.user;
+    const { id } = req.user;
+    const user = await User.findById(id);
     if (!user || user.Position !== "admin") {
       return res.status(403).json({
         error: "Forbidden: You dont have permission to access this resource",
