@@ -145,7 +145,7 @@ export const refresh = async (req, res) => {
       path: "/",
       sameSite: "strict",
     });
-    res.status(200).json({ accessToken: newAccessToken });
+    res.status(200).json({ token: newAccessToken });
   });
 };
 

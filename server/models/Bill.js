@@ -14,6 +14,10 @@ const billSchema = new mongoose.Schema(
           type: Number,
           required: true,
         },
+        price: {
+          type: Number,
+          required: true,
+        },
         percentOfSugar: {
           type: String,
           enum: ["30", "50", "100", ""],

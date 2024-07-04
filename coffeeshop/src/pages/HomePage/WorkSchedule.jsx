@@ -32,37 +32,6 @@ const WorkScheduleTable = ({ isEditing, workSchedule, setWorkSchedule }) => {
     return new Date(currentDate.setDate(diff));
   };
 
-  // const renderDay = () => {
-  //   const dayHeaders = [];
-  //   const selectedDateObj = new Date(selectedDate);
-
-  //   for (let i = 0; i < 7; i++) {
-  //     const currentDateObj = new Date(selectedDateObj);
-  //     currentDateObj.setDate(selectedDateObj.getDate() + i);
-  //     const dayOfMonth = currentDateObj.getDate();
-  //     dayHeaders.push(<th key={i} style={{ }} >{dayOfMonth}</th>);
-  //   }
-
-  //   return dayHeaders;
-  // };
-
-  // const renderWeekdays = () => {
-  //   const dayHeaders = [];
-  //   const selectedDateObj = new Date(selectedDate);
-
-  //   for (let i = 0; i < 7; i++) {
-  //     const currentDateObj = new Date(selectedDateObj);
-  //     currentDateObj.setDate(selectedDateObj.getDate() + i);
-  //     const dayOfWeek = currentDateObj.toLocaleDateString("en-US", {
-  //       weekday: "long",
-  //     });
-  //     dayHeaders.push(<th key={i} >{dayOfWeek}</th>);
-  //   }
-
-  //   return dayHeaders;
-  // };
-
-
   const renderDay = () => {
     const dayHeaders = [];
     const startOfWeek = getStartOfWeek(selectedDate);
@@ -93,34 +62,6 @@ const WorkScheduleTable = ({ isEditing, workSchedule, setWorkSchedule }) => {
     return dayHeaders;
   };
 
-  // const renderStaffOptions = (index) => {
-  //   const handleStaffSelect = (event) => {
-  //     const updatedSelections = [...staffSelections];
-  //     updatedSelections[index] = event.target.value;
-  //     setStaffSelections(updatedSelections);
-  //   };
-    
-  //   return  (
-  //     <FormControl fullWidth style={{marginTop: '3.5px', marginBottom: '3.5px'}}>
-  //       <InputLabel id={`demo-simple-select-label-${index}`} >Staff</InputLabel>
-  //       <Select
-  //         labelId={`demo-simple-select-label-${index}`}
-  //         id={`demo-simple-select-${index}`}
-  //         value={staffSelections[index] || ""}
-  //         label="Staff"
-  //         onChange={handleStaffSelect}
-  //         style={{width: '100%',}}
-  //       >
-  //         {users.map((user) => (
-  //           <MenuItem key={user.id} value={user}>
-  //             <span style={{fontSize: '14px'}}>{user.Name}</span>
-  //           </MenuItem>
-  //         ))}
-  //       </Select>
-  //     </FormControl>
-  //   );
-  // };
-
   const handleStaffSelect = (dayIndex, timeIndex, shiftIndex) => (event) => {
     const updatedSchedule = [...workSchedule];
     updatedSchedule[dayIndex][timeIndex][shiftIndex] = event.target.value;
@@ -140,16 +81,30 @@ const WorkScheduleTable = ({ isEditing, workSchedule, setWorkSchedule }) => {
             onChange={handleStaffSelect(dayIndex, timeIndex, shiftIndex)}
             style={{ width: '100%' }}
           >
+            <MenuItem key="" value="">
+              <span style={{ fontSize: "14px" }}>Bỏ chọn</span>
+            </MenuItem>
             {users.map((user) => (
               <MenuItem key={user.id} value={user.Name}>
-                <span style={{ fontSize: '14px' }}>{user.Name}</span>
+                <span style={{ fontSize: '14px', borderBottom: '1px solid #ccc', display: 'block', paddingBottom: '2px' }}>{user.Name}</span>
               </MenuItem>
             ))}
           </Select>
         </FormControl>
       );
     } else {
-      return <div>{workSchedule[dayIndex][timeIndex][shiftIndex]}</div>;
+      return (
+        <div style={{ paddingBottom: '2px' }}>
+          {workSchedule[dayIndex][timeIndex][shiftIndex] ? (
+            <div style={{ borderBottom: '1px solid #ccc', paddingBottom: '2px', alignItems:"center" }}>
+              {workSchedule[dayIndex][timeIndex][shiftIndex]}
+            </div>
+          ) : (
+            <span>{workSchedule[dayIndex][timeIndex][shiftIndex]}</span>
+          )}
+        </div>
+        
+      )
     }
   };
 
@@ -159,20 +114,26 @@ const WorkScheduleTable = ({ isEditing, workSchedule, setWorkSchedule }) => {
         {`
           .work-schedule-table {
             border-collapse: collapse;
+            alignItems:center
           }
 
           .work-schedule-table th, .work-schedule-table td {
             border: 1px solid black;
             padding: 3px;
             text-align: center;
+            width: 200px
           }
 
           .work-schedule-table th {
-            background-color: #f2f2f2;
+            background-color: #DEB99F;
           }
 
           .work-schedule-table td {
             background-color: #f2f2f2;
+          }
+
+          .work-schedule-table thead {
+            background-color: "red";
           }
 
           .work-schedule-table tbody tr:nth-child(even) {
@@ -182,65 +143,6 @@ const WorkScheduleTable = ({ isEditing, workSchedule, setWorkSchedule }) => {
         `}
       </style>
 
-      {/* <table className="work-schedule-table">
-        <thead>
-          <tr>
-            <th style={{}}>
-              <div className="date-picker" style={{ }} >
-                <input
-                  type="date"
-                  id="date"
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  style={{width: '90%', borderWidth: '0'}}
-                />
-              </div>
-            </th>
-            {selectedDate && renderDay()}
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="header-row">
-            <th >Thời gian</th>
-            {selectedDate && renderWeekdays()}
-          </tr>
-          <tr>
-            <td>
-              Sáng <br />
-              07:30 - 12:30
-            </td>
-            {Array.from({ length: 7 }).map((_, index) => (
-              <td key={index}>
-                {renderStaffOptions(index)}
-                {renderStaffOptions(index+7)}
-                {renderStaffOptions(index+14)}
-              </td>
-            ))}
-          </tr>
-          <tr>
-            <td>
-              Chiều <br /> 12:30 - 17:30
-            </td>
-            {Array.from({ length: 7 }).map((_, index) => (
-              <td key={index}>
-                {renderStaffOptions(index+21)}
-                {renderStaffOptions(index+28)}
-                {renderStaffOptions(index+35)}
-              </td>
-            ))}
-          </tr>
-          <td>
-            Tối <br /> 17:30 - 22:30
-          </td>
-            {Array.from({ length: 7 }).map((_, index) => (
-              <td key={index}>
-                {renderStaffOptions(index+42)}
-                {renderStaffOptions(index+49)}
-                {renderStaffOptions(index+56)}
-              </td>
-            ))}
-        </tbody>
-      </table> */}
       <table className="work-schedule-table">
         <thead>
           <tr>

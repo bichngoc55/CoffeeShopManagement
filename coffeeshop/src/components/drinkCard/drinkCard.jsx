@@ -6,7 +6,13 @@ import AcUnitOutlinedIcon from "@mui/icons-material/AcUnitOutlined";
 import DescriptionText from "../DescriptionText//DescriptionText";
 import { useReactToPrint } from "react-to-print";
 import { IconButton } from "@mui/material";
-const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
+const DrinkCard = ({
+  items,
+  searchTerm,
+  onDrinkClick,
+  onDrinkSelected,
+  selectedDrinkType,
+}) => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMood, setMood] = useState("");
@@ -22,12 +28,13 @@ const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
     setSugar("");
     setSelectedCardId(null);
   };
-  const handleCardClick = (id) => {
+  const handleCardClick = (id, item) => {
     if (id !== selectedCardId) {
       resetSelections();
     }
     setSelectedCardId(id);
     console.log(id);
+    onDrinkSelected(item);
   };
 
   const handleMoodClick = (mood) => {
@@ -77,7 +84,7 @@ const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
         results.map((item, id) => {
           return (
             <div key={item._id} className="drink-card">
-              <Card onClick={() => handleCardClick(item._id)}>
+              <Card onClick={() => handleCardClick(item._id, item)}>
                 <CardContent>
                   <div className="above">
                     <img
