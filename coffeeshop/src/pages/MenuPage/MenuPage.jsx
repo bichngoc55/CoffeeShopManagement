@@ -12,6 +12,7 @@ import FreeBreakfastOutlinedIcon from "@mui/icons-material/FreeBreakfastOutlined
 import LocalBarOutlinedIcon from "@mui/icons-material/LocalBarOutlined";
 import EggOutlinedIcon from "@mui/icons-material/EggOutlined";
 import { getDrinkInformation } from "../../services/drinkService";
+import axios from "axios";
 import SearchBar from "../../components/searchBar/searchbar";
 import WalletOutlinedIcon from "@mui/icons-material/WalletOutlined";
 import { IconButton } from "@mui/material";
@@ -22,7 +23,7 @@ import BillCard from "../../components/billCard/billCard";
 import PrintSection from "./printSection";
 import ModifyDialog from "../../components/ModifyDialog/ModifyDialog";
 import { QRCodeDisplay } from "./QRCode";
-
+import { DeleteConfirmationModal } from "../../components/DeleteConfirmationModal";
 const MenuPage = () => {
   const [drinksData, setDrinksData] = useState([]);
   const [results, setResults] = useState([]);
@@ -33,6 +34,7 @@ const MenuPage = () => {
   const [selectedIce, setIce] = useState("100");
   const [billItems, setBillItems] = useState([]);
   const [selectedSugar, setSugar] = useState("100");
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [selectedDrinkType, setSelectedDrinkType] = useState("");
   const [totalPirce, setTotalPrice] = useState(0);
   const [shouldRenderPrintSection, setShouldRenderPrintSection] =
@@ -88,7 +90,7 @@ const MenuPage = () => {
         const savedBillDetails = await fetchBillDetails(billId);
         setSavedBillDetails(savedBillDetails);
         setIsVisible(true);
-        setShowQRCode(true);
+        if (payment === "Digital") setShowQRCode(true);
         // Wait for state to update
         return new Promise((resolve) => {
           setTimeout(() => {
@@ -103,7 +105,12 @@ const MenuPage = () => {
   });
   const updateTableStatus = async (tableId) => {
     try {
-      await fetch(`http://localhost:3005/booking/${tableId}`, {
+      // Get current date and time
+      const currentDate = new Date().toISOString().split("T")[0];
+      const currentTime = new Date().toLocaleTimeString("en-US", {
+        hour12: false,
+      });
+      const response = await fetch(`http://localhost:3005/booking/${tableId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -111,6 +118,32 @@ const MenuPage = () => {
         },
         body: JSON.stringify({ status: "occupied" }),
       });
+      const bookingData = {
+        customerName: "N/A",
+        bookingDate: currentDate,
+        bookingTime: currentTime,
+      };
+
+      const bookingResponse = await fetch(
+        `http://localhost:3005/booking/add/hehe/${tableId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(bookingData),
+        }
+      );
+
+      if (!bookingResponse.ok) {
+        throw new Error(`HTTP error! status: ${bookingResponse.status}`);
+      }
+
+      // console.log("Table status and booking information updated");
+      console.log("Table status updated", bookingResponse);
+      console.log("Table status updated", response);
+
       fetchAvailableTables();
     } catch (error) {
       console.error("Error:", error);
@@ -316,17 +349,48 @@ const MenuPage = () => {
   const handleAddDrink = async (drink) => {
     setShowModal(true);
     try {
+      let photoUrl = null;
+
+      if (drink.Photo) {
+        const formdata = new FormData();
+        formdata.append("file", drink.Photo);
+        formdata.append("upload_preset", "Searn-musicapp");
+        formdata.append("cloud_name", "dzdso60ms");
+
+        try {
+          const cloudinaryResponse = await axios.post(
+            "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
+            formdata,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          photoUrl = cloudinaryResponse.data.url;
+          console.log("Photo uploaded to Cloudinary:", photoUrl);
+        } catch (error) {
+          console.error("Error uploading photo to Cloudinary:", error);
+        }
+      }
+
+      const drinkData = {
+        ...drink,
+        Photo: photoUrl,
+      };
+
       const response = await fetch("http://localhost:3005/menu/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(drink),
+        body: JSON.stringify(drinkData),
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       const data = await response.json();
       console.log("New drink added: ", data);
       setDrinksData((prevDrinks) => [...prevDrinks, data]);
@@ -336,22 +400,29 @@ const MenuPage = () => {
     }
   };
 
-  const handleDeleteDrink = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:3005/menu/${id}`, {
-        method: "DELETE",
-      });
+  const handleConfirmDelete = async (id) => {
+    if (selectedDrink) {
+      try {
+        const response = await fetch(
+          `http://localhost:3005/menu/${selectedDrink._id}`,
+          {
+            method: "DELETE",
+          }
+        );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Deleted drink: ", data);
+        setDrinksData((prevDrinks) =>
+          prevDrinks.filter((drink) => drink._id !== selectedDrink._id)
+        );
+        setShowDeleteConfirmation(false);
+        setSelectedDrink(null);
+      } catch (error) {
+        console.error("Error:", error);
       }
-      const data = await response.json();
-      console.log("Deleted drink: ", data);
-      setDrinksData((prevDrinks) =>
-        prevDrinks.filter((drink) => drink._id !== id)
-      );
-    } catch (error) {
-      console.error("Error:", error);
     }
   };
   const handleShowModifyDialog = () => {
@@ -447,7 +518,7 @@ const MenuPage = () => {
               />
               <button
                 className="btn"
-                onClick={() => handleDeleteDrink(selectedDrink._id)}
+                onClick={() => setShowDeleteConfirmation(true)}
               >
                 Delete Drink
               </button>
@@ -580,6 +651,14 @@ const MenuPage = () => {
               />
             )}
           </div>
+          {selectedDrink && (
+            <DeleteConfirmationModal
+              isOpen={showDeleteConfirmation}
+              onClose={() => setShowDeleteConfirmation(false)}
+              onConfirm={handleConfirmDelete}
+              selectedDrink={selectedDrink}
+            />
+          )}
         </div>
       </Box>
     </Box>

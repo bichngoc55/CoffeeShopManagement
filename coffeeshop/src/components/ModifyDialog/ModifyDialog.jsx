@@ -55,7 +55,7 @@ const ModifyDialog = ({ onClose, drink, handleUpdateChange }) => {
         }}
       >
         <DialogTitle sx={{ fontFamily: "Montserrat", fontSize: "1.5em" }}>
-          Modify Drink
+          Modify {drink?.Name}
         </DialogTitle>
         <IconButton sx={{ marginRight: "2%" }} onClick={onClose}>
           <CloseIcon />
@@ -69,7 +69,7 @@ const ModifyDialog = ({ onClose, drink, handleUpdateChange }) => {
           type="text"
           variant="standard"
           fullWidth
-          value={modifiedDrink.Name}
+          value={modifiedDrink?.Name}
           onChange={handleChange}
           sx={{
             "& .MuiInputBase-input": {
@@ -85,7 +85,7 @@ const ModifyDialog = ({ onClose, drink, handleUpdateChange }) => {
           type="number"
           fullWidth
           variant="standard"
-          value={modifiedDrink.Price}
+          value={modifiedDrink?.Price}
           onChange={handleChange}
           sx={{
             "& .MuiOutlinedInput-root": {
@@ -109,7 +109,7 @@ const ModifyDialog = ({ onClose, drink, handleUpdateChange }) => {
           <Select
             labelId="drink-type-label"
             name="Type"
-            value={modifiedDrink.Type}
+            value={modifiedDrink?.Type}
             onChange={handleChange}
             sx={{
               "& .MuiInputBase-input": {
@@ -133,7 +133,7 @@ const ModifyDialog = ({ onClose, drink, handleUpdateChange }) => {
           variant="standard"
           multiline
           rows={3}
-          value={modifiedDrink.Description}
+          value={modifiedDrink?.Description}
           onChange={handleChange}
           sx={{
             "& .MuiInputBase-input": {
