@@ -10,17 +10,7 @@ import Booking from "../models/Booking.js";
 // };
 const parseBookingTime = (bookingDate, bookingTime) => {
   const date = new Date(bookingDate);
-
-  // Tách giờ, phút và định dạng AM/PM
-  const [time, modifier] = bookingTime.split(" ");
-  let [hours, minutes] = time.split(":").map(Number);
-
-  // Nếu giờ không có phút, mặc định là 00
-  if (isNaN(minutes)) minutes = 0;
-
-  if (modifier === "pm" && hours < 12) hours += 12;
-  if (modifier === "am" && hours === 12) hours = 0;
-
+  const [hours, minutes] = bookingTime.split(":").map(Number);
   date.setHours(hours, minutes, 0, 0);
   return date;
 };
@@ -32,36 +22,37 @@ const getAllBooking = async (req, res) => {
     // Lấy tất cả các bảng từ cơ sở dữ liệu
     const tables = await Booking.find();
 
-    tables.forEach((table) => {
-      if (table.Booking.length > 0) {
-        let isBooked = false;
-
-        table.Booking.forEach((booking) => {
+    const updatedTables = tables.map((table) => {
+      if (table.Booking && table.Booking.length > 0) {
+        console.log(
+          table.tableNumber + " co so booking la :" + table.Booking.length
+        );
+        const isBooked = table.Booking.some((booking) => {
           const bookingDateTime = parseBookingTime(
             booking.bookingDate,
             booking.bookingTime
           );
+          const timeDifference =
+            (currentDate - bookingDateTime) / (1000 * 60 * 60); // Chuyển đổi thành giờ
 
-          // Nếu bookingDate và bookingTime đã đến hoặc đã qua, đánh dấu là "booked"
-          if (bookingDateTime <= currentDate) {
-            isBooked = true;
-          }
+          // Đánh dấu là "booked" nếu thời gian hiện tại nằm trong khoảng từ thời điểm đặt đến 5 giờ sau đó
+          return currentDate >= bookingDateTime && timeDifference < 5;
         });
 
-        // Cập nhật trạng thái của table dựa trên trạng thái của các booking
-        table.status = isBooked ? "booked" : "available";
-      } else {
-        // Nếu không có booking, trạng thái của table là "available"
-        table.status = "available";
+        if (isBooked) {
+          table.status = "booked";
+        } else if (table.status != "occupied" && table.status == "booked") {
+          table.status = "available";
+        }
       }
+
+      return table;
     });
 
     // Lưu các thay đổi vào cơ sở dữ liệu
-    for (const table of tables) {
-      await table.save();
-    }
+    await Promise.all(updatedTables.map((table) => table.save()));
 
-    res.status(200).json(tables);
+    res.status(200).json(updatedTables);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
