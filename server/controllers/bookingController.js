@@ -10,17 +10,7 @@ import Booking from "../models/Booking.js";
 // };
 const parseBookingTime = (bookingDate, bookingTime) => {
   const date = new Date(bookingDate);
-
-  // Tách giờ, phút và định dạng AM/PM
-  const [time, modifier] = bookingTime.split(" ");
-  let [hours, minutes] = time.split(":").map(Number);
-
-  // Nếu giờ không có phút, mặc định là 00
-  if (isNaN(minutes)) minutes = 0;
-
-  if (modifier === "pm" && hours < 12) hours += 12;
-  if (modifier === "am" && hours === 12) hours = 0;
-
+  const [hours, minutes] = bookingTime.split(":").map(Number);
   date.setHours(hours, minutes, 0, 0);
   return date;
 };
@@ -32,36 +22,35 @@ const getAllBooking = async (req, res) => {
     // Lấy tất cả các bảng từ cơ sở dữ liệu
     const tables = await Booking.find();
 
-    tables.forEach((table) => {
-      if (table.Booking.length > 0) {
-        let isBooked = false;
-
-        table.Booking.forEach((booking) => {
+    const updatedTables = tables.map((table) => {
+      if (table.Booking && table.Booking.length > 0) {
+        console.log(
+          table.tableNumber + " co so booking la :" + table.Booking.length
+        );
+        const isBooked = table.Booking.some((booking) => {
           const bookingDateTime = parseBookingTime(
             booking.bookingDate,
             booking.bookingTime
           );
+          const timeDifference =
+            (currentDate - bookingDateTime) / (1000 * 60 * 60); // Chuyển đổi thành giờ
 
-          // Nếu bookingDate và bookingTime đã đến hoặc đã qua, đánh dấu là "booked"
-          if (bookingDateTime <= currentDate) {
-            isBooked = true;
-          }
+          // Đánh dấu là "booked" nếu thời gian hiện tại nằm trong khoảng từ thời điểm đặt đến 5 giờ sau đó
+          return currentDate >= bookingDateTime && timeDifference < 5;
         });
 
-        // Cập nhật trạng thái của table dựa trên trạng thái của các booking
-        table.status = isBooked ? "booked" : "available";
-      } else {
-        // Nếu không có booking, trạng thái của table là "available"
-        table.status = "available";
+        if (isBooked) {
+          table.status = "booked";
+        }
       }
+
+      return table;
     });
 
     // Lưu các thay đổi vào cơ sở dữ liệu
-    for (const table of tables) {
-      await table.save();
-    }
+    await Promise.all(updatedTables.map((table) => table.save()));
 
-    res.status(200).json(tables);
+    res.status(200).json(updatedTables);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -83,6 +72,7 @@ const getDetailBooking = async (req, res) => {
 // Update a booking
 const updateBooking = async (req, res) => {
   try {
+    console.log("req body inside update : ", req.body);
     const booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
@@ -148,10 +138,48 @@ const addBookingSchedule = async (req, res) => {
       numberOfPeople,
       phoneNumberBooking,
       note,
-      status,
     } = req.body;
 
     let booking = await Booking.findOne({ tableNumber });
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    const newBookingEntry = {
+      customerName,
+      bookingDate: new Date(bookingDate),
+      bookingTime,
+      numberOfPeople,
+      phoneNumberBooking,
+      note,
+    };
+
+    booking.Booking.push(newBookingEntry);
+    await booking.save();
+
+    res.status(200).json({ message: "Booking updated successfully", booking });
+  } catch (error) {
+    console.error("Error updating booking:", error);
+    res
+      .status(500)
+      .json({ message: "Error updating booking", error: error.message });
+  }
+};
+const addBookingScheduleId = async (req, res) => {
+  try {
+    const { tableId } = req.params;
+    console.log("tableId: " + tableId);
+    const {
+      customerName,
+      bookingDate,
+      bookingTime,
+      numberOfPeople,
+      phoneNumberBooking,
+      note,
+    } = req.body;
+
+    let booking = await Booking.findById(tableId);
 
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
@@ -231,6 +259,7 @@ export {
   updateBookingSchedule,
   addBookingSchedule,
   addBooking,
+  addBookingScheduleId,
   deleteBooking,
   deleteBookingSchedule,
 };

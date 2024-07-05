@@ -18,22 +18,9 @@ import { logoutUser } from "../../redux/authSlice.js";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import Item from "./Item";
 import "./dashBoard.css";
-const Item = ({ title, to, icon, selected, setSelected }) => {
-  return (
-    <MenuItem
-      active={selected === title}
-      style={{
-        color: selected === title ? "#412D26" : "#8D817D",
-        backgroundColor: selected === title ? "#AA7E6D" : "transparent",
-      }}
-      onClick={() => setSelected(title)}
-      icon={icon}
-    >
-      <Link to={to}>{title}</Link>.
-    </MenuItem>
-  );
-};
 
 const DashBoard = () => {
   const theme = useTheme();
@@ -44,12 +31,40 @@ const DashBoard = () => {
   const { Ava, Name, Position } = useSelector((state) => state.auths.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    setSelected("Home");
     if (Position === "admin") setAdmin(true);
     else setAdmin(false);
-  }, [Position]);
+
+    // Set the selected item based on the current path
+    switch (location.pathname) {
+      case "/home":
+        setSelected("Home");
+        break;
+      case "/menu":
+        setSelected("Menu");
+        break;
+      case "/history":
+        setSelected("History");
+        break;
+      case "/staff":
+        setSelected("Staff");
+        break;
+      case "/inventory":
+        setSelected("Inventory");
+        break;
+      case "/booking":
+        setSelected("Booking");
+        break;
+      case "/analytics":
+        setSelected("Analytics");
+        break;
+      default:
+        setSelected("");
+    }
+  }, [Position, location.pathname]);
+
   const handleLogout = async () => {
     try {
       console.log("Trong hanle log out: ");
@@ -60,6 +75,7 @@ const DashBoard = () => {
       console.error("Logout failed:", error);
     }
   };
+
   return (
     <Sidebar
       className="sidebar-container"
@@ -80,12 +96,9 @@ const DashBoard = () => {
             },
             "&:hover": {
               color: "#714534 !important",
-              backgroundColor: "##8D817D !important",
+              backgroundColor: "#EFEFEF !important",
             },
           },
-          // display: "flex",
-          // alignItems: "center",
-          // padding: "8px 16px",
         }}
       >
         {/* LOGO AND MENU ICON */}
@@ -94,30 +107,29 @@ const DashBoard = () => {
           icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
           style={{
             margin: "10px 0 10px 0",
-            height:"auto",
-            alignItems:"center",
+            height: "auto",
+            alignItems: "center",
           }}
         >
           {!isCollapsed && (
             <Box display="flex" flexDirection={"row"}>
-              <Box
-                display="flex"
-                flexDirection={"column"}
-                alignItems="center"
-              >
+              <Box display="flex" flexDirection={"column"} alignItems="center">
                 <img
                   alt="logo JavaJoy"
                   src="../../assets/logo_JavaJoy.png"
                   className="logo-image"
-                  style={{ width: "50%",}}
+                  style={{ width: "50%" }}
                 />
-                <Typography fontSize={30} fontFamily={"NerkoOne-Regular"}>JAVA JOY</Typography>
+                <Typography fontSize={30} fontFamily={"NerkoOne-Regular"}>
+                  JAVA JOY
+                </Typography>
               </Box>
               <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                <MenuOutlinedIcon style={{alignSelf: 'flex-start',justifySelf:"right"}}/>
+                <MenuOutlinedIcon
+                  style={{ alignSelf: "flex-start", justifySelf: "right" }}
+                />
               </IconButton>
             </Box>
-            
           )}
         </MenuItem>
 

@@ -57,6 +57,7 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
   };
 
   const handleFileChange = (event) => {
+    console.log("event.target.files : ", event.target.files);
     const file = event.target.files[0];
     setNewDrink((prevData) => ({
       ...prevData,
