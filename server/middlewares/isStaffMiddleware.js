@@ -1,3 +1,5 @@
+import User from "../models/User.js";
+
 // export const isStaffMiddleware = async (req, res, next) => {
 //     try {
 //         // Get the user ID from the request object
@@ -19,7 +21,6 @@
 //         res.status(500).json({ error: 'Internal server error' });
 //     }
 // };
-import User from "../models/User.js";
 export const checkAdmin = async (req, res, next) => {
   try {
     const { id } = req.user;

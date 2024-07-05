@@ -8,6 +8,19 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+// const textFieldStyles = {
+//   "& .MuiOutlinedInput-root": {
+//     "& fieldset": {
+//       borderColor: "grey", // Default border color
+//     },
+//     "&:hover fieldset": {
+//       borderColor: "#9398A8", // Border color on hover
+//     },
+//     "&.Mui-focused fieldset": {
+//       borderColor: "#9398A9", // Border color when focused
+//     },
+//   },
+// };
 const textFieldStyles = {
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
@@ -20,7 +33,9 @@ const textFieldStyles = {
       borderColor: "#9398A9", // Border color when focused
     },
   },
+  width: "300px",
 };
+
 const style = {
   position: "absolute",
   top: "50%",

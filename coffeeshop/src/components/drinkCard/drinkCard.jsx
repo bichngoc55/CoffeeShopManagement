@@ -6,7 +6,13 @@ import AcUnitOutlinedIcon from "@mui/icons-material/AcUnitOutlined";
 import DescriptionText from "../DescriptionText//DescriptionText";
 import { useReactToPrint } from "react-to-print";
 import { IconButton } from "@mui/material";
-const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
+const DrinkCard = ({
+  items,
+  searchTerm,
+  onDrinkClick,
+  onDrinkSelected,
+  selectedDrinkType,
+}) => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMood, setMood] = useState("");
@@ -14,6 +20,17 @@ const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
   const [selectedIce, setIce] = useState("");
   const [selectedSugar, setSugar] = useState("");
   const [selectedCardId, setSelectedCardId] = useState(null);
+  const calculateAdjustedPrice = (basePrice, size) => {
+    // console.log("size 3: ", size);
+    switch (size) {
+      case "M":
+        return basePrice + 5;
+      case "L":
+        return basePrice + 10;
+      default:
+        return basePrice;
+    }
+  };
 
   const resetSelections = () => {
     setMood("");
@@ -22,12 +39,14 @@ const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
     setSugar("");
     setSelectedCardId(null);
   };
-  const handleCardClick = (id) => {
+  const handleCardClick = (id, item) => {
     if (id !== selectedCardId) {
       resetSelections();
     }
     setSelectedCardId(id);
+
     console.log(id);
+    onDrinkSelected(item);
   };
 
   const handleMoodClick = (mood) => {
@@ -77,7 +96,7 @@ const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
         results.map((item, id) => {
           return (
             <div key={item._id} className="drink-card">
-              <Card onClick={() => handleCardClick(item._id)}>
+              <Card onClick={() => handleCardClick(item._id, item)}>
                 <CardContent>
                   <div className="above">
                     <img
@@ -102,7 +121,7 @@ const DrinkCard = ({ items, searchTerm, onDrinkClick, selectedDrinkType }) => {
                         fontFamily="Montserrat"
                         padding-top="15%"
                       >
-                        {item.Price} VND
+                        {calculateAdjustedPrice(item.Price, selectedSize)} VND
                       </Typography>
                     </div>
                   </div>

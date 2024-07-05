@@ -21,6 +21,7 @@ import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
 import BillCard from "../../components/billCard/billCard";
 import PrintSection from "./printSection";
 import ModifyDialog from "../../components/ModifyDialog/ModifyDialog";
+import { QRCodeDisplay } from "./QRCode";
 
 const MenuPage = () => {
   const [drinksData, setDrinksData] = useState([]);
@@ -45,7 +46,7 @@ const MenuPage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [showModifyDialog, setShowModifyDialog] = useState(false);
   const [payment, setPayment] = useState("");
-
+  const [showQRCode, setShowQRCode] = useState(false);
   //payment
   const handlePayment = async (type) => {
     if (type === "cash") {
@@ -62,20 +63,41 @@ const MenuPage = () => {
 
   //print function
   const componentRef = useRef();
+  // const handlePrint = useReactToPrint({
+  //   content: () => componentRef.current,
+  //   onBeforePrint: async () => {
+  //     if (billItems.length > 0) {
+  //       const billId = await saveBillToDatabase();
+  //       const savedBillDetails = await fetchBillDetails(billId);
+  //       console.log(
+  //         "savedBillDetails: ",
+  //         JSON.stringify(savedBillDetails, null, 2)
+  //       );
+  //       setSavedBillDetails(savedBillDetails);
+  //       setIsVisible(true);
+  //     } else {
+  //       alert("Nothing to print in the bill!");
+  //     }
+  //   },
+  // });
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-    onBeforePrint: async () => {
+    onBeforeGetContent: async () => {
       if (billItems.length > 0) {
         const billId = await saveBillToDatabase();
         const savedBillDetails = await fetchBillDetails(billId);
-        // console.log(
-        //   "savedBillDetails: ",
-        //   JSON.stringify(savedBillDetails, null, 2)
-        // );
         setSavedBillDetails(savedBillDetails);
         setIsVisible(true);
+        setShowQRCode(true);
+        // Wait for state to update
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, 500);
+        });
       } else {
         alert("Nothing to print in the bill!");
+        return false;
       }
     },
   });
@@ -105,6 +127,7 @@ const MenuPage = () => {
       });
 
       const data = await response.json();
+      console.log("table data: ", data);
       const availableData = data.filter(
         (table) => table.status === "available"
       );
@@ -138,15 +161,19 @@ const MenuPage = () => {
     }
   };
   const saveBillToDatabase = async () => {
+    // console.log("billItems,", billItems);
     const items = billItems.map((item) => ({
       drink: item.drink._id,
       quantity: item.quantity,
+      price: item.drink.Price,
       percentOfSugar: item.sugar,
       size: item.size,
       hotOrCold: item.mood,
       percentOfIce: item.ice,
     }));
+    // console.log("items:", items);
     const tableNo = availableTables[0]._id;
+    // console.log(tableNo);
     const postData = {
       items,
       totalAmount: totalPirce,
@@ -155,7 +182,7 @@ const MenuPage = () => {
       Staff: user._id,
       PhuThu: 0,
     };
-
+    // console.log("postData: ", postData);
     try {
       const response = await fetch("http://localhost:3005/history/add", {
         method: "POST",
@@ -187,6 +214,38 @@ const MenuPage = () => {
   useEffect(() => {
     fetchAvailableTables();
   }, []);
+  const handleDrinkModify = (drinkModify) => {
+    setSelectedDrink(drinkModify);
+  };
+  const handleUpdateChange = async (modifiedDrink) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3005/menu/${selectedDrink._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(modifiedDrink),
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+      setDrinksData((prevDrinks) =>
+        prevDrinks.map((drink) =>
+          drink._id === selectedDrink._id ? { ...drink, ...data } : drink
+        )
+      );
+      const updatedDrinks = await getDrinkInformation();
+      setDrinksData(updatedDrinks);
+
+      setShowModifyDialog(false);
+      setSelectedDrink(null);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   const handleDrinkClick = (
     drink,
     selectedMood,
@@ -195,11 +254,18 @@ const MenuPage = () => {
     selectedSugar
   ) => {
     setClickCount(clickCount + 1);
+    console.log("den day r");
     setSelectedDrink(drink);
     setMood(selectedMood);
     setSize(selectedSize);
     setIce(selectedIce);
     setSugar(selectedSugar);
+    let adjustedPrice = drink.Price;
+    if (selectedSize === "M") {
+      adjustedPrice += 5;
+    } else if (selectedSize === "L") {
+      adjustedPrice += 10;
+    }
     const existingItemIndex = billItems.findIndex(
       (item) =>
         item.drink.id === drink.id &&
@@ -214,7 +280,7 @@ const MenuPage = () => {
       setBillItems(newBillItems);
     } else {
       const newBillItem = {
-        drink: drink,
+        drink: { ...drink, Price: adjustedPrice },
         mood: selectedMood,
         size: selectedSize,
         ice: selectedIce,
@@ -247,16 +313,51 @@ const MenuPage = () => {
   const handleHideModal = () => {
     setShowModal(false);
   };
-  const handleAddDrink = (drink) => {
+  const handleAddDrink = async (drink) => {
     setShowModal(true);
+    try {
+      const response = await fetch("http://localhost:3005/menu/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(drink),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("New drink added: ", data);
+      setDrinksData((prevDrinks) => [...prevDrinks, data]);
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
-  const handleDeleteDrink = (drinkId) => {
-    const newBillItems = billItems.filter((item) => item.drink.id !== drinkId);
-    setBillItems(newBillItems);
+  const handleDeleteDrink = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3005/menu/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Deleted drink: ", data);
+      setDrinksData((prevDrinks) =>
+        prevDrinks.filter((drink) => drink._id !== id)
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
   const handleShowModifyDialog = () => {
     setShowModifyDialog(true);
+    // if(selectedDrink)
+    console.log("Drink of selected: ", selectedDrink);
   };
   const handleHideModifyDialog = () => {
     setShowModifyDialog(false);
@@ -337,8 +438,8 @@ const MenuPage = () => {
             </Typography>
             <div className="ButtonComponent">
               <button className="btn" onClick={handleAddDrink}>
-                Thêm Món
-              </button> 
+                Add Drink
+              </button>
               <Modal2
                 open={showModal}
                 onClose={handleShowModal}
@@ -348,16 +449,16 @@ const MenuPage = () => {
                 className="btn"
                 onClick={() => handleDeleteDrink(selectedDrink._id)}
               >
-                Xoá Món
+                Delete Drink
               </button>
               <button className="btn" onClick={handleShowModifyDialog}>
-                Sửa Món
+                Modify Drink
               </button>
-              {showModal && <Modal2 onClose={handleHideModal} />}
               {showModifyDialog && (
                 <ModifyDialog
                   onClose={handleHideModifyDialog}
                   drink={selectedDrink}
+                  handleUpdateChange={handleUpdateChange}
                 />
               )}
             </div>
@@ -367,6 +468,7 @@ const MenuPage = () => {
               items={drinksData}
               searchItems={results}
               onDrinkClick={handleDrinkClick}
+              onDrinkSelected={handleDrinkModify}
               selectedDrinkType={selectedDrinkType}
             />
           </Box>
@@ -450,7 +552,7 @@ const MenuPage = () => {
                 Print Bill
               </button>
             </div>
-            <div ref={componentRef}>
+            {/* <div ref={componentRef}>
               {shouldRenderPrintSection && (
                 <PrintSection
                   shouldRenderPrintSection={shouldRenderPrintSection}
@@ -458,7 +560,25 @@ const MenuPage = () => {
                   savedBill={savedBillDetails}
                 />
               )}
+            </div> */}
+            <div style={{ display: "none" }}>
+              <div ref={componentRef}>
+                <PrintSection
+                  shouldRenderPrintSection={shouldRenderPrintSection}
+                  Name={Name}
+                  savedBill={savedBillDetails}
+                  billItems={billItems}
+                  totalPrice={totalPirce}
+                  payment={payment}
+                />
+              </div>
             </div>
+            {showQRCode && savedBillDetails && (
+              <QRCodeDisplay
+                billId={savedBillDetails._id}
+                onClose={() => setShowQRCode(false)}
+              />
+            )}
           </div>
         </div>
       </Box>

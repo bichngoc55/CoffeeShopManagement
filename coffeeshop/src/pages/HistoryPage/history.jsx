@@ -50,7 +50,10 @@ const History = () => {
       });
       const data = await response.json();
       console.log(data);
-      fetchBillData();
+      setBillData((prevBillData) =>
+        prevBillData.filter((bill) => bill._id !== id)
+      );
+      setBillCount((prevCount) => prevCount - 1);
     } catch (error) {
       console.error("Failed to fetch bill data:", error);
     }
@@ -89,7 +92,7 @@ const History = () => {
 
     const csvRows = [];
     csvRows.push(headers.join(","));
-
+    console.log("bill la : ", bills);
     bills.forEach((bill) => {
       const {
         _id,
@@ -101,7 +104,7 @@ const History = () => {
         createdAt,
       } = bill;
       const orderItems = items
-        .map((item) => `${item.name} (${item.quantity})`)
+        .map((item) => `${item.drink.Name} (${item.quantity})`)
         .join(", ");
       const row = [
         _id,
@@ -293,7 +296,7 @@ const History = () => {
         </Box>
 
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <Table style={{ width: 1150 }} aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell
@@ -370,10 +373,33 @@ const History = () => {
                 <StyledTableCell align="center">Option</StyledTableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {billData.map((bill) => (
-                <BillRow data={bill} handleDelete={handleDelete} />
-              ))}
+            <TableBody
+              style={{
+                width: "100%",
+              }}
+            >
+              {billData.length > 0 ? (
+                billData.map((bill) => (
+                  <BillRow
+                    key={bill._id}
+                    data={bill}
+                    handleDelete={handleDelete}
+                  />
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} align="center">
+                    <Typography
+                      marginLeft="3%"
+                      color="#412D26"
+                      fontSize="1.2em"
+                      fontWeight="bold"
+                    >
+                      No data available for this period
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
