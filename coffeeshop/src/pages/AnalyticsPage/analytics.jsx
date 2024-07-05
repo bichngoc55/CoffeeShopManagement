@@ -46,6 +46,11 @@ const Analytics = () => {
   const [currentMonthRevenue, setCurrentMonthRevenue] =useState()
   const [currentYearRevenue, setCurrentYearRevenue] =useState()
 
+  //tổng loại hình thanh toán
+  const [todayPaymentMethods, setTodayPaymentMethods] = useState({ Cash: 0, Digital: 0 });
+  const [monthPaymentMethods, setMonthPaymentMethods] = useState({ Cash: 0, Digital: 0 });
+  const [yearPaymentMethods, setYearPaymentMethods] = useState({ Cash: 0, Digital: 0 });
+
   //tròn số lượng từng món nước
   const [todayDrinksQuantity, setTodayDrinksQuantity] = useState({});
   const [currentMonthDrinksQuantity, setCurrentMonthDrinksQuantity] = useState({});
@@ -56,6 +61,10 @@ const Analytics = () => {
   const [todayRevenueData, setTodayRevenueData] = useState([]);
   const [monthRevenueData, setMonthRevenueData] = useState([]);
   const [yearRevenueData, setYearRevenueData] = useState([]);
+
+  const [todayRevenuePerDrink, setTodayRevenuePerDrink] = useState({});
+  const [monthRevenuePerDrink, setMonthRevenuePerDrink] = useState({});
+  const [yearRevenuePerDrink, setYearRevenuePerDrink] = useState({});
    // Hàm lấy tất cả các hóa đơn từ database 
   const getAllOrder = async (startDate = '', endDate = '') => {
     try {
@@ -87,6 +96,27 @@ const Analytics = () => {
     const monthOrders = await getAllOrder(startOfMonth, endOfMonth);
     const yearOrders = await getAllOrder(startOfYear, endOfYear);
 
+    //lấy số lượng của top5 món bán chạy nhất  
+    const getTop5Drinks = (drinksQuantity) => {
+      return Object.entries(drinksQuantity)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .reduce((obj, [key, value]) => {
+          obj[key] = value;
+          return obj;
+        }, {});
+    };
+
+    const getTop5RevenuePerDrink = (revenuePerDrink) => {
+      return Object.entries(revenuePerDrink)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .reduce((obj, [key, value]) => {
+          obj[key] = value;
+          return obj;
+        }, {});
+    };
+
     // Tính toán số lượng khách hàng và doanh thu
     const calculateMetrics = (orders) => {
       const customers = orders.length;
@@ -102,8 +132,27 @@ const Analytics = () => {
         });
         return acc;
       }, {});
-
-      return { customers, revenue, drinksQuantity, orders  };
+    
+      const paymentMethods = orders.reduce((acc, order) => {
+        acc[order.PaymentMethod] = (acc[order.PaymentMethod] || 0) + 1;
+        return acc;
+      }, { Cash: 0, Digital: 0 });
+    
+      //tính toán tổng số doanh thu của từng loại đồ uống
+      const revenuePerDrink = orders.reduce((acc, order) => {
+        order.items.forEach(item => {
+          const drinkId = item.drink.toString();
+          const revenue = item.quantity * item.price;
+          if (acc[drinkId]) {
+            acc[drinkId] += revenue;
+          } else {
+            acc[drinkId] = revenue;
+          }
+        });
+        return acc;
+      }, {});
+    
+      return { customers, revenue, drinksQuantity, paymentMethods, revenuePerDrink, orders };
     };
 
     const todayMetrics = calculateMetrics(todayOrders);
@@ -112,17 +161,30 @@ const Analytics = () => {
 
     setTodayCustomers(todayMetrics.customers);
     setTodayRevenue(todayMetrics.revenue);
-    setTodayDrinksQuantity(todayMetrics.drinksQuantity);
+    setTodayPaymentMethods(todayMetrics.paymentMethods);
+    setTodayDrinksQuantity(getTop5Drinks(todayMetrics.drinksQuantity));
+    setTodayRevenuePerDrink(getTop5RevenuePerDrink(todayMetrics.revenuePerDrink));
 
     setCurrentMonthCustomers(monthMetrics.customers);
     setCurrentMonthRevenue(monthMetrics.revenue);
-    setCurrentMonthDrinksQuantity(monthMetrics.drinksQuantity);
+    setMonthPaymentMethods(monthMetrics.paymentMethods);
+    setCurrentMonthDrinksQuantity(getTop5Drinks(monthMetrics.drinksQuantity));
+    setMonthRevenuePerDrink(getTop5RevenuePerDrink(monthMetrics.revenuePerDrink));
 
     setCurrentYearCustomers(yearMetrics.customers);
     setCurrentYearRevenue(yearMetrics.revenue);
-    setCurrentYearDrinksQuantity(yearMetrics.drinksQuantity);
+    setYearPaymentMethods(yearMetrics.paymentMethods);
+    setCurrentYearDrinksQuantity(getTop5Drinks(yearMetrics.drinksQuantity));
+    setYearRevenuePerDrink(getTop5RevenuePerDrink(yearMetrics.revenuePerDrink));
+    console.log('Year Revenue Per Drink Data:', {
+      labels: Object.keys(yearRevenuePerDrink).map(getDrinkName),
+      datasets: [{
+        data: Object.values(yearRevenuePerDrink),
+        backgroundColor: ['#659839', '#395632', '#A3AF9E', '#708238', '#8A9A5B'],
+      }]
+    });
 
-    // Fetch names for today's drinks
+    // Fetch names for today's drinks 
     await fetchAllDrinkNames(Object.keys(todayMetrics.drinksQuantity));
     await fetchAllDrinkNames(Object.keys(monthMetrics.drinksQuantity));
     await fetchAllDrinkNames(Object.keys(yearMetrics.drinksQuantity));
@@ -131,6 +193,7 @@ const Analytics = () => {
     setTodayRevenueData(calculateRevenueByTime(todayMetrics.orders, 'day'));
     setMonthRevenueData(calculateRevenueByTime(monthMetrics.orders, 'month'));
     setYearRevenueData(calculateRevenueByTime(yearMetrics.orders, 'year'));
+
   };
 
   useEffect(() => {
@@ -200,10 +263,6 @@ const Analytics = () => {
   const yearDrinksLabels = Object.keys(currentYearDrinksQuantity).map(getDrinkName);
   const yearDrinksData = Object.values(currentYearDrinksQuantity);
 
-  // const options = {
-  //   responsive: true,
-  //   maintainAspectRatio: false
-  // };
 
   const fetchDrinkNameById = async (id) => {
     try {
@@ -236,16 +295,6 @@ const Analytics = () => {
     }
     setDrinkNames(names);
   };
-
-  const data2 = {
-    labels: ['One', 'Two', 'Three'],
-    datasets: [
-      {
-        data: [2, 6, 4],
-        backgroundColor: ['#704332', '#DEB99F', '#55433C'],
-      }
-    ]
-  }
 
   const todayRevenueBarData = {
     labels: ['07:30 - 12:30', '12:30 - 17:30', '17:30 - 22:30'],
@@ -352,7 +401,14 @@ const Analytics = () => {
               <div className='squareCard card'>
                 <a className='label_text' style={{alignSelf: 'flex-start', }}>Price per drink</a>
                 <Pie 
-                  data={data2}   
+                  data={{
+                    labels: Object.keys(todayRevenuePerDrink).map(getDrinkName),
+                    datasets: [
+                      {
+                        data: Object.values(todayRevenuePerDrink),
+                        backgroundColor: ['#704332', '#9F8170','#DEB99F', '#4B3621', '#6F4E37']
+                      }
+                    ]}}   
                   options={options2}   
                 />
               </div>
@@ -366,8 +422,8 @@ const Analytics = () => {
                   <a className='normal_text' style={{  }}>{todayCustomers}</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
-                  <a className='normal_text' style={{  }}>100</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start', textAlign:"left"}}>Payment Method (Cash/Digital): </a>
+                  <a className='normal_text' style={{  }}>{todayPaymentMethods.Cash}/{todayPaymentMethods.Digital}</a>
                 </div>
               </div>
             </div>
@@ -400,8 +456,15 @@ const Analytics = () => {
               <div className='squareCard card'>
                 <a className='label_text' style={{alignSelf: 'flex-start', }}>Price per drink</a>
                 <Pie 
-                  data={data2}   
-                  options={options2}   
+                  data={{
+                    labels: Object.keys(monthRevenuePerDrink).map(getDrinkName),
+                    datasets: [
+                      {
+                        data: Object.values(monthRevenuePerDrink),
+                        backgroundColor:  ['#704332', '#9F8170','#DEB99F', '#4B3621', '#6F4E37']
+                      }
+                    ]}}   
+                  options={options2}    
                 />
               </div>
               <div className='flex' style={{ flexDirection: 'column', justifyContent: 'space-between', width:  '20%'}}>
@@ -414,8 +477,8 @@ const Analytics = () => {
                   <a className='normal_text' style={{  }}>{currentMonthCustomers}</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
-                  <a className='normal_text' style={{  }}>100</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start', textAlign:"left"}}>Payment Method (Cash/Digital): </a>
+                  <a className='normal_text' style={{  }}>{monthPaymentMethods.Cash}/{monthPaymentMethods.Digital}</a>
                 </div>
               </div>
             </div>
@@ -448,8 +511,15 @@ const Analytics = () => {
               <div className='squareCard card'>
                 <a className='label_text' style={{alignSelf: 'flex-start', }}>Price per drink</a>
                 <Pie 
-                  data={data2}   
-                  options={options2}   
+                  data={{
+                    labels: Object.keys(yearRevenuePerDrink).map(getDrinkName),
+                    datasets: [
+                      {
+                        data: Object.values(yearRevenuePerDrink),
+                        backgroundColor:  ['#704332', '#9F8170','#DEB99F', '#4B3621', '#6F4E37']
+                      }
+                    ]}}   
+                  options={options2}    
                 />
               </div>
               <div className='flex' style={{ flexDirection: 'column', justifyContent: 'space-between', width:  '20%'}}>
@@ -462,8 +532,8 @@ const Analytics = () => {
                   <a className='normal_text' style={{  }}>{currentYearCustomers}</a>
                 </div>
                 <div className='smallRectangleCard card'> 
-                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start'}}>Chưa biết</a>
-                  <a className='normal_text' style={{  }}>100</a>
+                  <a className='label_text' style={{alignSelf: 'flex-start', justifySelf: 'flex-start', textAlign:"left"}}>Payment Method (Cash/Digital): </a>
+                  <a className='normal_text' style={{  }}>{yearPaymentMethods.Cash}/{yearPaymentMethods.Digital}</a>
                 </div>
               </div>
             </div>

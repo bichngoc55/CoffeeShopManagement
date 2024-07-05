@@ -50,7 +50,7 @@
 }
 
 .coffeeMenuTitle {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bold;
 
   font-family: Montserrat;
@@ -65,15 +65,13 @@
 .cardDrink {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
   margin-top: 20px;
-  width: 100%;
 }
 .btn {
   gap: 5%;
-  background-color: #704332;
+  background-color: #ffffff;
   border-radius: 5px;
-  color: #ffffff;
+  color: #704332;
   width: 100%;
   height: 90%;
   border-color: black;

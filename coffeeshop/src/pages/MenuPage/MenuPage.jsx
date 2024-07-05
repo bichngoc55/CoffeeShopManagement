@@ -370,16 +370,16 @@ const MenuPage = () => {
         sx={{
           width: "100%",
           flexDirection: "row",
-          backgroundColor: "#F9F8FB",
+          backgroundColor: "#4B3621",
         }}
       >
         <div className="menu-section">
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography
-              className="headerText"
-              fontSize={24}
+              className="medium_text"
+              fontSize={28}
               fontWeight={"bold"}
-              color="#412D26"
+              color="white"
             >
               Choose category
             </Typography>
@@ -432,7 +432,7 @@ const MenuPage = () => {
               className="coffeeMenuTitle"
               fontSize={22}
               fontWeight={"bold"}
-              color="#412D26"
+              color="white"
             >
               Coffee Menu
             </Typography>
