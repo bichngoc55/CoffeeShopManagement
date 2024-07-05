@@ -18,6 +18,7 @@ import historyRoutes from "./routes/history.js";
 import authRoutes from "./routes/auth.js";
 import menuRoutes from "./routes/menu.js";
 import workScheduleRoutes from "./routes/workSchedule.js"
+import homeContentRoutes from "./routes/homeContent.js"
 import { verifyToken } from "./middlewares/authMiddleware.js";
 import toppingRoutes from "./routes/topping.js";
 //config
@@ -75,6 +76,8 @@ app.use("/booking", bookingRoutes);
 app.use("/history", historyRoutes);
 app.use("/menu", menuRoutes);
 app.use("/workSchedule", workScheduleRoutes)
+app.use("/homeContent", homeContentRoutes)
+
 //connect to mongodb
 mongoose
   .connect(process.env.URI)

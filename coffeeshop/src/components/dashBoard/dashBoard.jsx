@@ -109,9 +109,9 @@ const DashBoard = () => {
                   alt="logo JavaJoy"
                   src="../../assets/logo_JavaJoy.png"
                   className="logo-image"
-                  style={{ width: "50%",}}
+                  style={{ width: "30%",}}
                 />
-                <Typography fontSize={30} fontFamily={"NerkoOne-Regular"}>JAVA JOY</Typography>
+                <Typography fontSize={26} fontFamily={"NerkoOne-Regular"}>JAVA JOY</Typography>
               </Box>
               <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                 <MenuOutlinedIcon style={{alignSelf: 'flex-start',justifySelf:"right"}}/>

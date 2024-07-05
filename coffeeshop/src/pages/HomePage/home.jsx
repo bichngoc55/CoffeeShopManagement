@@ -9,7 +9,7 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
 
 import DashBoard from "../../components/dashBoard/dashBoard";
-import { Box } from "@mui/material";
+import { Box, TextField, Button, Typography } from "@mui/material";
 import "./home.css";
 import WorkScheduleTable from "./WorkSchedule";
 import NotificationButton from "./Notification";
@@ -18,6 +18,7 @@ import { SearchResultsList } from "../../components/searchBar/searchResultList";
 
 const HomePage = () => {
   const { token } = useSelector((state) => state.auths);
+  const { Ava, Name, Position } = useSelector((state) => state.auths.user);
 
   const [isEditing, setIsEditing] = useState([false, false, false]);
   const [isContentVisible, setIsContentVisible] = useState(false);
@@ -42,6 +43,107 @@ const HomePage = () => {
     };
   };
 
+
+  const [welcomeContent, setWelcomeContent] = useState("");
+  const [newWelcomeContent, setNewWelcomeContent] = useState("");
+  const [termsContent, setTermsContent] = useState("");
+  const [newTermsContent, setNewTermsContent] = useState("");
+
+  const formatContent = (content) => {
+    let listNumber = 0;
+    const formattedLines = content.split('\n').map((line, index) => {
+      if (line.trim().startsWith('-')) {
+        listNumber++;
+        return <li key={index}>{`${listNumber}. ${line.trim().substring(1).trim()}`}</li>;
+      }
+      return <p key={index}>{line}</p>;
+    });
+
+    return (
+      <>
+        {formattedLines.map((line, index) => 
+          line.type === 'li' ? <ul key={index}>{line}</ul> : line
+        )}
+      </>
+    );
+  };
+
+  const handleSave = (index) => {
+    return async () => {
+      await updateHomeContent();
+      (index === 0) ? setNewWelcomeContent(welcomeContent) : setNewTermsContent(termsContent)
+      setIsEditing((prevIsEditing) => {
+        const newIsEditing = [...prevIsEditing];
+        newIsEditing[index] = false;
+        return newIsEditing;
+      });
+    };
+  };
+
+  const handleCancel = (index) => {
+    return () => {
+      (index === 0) ? setWelcomeContent(newWelcomeContent) : setTermsContent(newTermsContent)
+      // Reset the content to what it was before editing
+      setIsEditing((prevIsEditing) => {
+        const newIsEditing = [...prevIsEditing];
+        newIsEditing[index] = false;
+        return newIsEditing;
+      });
+    }
+  };
+
+  const fetchWelcome = async () => {
+    try {
+      const response = await fetch(`http://localhost:3005/homeContent/6687249e21a8e565ceae8ad9`, {
+        method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,  // Đảm bảo rằng bạn đã có `token` ở đâu đó trong mã của bạn
+          },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setWelcomeContent(data.Welcome)
+        setNewWelcomeContent(data.Welcome)
+        setTermsContent(data.RegulationsAndTerms)
+        setNewTermsContent(data.RegulationsAndTerms)
+      } else {
+        console.error("Request get welcome's text failed with status:", response.status);
+      }
+    }
+    catch (error) {
+      console.error('Failed to fetch welcome', error);
+    }
+  }
+
+  const updateHomeContent = async () => {
+    try {
+      // Tạo một đối tượng chứa các thay đổi cần cập nhật
+      const updatedContent = {
+        Welcome: welcomeContent,
+        RegulationsAndTerms: termsContent,
+      };
+  
+      // Gửi yêu cầu PATCH đến API để lưu lịch làm việc mới
+      const response = await fetch(`http://localhost:3005/homeContent/6687249e21a8e565ceae8ad9/content`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Đảm bảo rằng bạn đã có `token` ở đâu đó trong mã của bạn
+        },
+        body: JSON.stringify(updatedContent),
+      });
+  
+      if (response.ok) {
+        console.log('Content đã được cập nhật thành công');
+      } else {
+        console.error('Không thể cập nhật Content', response.status);
+      }
+    } catch (error) {
+      console.error('Lỗi khi cập nhật Content', error);
+    }
+  };
+
   const [workSchedule, setWorkSchedule] = useState([
     [["", "", ""], ["", "", ""], ["", "", ""]],
     [["", "", ""], ["", "", ""], ["", "", ""]],
@@ -63,7 +165,7 @@ const HomePage = () => {
     [["", "", ""], ["", "", ""], ["", "", ""]],
   ]);
 
-  const handleSaveChanges = () => {
+  const handleSaveWorkScheduleChanges = () => {
     // Lưu thay đổi vào cơ sở dữ liệu
     // Cập nhật originalWorkSchedule
     setOriginalWorkSchedule(JSON.parse(JSON.stringify(workSchedule))); // Deep copy
@@ -76,7 +178,7 @@ const HomePage = () => {
       updateWorkSchedule()
   };
 
-  const handleCancelChanges = () => {
+  const handleCancelWorkScheduleChanges = () => {
     console.log('Original Work Schedule:', originalWorkSchedule);
     if (originalWorkSchedule && Array.isArray(originalWorkSchedule) && originalWorkSchedule.length > 0) {
       setWorkSchedule(JSON.parse(JSON.stringify(originalWorkSchedule))); // Deep copy
@@ -188,6 +290,7 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchWorkSchedule();
+    fetchWelcome();
   }, []);
 
   return (
@@ -216,13 +319,15 @@ const HomePage = () => {
               className="notification-button"
               onClick={toggleNotificationList}
             >
-              <div style={{ width: "70%", position: "relative" }}>
-                <img
-                  alt="profile-user"
-                  loading="lazy"
-                  src="../../assets/avtUser.png"
-                  className="avatar-image"
-                />
+              <div style={{ width: "70%", position: "relative",  aspectRatio: "1/1", overflow: "hidden", }}>
+                <div style={{aspectRatio: "1/1", overflow: "hidden", borderRadius:"100%"}}>
+                  <img
+                    alt="profile-user"
+                    // loading="lazy"
+                    src={Ava}
+                    className="avatar-image"
+                  />
+                </div>
                 <NotificationsNoneRoundedIcon
                   className="notification-icon"
                   style={{ color: isNotificationShown ? "red" : "inherit" }}
@@ -241,53 +346,80 @@ const HomePage = () => {
             className="large_text font-semibold"
             style={{ marginTop: "4%", textAlign: "left", color: "#714534" }}
           >
-            Hello [Name]!
+            Hello {Name}!
           </a>
           <div className="line" />
 
           <div className=''>
             {/* <a className='title'> Welcome to JavaJoy! </a> */}
-            <div style={{ display: 'flex',flexDirection: 'row', justifyContent: 'space-between'}}>
+            <div style={{ display: 'flex',flexDirection: 'row', justifyContent: 'space-between', justifyContent: 'space-between', alignItems:'center'}}>
               <a className='title'> Welcome to JavaJoy! </a>
-              <button onClick={toggleIsEditing(0)} className='icon' style={{ justifySelf: 'flex-end' }}>
-                {isEditing[0] ? (
+              {Position === 'admin' && (
                 <div>
-                  <SaveRoundedIcon style={{  }} />
-                  <DisabledByDefaultRoundedIcon />
+                  {isEditing[0] ? (
+                    <div>
+                      <button onClick={handleSave(0)} className='icon' style={{ marginRight: '10px' }}>
+                        <SaveRoundedIcon />
+                      </button>
+                      <button onClick={handleCancel(0)} className='icon'>
+                        <DisabledByDefaultRoundedIcon />
+                      </button>
+                    </div>
+                  ) : (
+                    <button onClick={toggleIsEditing(0)} className='icon' style={{ justifySelf: 'flex-end' }}>
+                      <EditRoundedIcon/>
+                    </button>
+                  )}
                 </div>
-                ) : <EditRoundedIcon/>}
-              </button>
+              )}
             </div>
             <br/>
             <div style={{marginLeft: '2%'}}>
-              <a className='small_text'> 
-                We have been eagerly awaiting this moment to meet and work together.
-                JavaJoy is thrilled to welcome each new member to our family. Let's
-                create unforgettable experiences and build an amazing work
-                environment together.<br/> Be ready to explore, innovate, and achieve
-                remarkable success.Welcome to our team! <br/> Best regards, <br/> JavaJoy
-              </a>
+              {isEditing[0] ? (
+                <TextField
+                  variant="outlined"
+                  value={welcomeContent}
+                  onChange={(e) => setWelcomeContent(e.target.value)}
+                  multiline
+                  rows={10}
+                  fullWidth
+                />
+              ) : (
+                <div className='small_text'>
+                  {formatContent(welcomeContent)}
+                </div>
+              )}
             </div>
           </div>
           <div className="line" />
 
           <div className="">
             {/* Regulations and Terms */}
-            <div className='title' style={{ display: 'flex',flexDirection: 'row',}}>
+            <div className='title' style={{ display: 'flex',flexDirection: 'row', justifyContent: 'space-between', alignItems:'center'}}>
               <div>
                 <a > Regulations and Terms  </a>
                 <button onClick={handleToggleClick} className='icon'>
                   {isContentVisible ? <ArrowDropDownRoundedIcon /> : <ArrowDropDownRoundedIcon style={{ transform: 'rotate(-90deg)' }}/>}
                 </button>
               </div>
-              <button onClick={toggleIsEditing(1)} className='icon' style={{ marginLeft: 'auto' }}>
-                {isEditing[1] ? (
+              {Position === 'admin' && (
                 <div>
-                  <SaveRoundedIcon style={{  }} />
-                  <DisabledByDefaultRoundedIcon />
+                  {isEditing[1] ? (
+                    <div>
+                      <button onClick={handleSave(1)} className='icon' style={{ marginRight: '10px' }}>
+                        <SaveRoundedIcon />
+                      </button>
+                      <button onClick={handleCancel(1)} className='icon'>
+                        <DisabledByDefaultRoundedIcon />
+                      </button>
+                    </div>
+                  ) : (
+                    <button onClick={toggleIsEditing(1)} className='icon' style={{ justifySelf: 'flex-end' }}>
+                      <EditRoundedIcon/>
+                    </button>
+                  )}
                 </div>
-                ) : <EditRoundedIcon/>}
-              </button>
+              )}
             </div>
             <br />
             <div
@@ -296,101 +428,48 @@ const HomePage = () => {
               }`}
               style={{ marginLeft: "2%" }}
             >
-              <a className="small_text">
-                Here are some terms and conditions for you and other employees
-                in JavaJoy to help us work together better:
-              </a>
-              <ol
-                className="small_text"
-                style={{
-                  listStyleType: "decimal",
-                  marginLeft: "1em",
-                  marginTop: "0",
-                }}
-              >
-                <li>
-                  Working hours: Employees must adhere to the designated work
-                  schedule and ensure punctuality. If there are any changes to
-                  the work schedule, employees need to provide advance notice
-                  and seek permission from the manager/supervisor.
-                </li>
-                <li>
-                  Professional ethics: Employees must work professionally,
-                  honestly, and with a sense of responsibility. They must comply
-                  with the café's rules and regulations and avoid causing harm
-                  to the café's image and reputation.
-                </li>
-                <li>
-                  Maintain hygiene: Employees must maintain good personal
-                  hygiene and adhere to the industry's hygiene regulations. This
-                  includes keeping clothing, hair, and nails clean, refraining
-                  from smoking in the café area, and following food hygiene
-                  regulations.
-                </li>
-                <li>
-                  Occupational safety: Employees must comply with occupational
-                  safety rules and regulations. They should use appropriate
-                  personal protective equipment, such as masks and gloves when
-                  necessary. Immediately report any safety incidents or hazards
-                  to the manager/supervisor.
-                </li>
-                <li>
-                  Maintain a respectful attitude: Employees must treat everyone
-                  in the café, including colleagues and customers, with respect
-                  and a positive attitude. They should not discriminate based on
-                  gender, age, race, religion, nationality, or any other
-                  factors.
-                </li>
-                <li>
-                  Information security: Employees must protect customer and café
-                  information, refraining from unauthorized disclosure or use of
-                  information. They should maintain transparency and avoid any
-                  misuse of data.
-                </li>
-                <li>
-                  Compliance with regulations: Employees must adhere to all café
-                  policies, procedures, and relevant laws and regulations,
-                  including labor laws
-                </li>
-              </ol>
-              <a className="small_text">
-                These terms and conditions aim to ensure a professional, safe,
-                positive, and fair working environment in the café. If there are
-                any issues, employees should discuss them with the café
-                manager/supervisor.
-              </a>
+              {isEditing[1] ? (
+                <TextField
+                  variant="outlined"
+                  value={termsContent}
+                  onChange={(e) => setTermsContent(e.target.value)}
+                  multiline
+                  rows={10}
+                  fullWidth
+                />
+              ) : (
+                <div className='small_text'>
+                  {formatContent(termsContent)}
+                </div>
+              )}
             </div>
           </div>
           <div className="line" />
 
           <div className=''> 
-            <div style={{ display: 'flex',flexDirection: 'row', justifyContent: 'space-between'}}>
+            <div style={{ display: 'flex',flexDirection: 'row', justifyContent: 'space-between', alignItems:'center'}}>
               <a className='title'>Work Schedule</a>
-              {/* <button onClick={toggleIsEditing(2)} className='icon' style={{ justifySelf: 'flex-end' }}>
-                {isEditing[2] ? (
+              {Position === 'admin' && (
                 <div>
-                  <SaveRoundedIcon style={{  }} />
-                  <DisabledByDefaultRoundedIcon />
+                  {isEditing[2] ? (
+                    <div>
+                      <button onClick={handleSaveWorkScheduleChanges} className='icon' style={{ marginRight: '10px' }}>
+                        <SaveRoundedIcon />
+                      </button>
+                      <button onClick={handleCancelWorkScheduleChanges} className='icon'>
+                        <DisabledByDefaultRoundedIcon />
+                      </button>
+                    </div>
+                  ) : (
+                    <button onClick={toggleIsEditing(2)} className='icon' style={{ justifySelf: 'flex-end' }}>
+                      <EditRoundedIcon/>
+                    </button>
+                  )}
                 </div>
-                ) : <EditRoundedIcon/>}
-              </button> */}
-              {isEditing[2] ? (
-                <div>
-                  <button onClick={handleSaveChanges} className='icon' style={{ marginRight: '10px' }}>
-                    <SaveRoundedIcon />
-                  </button>
-                  <button onClick={handleCancelChanges} className='icon'>
-                    <DisabledByDefaultRoundedIcon />
-                  </button>
-                </div>
-              ) : (
-                <button onClick={toggleIsEditing(2)} className='icon' style={{ justifySelf: 'flex-end' }}>
-                  <EditRoundedIcon/>
-                </button>
               )}
             </div>
             <div style={{marginTop: '3%',}}>
-            <WorkScheduleTable isEditing={isEditing[2]} workSchedule={workSchedule} setWorkSchedule={setWorkSchedule} />
+              <WorkScheduleTable isEditing={isEditing[2]} workSchedule={workSchedule} setWorkSchedule={setWorkSchedule} />
             </div>
           </div>
         </div>

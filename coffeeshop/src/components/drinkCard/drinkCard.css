@@ -1,10 +1,13 @@
 .container {
   display: flex;
-  flex-direction: row;
+  width: 100%;
+  max-width: 1200px; /* hoặc bất kỳ giá trị phù hợp nào */
+  flex-wrap: wrap;
   height: auto;
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  gap: 16px
 }
 @media (max-width: 768px) {
   .drink-card {
@@ -14,7 +17,7 @@
 }
 .drink-card {
   width: 45%;
-  margin-bottom: 20px;
+  /* flex: 1 1 calc(50% - 16px);  */
   border-radius: 20px;
 
   transition: background-color 0.3s ease;
