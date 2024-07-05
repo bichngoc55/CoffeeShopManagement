@@ -161,9 +161,41 @@ const MenuPage = () => {
 
       const data = await response.json();
       console.log("table data: ", data);
-      const availableData = data.filter(
-        (table) => table.status === "available"
-      );
+      // const availableData = data.filter(
+      //   (table) => table.status === "available"
+      // );
+      // if (availableData.length === 0) {
+      //   console.log("Không còn bàn trống");
+      //   return;
+      // }
+      // setAvailableTables(availableData);
+      const currentDate = new Date();
+      const availableData = data.filter((table) => {
+        if (table.status !== "available") return false;
+
+        if (table.Booking.length === 0) return true;
+
+        return !table.Booking.some((booking) => {
+          const bookingDate = new Date(booking.bookingDate);
+          const bookingTime = booking.bookingTime.split(":");
+          bookingDate.setHours(
+            parseInt(bookingTime[0]),
+            parseInt(bookingTime[1])
+          );
+          if (
+            bookingDate.getDate() === currentDate.getDate() &&
+            bookingDate.getMonth() === currentDate.getMonth() &&
+            bookingDate.getFullYear() === currentDate.getFullYear()
+          ) {
+            // Tính khoảng thời gian giữa thời gian hiện tại và bookingTime
+            const timeDiff = (bookingDate - currentDate) / (1000 * 60 * 60); // Chuyển đổi thành giờ
+
+            // Nếu khoảng thời gian nhỏ hơn 4 giờ, không thêm vào danh sách available
+            return timeDiff >= 0 && timeDiff < 3;
+          }
+          return false;
+        });
+      });
       if (availableData.length === 0) {
         console.log("Không còn bàn trống");
         return;

@@ -11,7 +11,6 @@ import Booking from "../models/Booking.js";
 const parseBookingTime = (bookingDate, bookingTime) => {
   const date = new Date(bookingDate);
   const [hours, minutes] = bookingTime.split(":").map(Number);
-  const [hours, minutes] = bookingTime.split(":").map(Number);
   date.setHours(hours, minutes, 0, 0);
   return date;
 };
@@ -23,12 +22,6 @@ const getAllBooking = async (req, res) => {
     // Lấy tất cả các bảng từ cơ sở dữ liệu
     const tables = await Booking.find();
 
-    const updatedTables = tables.map((table) => {
-      if (table.Booking && table.Booking.length > 0) {
-        console.log(
-          table.tableNumber + " co so booking la :" + table.Booking.length
-        );
-        const isBooked = table.Booking.some((booking) => {
     const updatedTables = tables.map((table) => {
       if (table.Booking && table.Booking.length > 0) {
         console.log(
@@ -48,7 +41,7 @@ const getAllBooking = async (req, res) => {
 
         if (isBooked) {
           table.status = "booked";
-        } else if (table.status != "occupied" && table.status == "booked") {
+        } else if (table.status !== "occupied" && table.status === "booked") {
           table.status = "available";
         }
       }
@@ -58,9 +51,7 @@ const getAllBooking = async (req, res) => {
 
     // Lưu các thay đổi vào cơ sở dữ liệu
     await Promise.all(updatedTables.map((table) => table.save()));
-    await Promise.all(updatedTables.map((table) => table.save()));
 
-    res.status(200).json(updatedTables);
     res.status(200).json(updatedTables);
   } catch (error) {
     res.status(500).json({ error: error.message });
