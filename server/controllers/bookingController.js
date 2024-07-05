@@ -11,6 +11,7 @@ import Booking from "../models/Booking.js";
 const parseBookingTime = (bookingDate, bookingTime) => {
   const date = new Date(bookingDate);
   const [hours, minutes] = bookingTime.split(":").map(Number);
+  const [hours, minutes] = bookingTime.split(":").map(Number);
   date.setHours(hours, minutes, 0, 0);
   return date;
 };
@@ -22,6 +23,12 @@ const getAllBooking = async (req, res) => {
     // Lấy tất cả các bảng từ cơ sở dữ liệu
     const tables = await Booking.find();
 
+    const updatedTables = tables.map((table) => {
+      if (table.Booking && table.Booking.length > 0) {
+        console.log(
+          table.tableNumber + " co so booking la :" + table.Booking.length
+        );
+        const isBooked = table.Booking.some((booking) => {
     const updatedTables = tables.map((table) => {
       if (table.Booking && table.Booking.length > 0) {
         console.log(
@@ -51,7 +58,9 @@ const getAllBooking = async (req, res) => {
 
     // Lưu các thay đổi vào cơ sở dữ liệu
     await Promise.all(updatedTables.map((table) => table.save()));
+    await Promise.all(updatedTables.map((table) => table.save()));
 
+    res.status(200).json(updatedTables);
     res.status(200).json(updatedTables);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -74,6 +83,7 @@ const getDetailBooking = async (req, res) => {
 // Update a booking
 const updateBooking = async (req, res) => {
   try {
+    console.log("req body inside update : ", req.body);
     const booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
@@ -139,10 +149,48 @@ const addBookingSchedule = async (req, res) => {
       numberOfPeople,
       phoneNumberBooking,
       note,
-      status,
     } = req.body;
 
     let booking = await Booking.findOne({ tableNumber });
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    const newBookingEntry = {
+      customerName,
+      bookingDate: new Date(bookingDate),
+      bookingTime,
+      numberOfPeople,
+      phoneNumberBooking,
+      note,
+    };
+
+    booking.Booking.push(newBookingEntry);
+    await booking.save();
+
+    res.status(200).json({ message: "Booking updated successfully", booking });
+  } catch (error) {
+    console.error("Error updating booking:", error);
+    res
+      .status(500)
+      .json({ message: "Error updating booking", error: error.message });
+  }
+};
+const addBookingScheduleId = async (req, res) => {
+  try {
+    const { tableId } = req.params;
+    console.log("tableId: " + tableId);
+    const {
+      customerName,
+      bookingDate,
+      bookingTime,
+      numberOfPeople,
+      phoneNumberBooking,
+      note,
+    } = req.body;
+
+    let booking = await Booking.findById(tableId);
 
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
@@ -222,6 +270,7 @@ export {
   updateBookingSchedule,
   addBookingSchedule,
   addBooking,
+  addBookingScheduleId,
   deleteBooking,
   deleteBookingSchedule,
 };

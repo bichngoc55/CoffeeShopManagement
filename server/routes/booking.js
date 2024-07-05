@@ -6,6 +6,7 @@ import {
   addBooking,
   updateBooking,
   updateBookingSchedule,
+  addBookingScheduleId,
   deleteBooking,
   addBookingSchedule,
   deleteBookingSchedule,
@@ -19,6 +20,7 @@ router.get("/:id", verifyToken, getDetailBooking);
 /* CREATE */
 router.post("/add", addBooking);
 router.patch("/add/:tableNumber", addBookingSchedule);
+router.patch("/add/hehe/:tableId", addBookingScheduleId);
 
 /* UPDATE */
 router.patch("/:id", verifyToken, updateBooking);

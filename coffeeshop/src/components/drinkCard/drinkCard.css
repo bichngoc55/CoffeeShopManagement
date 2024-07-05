@@ -1,42 +1,23 @@
-.container {
-  display: flex;
-  width: 100%;
-  max-width: 1200px; /* hoặc bất kỳ giá trị phù hợp nào */
-  flex-wrap: wrap;
+.container2 {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr);
   height: auto;
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-  gap: 16px
+  width: 100%;
+  margin: 0 auto;
 }
-@media (max-width: 768px) {
-  .drink-card {
-    flex-basis: 100%;
-    max-width: none;
-  }
-}
+
 .drink-card {
-  width: 45%;
-  /* flex: 1 1 calc(50% - 16px);  */
+  width: 85%;
+  margin-bottom: 20px;
   border-radius: 20px;
 
   transition: background-color 0.3s ease;
-  background-color: aqua;
   transition: background-color 0.3s ease;
 }
 .drink-card:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-@media (max-width: 768px) {
-  .drink-card {
-    width: 100%;
-  }
-}
-@media (max-width: 768px) {
-  .drink-card {
-    width: 48%; /* Now it's 48% even on smaller screens */
-  }
-}
+
 .drink-card:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
