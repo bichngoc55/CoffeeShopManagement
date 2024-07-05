@@ -1,15 +1,15 @@
 import { verifyToken } from "../middlewares/authMiddleware.js";
 import express from "express";
 import {
-    getWeekSchedule,
-    updateWeekSchedule,
-} from "../controllers/workScheduleController.js";
+    getDetailContent,
+    updateContent,
+} from "../controllers/homeContentController.js";
 
 import { checkAdmin } from "../middlewares/isStaffMiddleware.js";
 const router = express.Router();
 
 /* READ */
-router.get("/", getWeekSchedule);
+router.get("/:id", verifyToken,  getDetailContent);
 /* UPDATE */
-router.patch("/:id/week", verifyToken, checkAdmin, updateWeekSchedule);
+router.patch("/:id/content", verifyToken,  updateContent);
 export default router;

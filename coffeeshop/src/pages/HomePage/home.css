@@ -16,6 +16,7 @@ html {
   font-size: 1rem;
   margin-top: 1.86%;
   margin-bottom: 1.86% ;
+  font-family: "Montserrat", sans-serif;
 }
 
 p {
@@ -91,8 +92,9 @@ height: 0;
 .avatar-image {
   width: auto;
   height: auto;
+  object-fit: cover;
+  overflow: hidden;
   cursor: pointer;
-  border-radius: 100%;
 }
 
 .notification-icon {

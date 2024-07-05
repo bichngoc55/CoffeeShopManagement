@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 // import { loginUser } from "../../services/loginService.js";
 import { loginUser } from "../../redux/authSlice.js";
 import { useSelector } from "react-redux";
+import { Typography } from "@mui/material";
 
 const LoginPage = () => {
   const [emailInput, setUsername] = useState("");
@@ -57,6 +58,15 @@ const LoginPage = () => {
     <form onSubmit={handleSubmit} className="login-page">
       <div className="image-section"></div>
       <div className="form-section">
+        <div className="logo">
+          <img
+            alt="logo JavaJoy"
+            src="../../assets/logo_JavaJoy.png"
+            className="logo-image"
+            style={{ width: "15%",}}
+          />
+          <Typography fontSize={30} fontFamily={"NerkoOne-Regular"} color={"#714534"}>JAVA JOY</Typography>
+        </div>
         <div className="form">
           <label className="welcome">WELCOME BACK</label>
 
