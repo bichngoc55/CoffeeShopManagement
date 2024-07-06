@@ -36,6 +36,7 @@ const Booking = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const [deleteSchedule, setDeleteSchedule] = useState();
 
   const [availableTables, setAvailableTables] = useState(0);
   const [occupiedTables, setOccupiedTables] = useState(0);
@@ -85,7 +86,6 @@ const Booking = () => {
   const AddTable = async () => {
     const newTable = {
       tableNumber: table.length + 1,
-      status: "available",
     };
     const response = await fetch("http://localhost:3005/booking/add", {
       method: "POST",
@@ -141,6 +141,7 @@ const Booking = () => {
       });
 
       if (response.ok) {
+        console.log("goi fetch data trong booking");
         const data = await response.json();
         setTable(data);
         const statusCount = data.reduce((count, item) => {
@@ -189,8 +190,14 @@ const Booking = () => {
 
   useEffect(() => {
     fetchData();
-    fetchBookings();
-  }, []);
+    if (selectedTable) {
+      fetchBookings();
+    }
+  }, [selectedTable]);
+  const ClickTable = (item) => {
+    setSelectedTable(item._id);
+    setSelectedNumber(item.tableNumber);
+  };
 
   return (
     <Box sx={{ display: "flex", backgroundColor: "#f9f8fb" }}>
@@ -247,9 +254,7 @@ const Booking = () => {
                   key={item._id}
                   style={{ color: containerColor }}
                   onClick={() => {
-                    setSelectedTable(item._id);
-                    setSelectedNumber(item.tableNumber);
-                    fetchBookings();
+                    ClickTable(item);
                   }}
                 >
                   <TableRestaurantIcon />
@@ -397,7 +402,12 @@ const Booking = () => {
                       <EditIcon fontSize="small" sx={{ marginRight: "5px" }} />
                       Edit
                     </Button>
-                    <Button onClick={handleClick}>
+                    <Button
+                      onClick={(e) => {
+                        handleClick(e);
+                        setDeleteSchedule(booking);
+                      }}
+                    >
                       <DeleteIcon
                         fontSize="small"
                         sx={{ marginRight: "5px" }}
@@ -413,7 +423,7 @@ const Booking = () => {
                         "aria-labelledby": "basic-button",
                       }}
                     >
-                      <MenuItem onClick={() => deleteBooking(booking)}>
+                      <MenuItem onClick={() => deleteBooking(deleteSchedule)}>
                         Sure
                       </MenuItem>
                       <MenuItem onClick={handleClose}>Cancel</MenuItem>

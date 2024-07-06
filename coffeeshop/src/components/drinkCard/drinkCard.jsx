@@ -87,7 +87,7 @@ const DrinkCard = ({
   }, [searchTerm, items, selectedDrinkType]);
 
   return (
-    <div className="container">
+    <div className="container2">
       {isLoading ? (
         <div className="loading-container">
           <Typography variant="h6">Loading...</Typography>
@@ -101,7 +101,11 @@ const DrinkCard = ({
                   <div className="above">
                     <img
                       className="image"
-                      src={`http://localhost:3005/assets/${item.Photo}`}
+                      src={
+                        item.Photo.startsWith("http://res.cloudinary")
+                          ? item.Photo
+                          : `http://localhost:3005/assets/${item.Photo}`
+                      }
                       alt={item.Name}
                     />{" "}
                     <div className="textComponent">
@@ -121,7 +125,10 @@ const DrinkCard = ({
                         fontFamily="Montserrat"
                         padding-top="15%"
                       >
-                        {calculateAdjustedPrice(item.Price, selectedSize)} VND
+                        {selectedCardId === item._id
+                          ? calculateAdjustedPrice(item.Price, selectedSize)
+                          : item.Price}{" "}
+                        VND
                       </Typography>
                     </div>
                   </div>
