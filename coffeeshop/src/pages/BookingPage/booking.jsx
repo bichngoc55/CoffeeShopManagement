@@ -36,6 +36,14 @@ const Booking = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const [anchorE2, setAnchorE2] = useState(null);
+  const open2 = Boolean(anchorE2);
+  const handleClick2 = (event) => {
+    setAnchorE2(event.currentTarget);
+  };
+  const handleClose2 = () => {
+    setAnchorE2(null);
+  };
   const [deleteSchedule, setDeleteSchedule] = useState();
 
   const [availableTables, setAvailableTables] = useState(0);
@@ -112,6 +120,7 @@ const Booking = () => {
     } else fetchData();
   };
   const deleteBooking = async (booking) => {
+    handleClose();
     const response = await fetch(
       `http://localhost:3005/booking/${selectedNumber}/${booking._id}`,
       {
@@ -197,6 +206,27 @@ const Booking = () => {
   const ClickTable = (item) => {
     setSelectedTable(item._id);
     setSelectedNumber(item.tableNumber);
+  };
+
+  const UpdateStatus = async (value) => {
+    handleClose2();
+    const response = await fetch(
+      `http://localhost:3005/booking/${selectedTable}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: value }),
+      }
+    );
+    if (!response.ok) {
+      if (response.status === 500) {
+        alert("Lỗi kết nối đến máy chủ");
+        navigate("/login");
+      }
+    } else fetchData();
   };
 
   return (
@@ -336,9 +366,28 @@ const Booking = () => {
         }}
       >
         <div className="bookinglist">
-          <label style={{ fontSize: "14px", fontWeight: "bold" }}>
+          <Button
+            onClick={handleClick2}
+            style={{ fontSize: "14px", fontWeight: "bold" }}
+          >
             Table {selectedNumber}
-          </label>
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorE2}
+            open={open2}
+            onClose={handleClose2}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={() => UpdateStatus("available")}>
+              Available
+            </MenuItem>
+            <MenuItem onClick={() => UpdateStatus("occupied")}>
+              Ocuppied
+            </MenuItem>
+          </Menu>
           <Button
             sx={{ fontSize: "14px", fontWeight: "bold" }}
             onClick={openModalAdd}
@@ -353,6 +402,7 @@ const Booking = () => {
             tableNumber={selectedNumber}
           />
         </div>
+
         <TableContainer component={Paper}>
           <Table aria-label="simple table">
             <TableHead>

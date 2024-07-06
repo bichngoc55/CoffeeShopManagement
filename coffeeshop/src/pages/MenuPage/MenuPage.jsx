@@ -24,6 +24,10 @@ import PrintSection from "./printSection";
 import ModifyDialog from "../../components/ModifyDialog/ModifyDialog";
 import { QRCodeDisplay } from "./QRCode";
 import { DeleteConfirmationModal } from "../../components/DeleteConfirmationModal";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+
 const MenuPage = () => {
   const [drinksData, setDrinksData] = useState([]);
   const [results, setResults] = useState([]);
@@ -49,6 +53,57 @@ const MenuPage = () => {
   const [showModifyDialog, setShowModifyDialog] = useState(false);
   const [payment, setPayment] = useState("");
   const [showQRCode, setShowQRCode] = useState(false);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+  const [deleteBillItem, setDeleteBillItem] = useState();
+  const [deleteIndex, setDeleteIndex] = useState(0);
+  const handleItemClick = (e, billItem, index) => {
+    // Thực hiện các hành động bạn muốn ở đây
+    console.log("Clicked item:", billItem);
+    setAnchorEl(e.currentTarget);
+    setDeleteBillItem(billItem);
+    setDeleteIndex(index);
+  };
+
+  const increase1quantity = (itemIncrease) => {
+    setBillItems(
+      billItems.map((item) => {
+        if (item.drink._id === itemIncrease.drink._id) {
+          return {
+            ...item,
+            quantity: item.quantity + 1,
+          };
+        }
+        return item;
+      })
+    );
+  };
+  const delete1quantity = (itemDelete) => {
+    if (deleteBillItem.quantity > 1) {
+      setBillItems(
+        billItems.map((item) => {
+          if (item.drink._id === itemDelete.drink._id && item.quantity > 0) {
+            return {
+              ...item,
+              quantity: item.quantity - 1,
+            };
+          }
+          return item;
+        })
+      );
+      console.log(deleteBillItem);
+    } else {
+      setBillItems(billItems.filter((_, index) => index !== deleteIndex));
+      handleCloseMenu();
+    }
+  };
   //payment
   const handlePayment = async (type) => {
     if (type === "cash") {
@@ -333,7 +388,7 @@ const MenuPage = () => {
     }
     const existingItemIndex = billItems.findIndex(
       (item) =>
-        item.drink.id === drink.id &&
+        item.drink._id === drink._id &&
         item.mood === selectedMood &&
         item.size === selectedSize &&
         item.ice === selectedIce &&
@@ -343,6 +398,7 @@ const MenuPage = () => {
       const newBillItems = [...billItems];
       newBillItems[existingItemIndex].quantity += 1;
       setBillItems(newBillItems);
+      console.log(billItems);
     } else {
       const newBillItem = {
         drink: { ...drink, Price: adjustedPrice },
@@ -489,6 +545,7 @@ const MenuPage = () => {
   const handleHideModifyDialog = () => {
     setShowModifyDialog(false);
   };
+
   return (
     <Box sx={{ display: "flex" }}>
       <DashBoard />
@@ -621,20 +678,59 @@ const MenuPage = () => {
         </div>
         <div className="bill-detail-container">
           <div className="bill-detail">
-            <Typography
-              color="#000009"
-              padding="10%"
-              fontSize="2em"
-              fontWeight="bold"
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "baseline",
+              }}
             >
-              Bill
-            </Typography>
+              <Typography
+                color="#000009"
+                padding="10%"
+                fontSize="2em"
+                fontWeight="bold"
+              >
+                Bill
+              </Typography>
+              <Button onClick={() => setBillItems([])}>
+                <Typography color="#000009" fontSize="1em">
+                  Clear All
+                </Typography>
+              </Button>
+            </div>
+
             {selectedDrink && (
               <BillCard
                 billItems={billItems}
                 calculateTotalPrice={calculateTotalPrice}
+                clickItem={handleItemClick}
+                inCrease1Quantity={increase1quantity}
+                delete1quantity={delete1quantity}
               />
             )}
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleCloseMenu}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  setBillItems(
+                    billItems.filter((_, index) => index !== deleteIndex)
+                  );
+                  handleCloseMenu();
+                }}
+              >
+                Delete drink
+              </MenuItem>
+              <MenuItem onClick={handleCloseMenu}>Cancel</MenuItem>
+            </Menu>
             <div className="hehe">
               --------------------------------------------------
             </div>
