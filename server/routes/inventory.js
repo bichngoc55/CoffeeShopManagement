@@ -6,15 +6,18 @@ import {
   createIngredient,
   getDetailIngredient,
   deleteIngredient,
+  ktraGanHetHan
 } from "../controllers/inventoryController.js";
 const router = express.Router();
 
 /* READ */
 router.get("/", getAllIngredients);
 /* READ */
-router.get("/:ingredientId", verifyToken, getDetailIngredient);
+router.get("/expired", verifyToken, ktraGanHetHan);
 /* CREATE */
 router.post("/add", createIngredient);
+/* READ */
+router.get("/:ingredientId", verifyToken, getDetailIngredient);
 /* UPDATE */
 router.patch("/:id", updateIngredient);
 /* DELETE */

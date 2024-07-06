@@ -48,7 +48,6 @@ const createIngredient = async (req, res) => {
       name,
       quantity,
       BaoQuan,
-      StaffName,
       unit,
       price,
       ExpiryDate,
@@ -64,7 +63,6 @@ const createIngredient = async (req, res) => {
       name,
       quantity,
       BaoQuan,
-      StaffName,
       unit,
       price,
       ExpiryDate,
@@ -91,6 +89,33 @@ const deleteIngredient = async (req, res) => {
     res.status(500).json({ error: "Failed to delete Ingredient" });
   }
 };
+
+export const ktraGanHetHan = async (req, res) => {
+  try {
+    const daysThreshold = 7;
+
+    const currentDate = new Date();
+    const thresholdDate = new Date(currentDate.getTime() + daysThreshold * 24 * 60 * 60 * 1000);
+
+    console.log(`Current Date: ${currentDate}`);
+    console.log(`Threshold Date: ${thresholdDate}`);
+
+    // Tìm các nguyên liệu có ngày hết hạn từ currentDate đến thresholdDate
+    const nearlyExpiredIngredients = await Ingredient.find({
+      ExpiryDate: { $gte: currentDate, $lte: thresholdDate }
+    });
+
+    res.status(200).json({
+      count: nearlyExpiredIngredients.length,
+      data: nearlyExpiredIngredients
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message
+    });
+  }
+};
+
 export {
   getAllIngredients,
   updateIngredient,

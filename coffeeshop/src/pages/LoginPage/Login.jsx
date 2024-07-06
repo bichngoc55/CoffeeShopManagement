@@ -63,7 +63,7 @@ const LoginPage = () => {
             alt="logo JavaJoy"
             src="../../assets/logo_JavaJoy.png"
             className="logo-image"
-            style={{ width: "15%",}}
+            style={{ width: "14%",}}
           />
           <Typography fontSize={30} fontFamily={"NerkoOne-Regular"} color={"#714534"}>JAVA JOY</Typography>
         </div>

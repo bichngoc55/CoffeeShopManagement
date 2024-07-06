@@ -148,13 +148,17 @@ const WorkScheduleTable = ({ isEditing, workSchedule, setWorkSchedule }) => {
           <tr>
             <th style={{}}>
               <div className="date-picker" style={{}}>
-                <input
+                {/* <input
                   type="date"
                   id="date"
                   value={selectedDate}
                   onChange={handleDateChange}
                   style={{ width: '90%', borderWidth: '0' }}
-                />
+                /> */}
+                {new Date(selectedDate).toLocaleString('vi-VN', {
+                  month: 'numeric',
+                  year: 'numeric',
+                })}
               </div>
             </th>
             {selectedDate && renderDay()}
@@ -162,10 +166,10 @@ const WorkScheduleTable = ({ isEditing, workSchedule, setWorkSchedule }) => {
         </thead>
         <tbody>
           <tr className="header-row">
-            <th>Thời gian</th>
+            <th>Shift</th>
             {selectedDate && renderWeekdays()}
           </tr>
-          {['Sáng', 'Chiều', 'Tối'].map((timePeriod, timeIndex) => (
+          {['Morning', 'Afternoon', 'Evening'].map((timePeriod, timeIndex) => (
             <tr key={timePeriod}>
               <td>
                 {timePeriod} <br />

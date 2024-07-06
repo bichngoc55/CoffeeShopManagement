@@ -14,6 +14,20 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+  // Add this line to create a border for each row
+  '& td': {
+    borderBottom: '1px solid rgba(224, 224, 224, 1)',
+  },
+}));
+
 const InventoryRow = ({
   data,
   isEditing,
@@ -36,7 +50,7 @@ const InventoryRow = ({
   };
 
   return (
-    <TableRow hover>
+    <StyledTableRow hover>
       <StyledTableCell align="center" sx={{ fontFamily: "Montserrat" }}>
         {isEditing ? (
           <input
@@ -104,7 +118,7 @@ const InventoryRow = ({
           data.price
         )}
       </StyledTableCell>
-      <StyledTableCell sx={{ fontFamily: "Montserrat" }} align="center">
+      {/* <StyledTableCell sx={{ fontFamily: "Montserrat" }} align="center">
         {isEditing ? (
           <input
             type="text"
@@ -116,7 +130,7 @@ const InventoryRow = ({
         ) : (
           data.StaffName
         )}
-      </StyledTableCell>
+      </StyledTableCell> */}
       <StyledTableCell sx={{ fontFamily: "Montserrat" }} align="center">
         {isEditing ? (
           <input
@@ -146,22 +160,20 @@ const InventoryRow = ({
       <StyledTableCell
         align="center"
         sx={{
-          display: "flex",
           alignItems: "center",
-          width: "100%",
+          width: "10%",
           height: "100%",
-          marginTop: "20%",
           justifyContent: "space-between",
         }}
       >
-        <IconButton sx={{ flexGrow: 1 }} onClick={toggleEdit}>
+        <IconButton sx={{  }} onClick={toggleEdit}>
           {isEditing ? <DoneOutlineOutlinedIcon /> : <EditIcon />}
         </IconButton>
-        <IconButton sx={{ flexGrow: 1 }} onClick={() => handleDelete(data._id)}>
+        <IconButton sx={{  }} onClick={() => handleDelete(data._id)}>
           <DeleteIcon />
         </IconButton>
       </StyledTableCell>
-    </TableRow>
+    </StyledTableRow >
   );
 };
 

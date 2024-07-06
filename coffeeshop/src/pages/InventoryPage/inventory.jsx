@@ -50,6 +50,8 @@ const Inventory = () => {
   const handleCloseModal = () => {
     setModalOpen(false);
   };
+
+  //Gọi dữ liệu kho từ db
   const fetchInventoryData = async () => {
     try {
       const response = await fetch("http://localhost:3005/inventory/", {
@@ -126,16 +128,15 @@ const Inventory = () => {
     setSortField("ExpiryDate");
   };
 
-  const user = useSelector((state) => state.auths.user);
-  const Name = user.Name;
+  // const user = useSelector((state) => state.auths.user);
+  // const Name = user.Name;
   const handleSubmitModal = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const data2 = {
-      name: formData.get("name"),
+      // name: formData.get("name"),
       quantity: formData.get("quantity"),
       BaoQuan: formData.get("description"),
-      StaffName: Name,
       unit: formData.get("unit"),
       price: formData.get("price"),
       ExpiryDate: formData.get("expiryDate"),
@@ -164,12 +165,12 @@ const Inventory = () => {
       <DashBoard />
       <div
         style={{
-          paddingLeft: "16px",
+          marginLeft:"2.64%",
+          marginRight: "2.64%",
           textAlign: "left",
-        }}
-      >
-        <label style={{ width: "100%" }} className="headerBooking">
-          Màn Hình Nhập Kho/Nguyên Liệu
+        }}>
+        <label style={{marginTop: "2.15%", }} className="font-semibold medium_text">
+          Inventory Page
         </label>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box
@@ -264,14 +265,14 @@ const Inventory = () => {
                 >
                   Giá tiền
                 </StyledTableCell>
-                <StyledTableCell
+                {/* <StyledTableCell
                   style={{
                     borderRight: "1px solid rgba(224, 224, 224, 1)",
                   }}
                   align="center"
                 >
                   Nhân Viên
-                </StyledTableCell>
+                </StyledTableCell> */}
                 <StyledTableCell
                   style={{
                     borderRight: "1px solid rgba(224, 224, 224, 1)",
