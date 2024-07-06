@@ -1,11 +1,11 @@
 /* text */
 
 html {
-    font-size: 14px; /* Đặt kích thước cơ sở là 16px */
+  font-size: 14px; /* Đặt kích thước cơ sở là 16px */
 }
 
 .medium_text {
-    font-size: 2rem; /* Kích thước chữ là 2 lần kích thước cơ sở */
+  font-size: 2rem; /* Kích thước chữ là 2 lần kích thước cơ sở */
 }
 
 .large_text {
@@ -38,8 +38,30 @@ p {
   margin-right: 2.64%;
 }
 
-.search-input::placeholder {
-    font-size: 1rem;
+.notification-list {
+  position: absolute;
+  background-color: #714534;
+  margin-right: 2%;
+  right: 0px;
+  width: 15%;
+  padding: 5px;
+}
+
+.notification-item {
+  font-size: 12px; 
+  font-family: "Montserrat", sans-serif;
+  color: white
+}
+
+.notification-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  color: red;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 /* style */
@@ -99,6 +121,6 @@ height: 0;
 
 .notification-icon {
   position: absolute;
-  top: 0;
+  top: 2px;
   right: 0;
 }
