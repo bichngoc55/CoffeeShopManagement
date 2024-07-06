@@ -95,7 +95,7 @@ const DrinkCard = ({
       ) : results.length > 0 ? (
         results.map((item, id) => {
           return (
-            <div key={item._id} className="drink-card">
+            <div key={item._id} id={item._id} className="drink-card">
               <Card onClick={() => handleCardClick(item._id, item)}>
                 <CardContent>
                   <div className="above">

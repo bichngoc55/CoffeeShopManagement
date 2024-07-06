@@ -356,16 +356,35 @@ const MenuPage = () => {
       setBillItems([...billItems, newBillItem]);
     }
   };
-  const handleSearch = (searchTerm) => {
-    if (!searchTerm) {
+  // const handleSearch = (searchTerm) => {
+  //   if (!searchTerm) {
+  //     setResults([]);
+  //     return;
+  //   }
+
+  //   const filteredResults = drinksData.filter((item) =>
+  //     item.Name.toLowerCase().includes(searchTerm.toLowerCase())
+  //   );
+  //   setResults(filteredResults);
+  // };
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    if (!term) {
       setResults([]);
       return;
     }
 
     const filteredResults = drinksData.filter((item) =>
-      item.Name.toLowerCase().includes(searchTerm.toLowerCase())
+      item.Name.toLowerCase().includes(term.toLowerCase())
     );
     setResults(filteredResults);
+    console.log(
+      "Kết quả search của '" + term + "' là:",
+      filteredResults.map((item) => item.Name).join(", ")
+    );
   };
   useEffect(() => {
     getDrinkInformation().then((res) => {
@@ -377,6 +396,11 @@ const MenuPage = () => {
   };
   const handleHideModal = () => {
     setShowModal(false);
+  };
+  const handleResultClick = (result) => {
+    // Thêm bất kỳ xử lý nào bạn muốn khi một kết quả được click
+    setResults([]);
+    console.log(`Selected: ${result.Name}`);
   };
   const handleAddDrink = async (drink) => {
     setShowModal(true);
@@ -486,7 +510,7 @@ const MenuPage = () => {
             >
               Choose category
             </Typography>
-            <SearchBar
+            {/* <SearchBar
               placeholder="Search category or menu"
               width="130%"
               height="24%"
@@ -494,7 +518,26 @@ const MenuPage = () => {
             />
             {results && results.length > 0 && (
               <SearchResultsList results={results} />
-            )}
+            )} */}
+            <div
+              style={{
+                position: "relative",
+                zIndex: 5,
+              }}
+            >
+              <SearchBar
+                placeholder="Search category or menu"
+                width="130%"
+                height="24%"
+                setResults={handleSearch}
+              />
+              {results.length > 0 && (
+                <SearchResultsList
+                  results={results}
+                  onResultClick={handleResultClick}
+                />
+              )}
+            </div>
           </Box>
           <Box
             className="drinkType"
@@ -576,86 +619,87 @@ const MenuPage = () => {
             />
           </Box>
         </div>
-        <div className="bill-detail">
-          <Typography
-            color="#000009"
-            padding="10%"
-            fontSize="2em"
-            fontWeight="bold"
-          >
-            Bill
-          </Typography>
-          {selectedDrink && (
-            <BillCard
-              billItems={billItems}
-              calculateTotalPrice={calculateTotalPrice}
-            />
-          )}
-          <div className="hehe">
-            --------------------------------------------------
-          </div>
-          {totalPirce > 0 && (
-            <div className="totalPrice">
+        <div className="bill-detail-container">
+          <div className="bill-detail">
+            <Typography
+              color="#000009"
+              padding="10%"
+              fontSize="2em"
+              fontWeight="bold"
+            >
+              Bill
+            </Typography>
+            {selectedDrink && (
+              <BillCard
+                billItems={billItems}
+                calculateTotalPrice={calculateTotalPrice}
+              />
+            )}
+            <div className="hehe">
+              --------------------------------------------------
+            </div>
+            {totalPirce > 0 && (
+              <div className="totalPrice">
+                <Typography
+                  color="#000009"
+                  padding="10%"
+                  fontSize="1.7em"
+                  fontWeight="bold"
+                  paddingTop="4%"
+                  paddingBottom="0%"
+                  marginBottom="0%"
+                >
+                  Total
+                </Typography>
+                <div className="Price">{totalPirce} VND</div>
+              </div>
+            )}
+            <div className="payment">
               <Typography
                 color="#000009"
                 padding="10%"
                 fontSize="1.7em"
                 fontWeight="bold"
-                paddingTop="4%"
-                paddingBottom="0%"
-                marginBottom="0%"
               >
-                Total
+                Payment Method
               </Typography>
-              <div className="Price">{totalPirce} VND</div>
-            </div>
-          )}
-          <div className="payment">
-            <Typography
-              color="#000009"
-              padding="10%"
-              fontSize="1.7em"
-              fontWeight="bold"
-            >
-              Payment Method
-            </Typography>
-            <div className="PaymentMethod">
-              <div
-                className="momo"
-                style={payment === "Digital" ? selectedPaymentStyle : {}}
-              >
-                <IconButton onClick={() => handlePayment("momo")}>
-                  <WalletOutlinedIcon />
-                </IconButton>
+              <div className="PaymentMethod">
+                <div
+                  className="momo"
+                  style={payment === "Digital" ? selectedPaymentStyle : {}}
+                >
+                  <IconButton onClick={() => handlePayment("momo")}>
+                    <WalletOutlinedIcon />
+                  </IconButton>
+                </div>
+                <div
+                  className="cash"
+                  style={payment === "Cash" ? selectedPaymentStyle : {}}
+                >
+                  <IconButton onClick={() => handlePayment("cash")}>
+                    <LocalAtmOutlinedIcon />
+                  </IconButton>
+                </div>
+                <div
+                  className="bank"
+                  onClick={() => handlePayment("bank")}
+                  style={payment === "Card" ? selectedPaymentStyle : {}}
+                >
+                  <IconButton>
+                    <AccountBalanceOutlinedIcon />
+                  </IconButton>
+                </div>
               </div>
-              <div
-                className="cash"
-                style={payment === "Cash" ? selectedPaymentStyle : {}}
-              >
-                <IconButton onClick={() => handlePayment("cash")}>
-                  <LocalAtmOutlinedIcon />
-                </IconButton>
+              <div className="button">
+                <button
+                  className="add-to-payment"
+                  onClick={handlePrint}
+                  disabled={billItems.length === 0}
+                >
+                  Print Bill
+                </button>
               </div>
-              <div
-                className="bank"
-                onClick={() => handlePayment("bank")}
-                style={payment === "Card" ? selectedPaymentStyle : {}}
-              >
-                <IconButton>
-                  <AccountBalanceOutlinedIcon />
-                </IconButton>
-              </div>
-            </div>
-            <div className="button">
-              <button
-                className="add-to-payment"
-                onClick={handlePrint}
-                disabled={billItems.length === 0}
-              >
-                Print Bill
-              </button>
-            </div>
-            {/* <div ref={componentRef}>
+              {/* <div ref={componentRef}>
               {shouldRenderPrintSection && (
                 <PrintSection
                   shouldRenderPrintSection={shouldRenderPrintSection}
@@ -664,33 +708,34 @@ const MenuPage = () => {
                 />
               )}
             </div> */}
-            <div style={{ display: "none" }}>
-              <div ref={componentRef}>
-                <PrintSection
-                  shouldRenderPrintSection={shouldRenderPrintSection}
-                  Name={Name}
-                  savedBill={savedBillDetails}
-                  billItems={billItems}
-                  totalPrice={totalPirce}
-                  payment={payment}
-                />
+              <div style={{ display: "none" }}>
+                <div ref={componentRef}>
+                  <PrintSection
+                    shouldRenderPrintSection={shouldRenderPrintSection}
+                    Name={Name}
+                    savedBill={savedBillDetails}
+                    billItems={billItems}
+                    totalPrice={totalPirce}
+                    payment={payment}
+                  />
+                </div>
               </div>
+              {showQRCode && savedBillDetails && (
+                <QRCodeDisplay
+                  billId={savedBillDetails._id}
+                  onClose={() => setShowQRCode(false)}
+                />
+              )}
             </div>
-            {showQRCode && savedBillDetails && (
-              <QRCodeDisplay
-                billId={savedBillDetails._id}
-                onClose={() => setShowQRCode(false)}
+            {selectedDrink && (
+              <DeleteConfirmationModal
+                isOpen={showDeleteConfirmation}
+                onClose={() => setShowDeleteConfirmation(false)}
+                onConfirm={handleConfirmDelete}
+                selectedDrink={selectedDrink}
               />
             )}
           </div>
-          {selectedDrink && (
-            <DeleteConfirmationModal
-              isOpen={showDeleteConfirmation}
-              onClose={() => setShowDeleteConfirmation(false)}
-              onConfirm={handleConfirmDelete}
-              selectedDrink={selectedDrink}
-            />
-          )}
         </div>
       </Box>
     </Box>
