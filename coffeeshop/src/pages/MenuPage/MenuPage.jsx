@@ -173,31 +173,34 @@ const MenuPage = () => {
         },
         body: JSON.stringify({ status: "occupied" }),
       });
-      const bookingData = {
-        customerName: "N/A",
-        bookingDate: currentDate,
-        bookingTime: currentTime,
-      };
-
-      const bookingResponse = await fetch(
-        `http://localhost:3005/booking/add/hehe/${tableId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(bookingData),
-        }
-      );
-
-      if (!bookingResponse.ok) {
-        throw new Error(`HTTP error! status: ${bookingResponse.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      // const bookingData = {
+      //   customerName: "N/A",
+      //   bookingDate: currentDate,
+      //   bookingTime: currentTime,
+      // };
 
-      // console.log("Table status and booking information updated");
-      console.log("Table status updated", bookingResponse);
-      console.log("Table status updated", response);
+      // const bookingResponse = await fetch(
+      //   `http://localhost:3005/booking/add/hehe/${tableId}`,
+      //   {
+      //     method: "PATCH",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //     body: JSON.stringify(bookingData),
+      //   }
+      // );
+
+      // if (!bookingResponse.ok) {
+      //   throw new Error(`HTTP error! status: ${bookingResponse.status}`);
+      // }
+
+      // // console.log("Table status and booking information updated");
+      // console.log("Table status updated", bookingResponse);
+      // console.log("Table status updated", response);
 
       fetchAvailableTables();
     } catch (error) {
