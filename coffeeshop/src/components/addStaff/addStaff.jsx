@@ -235,7 +235,7 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
                   className={`email ${errors.email ? "error-input" : ""}`}
                   type="text"
                   value={emailInput}
-                  placeholder="Nhập email"
+                  placeholder="Enter email"
                   onChange={(event) => {
                     setEmail(event.target.value);
                     if (errors.email) {
@@ -302,7 +302,7 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
           <div className="iconContainer">
             <CakeIcon />
           </div>
-          <label className="label">Ngày sinh: </label>
+          <label className="label">Birthday: </label>
           <div className="date-picker">
             <input
               type="date"
@@ -332,7 +332,7 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
           <div className="iconContainer">
             <WcIcon />
           </div>
-          <label className="label">Giới tính: </label>
+          <label className="label">Gender: </label>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
@@ -372,7 +372,7 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
           <div className="iconContainer">
             <BadgeIcon />
           </div>
-          <label className="label">Chức vụ: </label>
+          <label className="label">Position: </label>
           <div
             style={{
               width: "100px",
@@ -439,11 +439,11 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
         }}
       >
         <div>
-          <label className="labelUsername">Mật khẩu</label>
+          <label className="labelUsername">Password</label>
           <input
             className={`passwordInput ${errors.password ? "error-input" : ""}`}
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
             //value={passwordInput}
             onChange={(event) => {
               setPassword(event.target.value);
@@ -461,11 +461,11 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
           )}
         </div>
         <div>
-          <label className="labelUsername">Xác nhận mật khẩu</label>
+          <label className="labelUsername">Confirm Password</label>
           <input
             className={`passwordInput ${errors.password2 ? "error-input" : ""}`}
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
             onChange={(event) => {
               setPassword2(event.target.value);
               if (errors.password2 && password2Input === passwordInput) {

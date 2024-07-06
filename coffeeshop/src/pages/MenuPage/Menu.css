@@ -3,6 +3,8 @@
   display: flex;
   padding: 0;
   margin: 0;
+  position: relative;
+  overflow: hidden;
 }
 .menu-section::-webkit-scrollbar {
   display: none;
@@ -13,7 +15,8 @@
   scrollbar-width: none;
 }
 .menu-section {
-  width: 85%;
+  /* width: 85%; */
+  flex: 1;
   padding-left: 2%;
   padding-top: 2%;
 
@@ -41,12 +44,28 @@
   width: 75%;
 }
 
-.bill-detail {
+/* .bill-detail {
   width: 25%;
   padding-top: 0%;
   height: 100%;
   background-color: #ffffff;
   margin-right: 0.5%;
+  position: sticky;
+  right: 0;
+} */
+.bill-detail {
+  height: 100%;
+  position: fixed; /* Giữ bill-detail cố định */
+  top: 0; /* Căn chỉnh với đỉnh của viewport */
+  right: 10; /* Căn chỉnh với cạnh phải của viewport */
+  width: 300px; /* Giữ cùng chiều rộng với container */
+  /* Cho phép cuộn nội dung bill nếu cần */
+}
+.bill-detail-container {
+  width: 30%; /* hoặc bất kỳ chiều rộng cố định nào bạn muốn */
+  position: relative; /* Đổi từ sticky thành relative */
+  height: 100%;
+  background-color: #ffffff; /* Đảm bảo container lấp đầy chiều cao của content */
 }
 
 .coffeeMenuTitle {
@@ -237,4 +256,9 @@
   font-family: Montserrat, sans-serif;
   font-size: 1.5em;
   font-weight: "bold";
+}
+.search-bar-container {
+  position: "relative";
+  background-color: "red";
+  z-index: 5;
 }

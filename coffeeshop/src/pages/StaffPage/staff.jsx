@@ -11,6 +11,8 @@ import { useSelector } from "react-redux";
 import PopupStaff from "../../components/table/popupEdit";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import SearchIcon from "@mui/icons-material/Search";
+import { IconButton } from "@mui/material";
 function useFocus() {
   const ref = useRef(null);
 
@@ -37,9 +39,35 @@ const Stuff = () => {
   const [users, setUsers] = useState([]);
   const [inputRef, setInputFocus] = useFocus();
   const [openPopupId, setOpenPopupId] = useState(null);
-
+  const [searchResult, setSearchResult] = useState([]);
   const openModal = (index) => {
     setOpenPopupId(index);
+  };
+
+  const handleSearch = (searchTerm) => {
+    if (!searchTerm) {
+      setSearchResult([]); // Nếu không có giá trị tìm kiếm, đặt kết quả tìm kiếm là mảng rỗng
+    } else {
+      const lowercasedFilter = searchTerm.toLowerCase();
+      const filteredData = users.filter((user) => {
+        const nameParts = user.Name.split(" ");
+        const firstName = nameParts[nameParts.length - 1].toLowerCase();
+        return firstName[0].includes(lowercasedFilter);
+      });
+      setSearchResult(filteredData);
+    }
+  };
+  const handleClickSearch = (result) => {
+    const drinkId = result._id;
+    const element = document.getElementById(drinkId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      console.log("tim thay r");
+      element.style.borderBottom = "2px solid black";
+      setTimeout(() => {
+        element.style.borderBottom = ""; // Trả lại viền ban đầu
+      }, 5000);
+    } else console.log("no scrool");
   };
 
   const closeModalAndUpdate = () => {
@@ -89,10 +117,10 @@ const Stuff = () => {
     {
       title: "Hồ sơ nhân viên",
       content: (
-        <div>
+        <div style={{ overflow: "scroll" }}>
           {users.map((user, index) => {
             return (
-              <div className="container-card">
+              <div id={user._id} className="container-card">
                 <div className="image-container">
                   <img src={user.Ava} alt="User" />
                 </div>
@@ -181,7 +209,34 @@ const Stuff = () => {
       <div style={{ backgroundColor: "#f9f8fb", width: "100%" }}>
         <p className="Header">
           <strong>Quản lý nhân viên</strong>
+          <div style={{ position: "relative" }}>
+            <div className="search-bar-staff">
+              <input
+                style={{ height: "80%", fontSize: "12px" }}
+                placeholder="Search by name"
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+              <IconButton className="search-icon">
+                <SearchIcon className="fa fa-search" />
+              </IconButton>
+            </div>
+            {searchResult.length > 0 && (
+              <div className="searchListContainer">
+                {searchResult.map((user) => (
+                  <div key={user._id}>
+                    <button
+                      className="searchitem"
+                      onClick={() => handleClickSearch(user)}
+                    >
+                      {user.Name}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </p>
+
         <TabStaff items={items} />
       </div>
     </Box>

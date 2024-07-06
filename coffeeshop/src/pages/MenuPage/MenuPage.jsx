@@ -24,6 +24,10 @@ import PrintSection from "./printSection";
 import ModifyDialog from "../../components/ModifyDialog/ModifyDialog";
 import { QRCodeDisplay } from "./QRCode";
 import { DeleteConfirmationModal } from "../../components/DeleteConfirmationModal";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+
 const MenuPage = () => {
   const [drinksData, setDrinksData] = useState([]);
   const [results, setResults] = useState([]);
@@ -49,6 +53,57 @@ const MenuPage = () => {
   const [showModifyDialog, setShowModifyDialog] = useState(false);
   const [payment, setPayment] = useState("");
   const [showQRCode, setShowQRCode] = useState(false);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+  const [deleteBillItem, setDeleteBillItem] = useState();
+  const [deleteIndex, setDeleteIndex] = useState(0);
+  const handleItemClick = (e, billItem, index) => {
+    // Thực hiện các hành động bạn muốn ở đây
+    console.log("Clicked item:", billItem);
+    setAnchorEl(e.currentTarget);
+    setDeleteBillItem(billItem);
+    setDeleteIndex(index);
+  };
+
+  const increase1quantity = (itemIncrease) => {
+    setBillItems(
+      billItems.map((item) => {
+        if (item.drink._id === itemIncrease.drink._id) {
+          return {
+            ...item,
+            quantity: item.quantity + 1,
+          };
+        }
+        return item;
+      })
+    );
+  };
+  const delete1quantity = (itemDelete) => {
+    if (deleteBillItem.quantity > 1) {
+      setBillItems(
+        billItems.map((item) => {
+          if (item.drink._id === itemDelete.drink._id && item.quantity > 0) {
+            return {
+              ...item,
+              quantity: item.quantity - 1,
+            };
+          }
+          return item;
+        })
+      );
+      console.log(deleteBillItem);
+    } else {
+      setBillItems(billItems.filter((_, index) => index !== deleteIndex));
+      handleCloseMenu();
+    }
+  };
   //payment
   const handlePayment = async (type) => {
     if (type === "cash") {
@@ -333,7 +388,7 @@ const MenuPage = () => {
     }
     const existingItemIndex = billItems.findIndex(
       (item) =>
-        item.drink.id === drink.id &&
+        item.drink._id === drink._id &&
         item.mood === selectedMood &&
         item.size === selectedSize &&
         item.ice === selectedIce &&
@@ -343,6 +398,7 @@ const MenuPage = () => {
       const newBillItems = [...billItems];
       newBillItems[existingItemIndex].quantity += 1;
       setBillItems(newBillItems);
+      console.log(billItems);
     } else {
       const newBillItem = {
         drink: { ...drink, Price: adjustedPrice },
@@ -356,16 +412,35 @@ const MenuPage = () => {
       setBillItems([...billItems, newBillItem]);
     }
   };
-  const handleSearch = (searchTerm) => {
-    if (!searchTerm) {
+  // const handleSearch = (searchTerm) => {
+  //   if (!searchTerm) {
+  //     setResults([]);
+  //     return;
+  //   }
+
+  //   const filteredResults = drinksData.filter((item) =>
+  //     item.Name.toLowerCase().includes(searchTerm.toLowerCase())
+  //   );
+  //   setResults(filteredResults);
+  // };
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    if (!term) {
       setResults([]);
       return;
     }
 
     const filteredResults = drinksData.filter((item) =>
-      item.Name.toLowerCase().includes(searchTerm.toLowerCase())
+      item.Name.toLowerCase().includes(term.toLowerCase())
     );
     setResults(filteredResults);
+    console.log(
+      "Kết quả search của '" + term + "' là:",
+      filteredResults.map((item) => item.Name).join(", ")
+    );
   };
   useEffect(() => {
     getDrinkInformation().then((res) => {
@@ -377,6 +452,11 @@ const MenuPage = () => {
   };
   const handleHideModal = () => {
     setShowModal(false);
+  };
+  const handleResultClick = (result) => {
+    // Thêm bất kỳ xử lý nào bạn muốn khi một kết quả được click
+    setResults([]);
+    console.log(`Selected: ${result.Name}`);
   };
   const handleAddDrink = async (drink) => {
     setShowModal(true);
@@ -465,6 +545,7 @@ const MenuPage = () => {
   const handleHideModifyDialog = () => {
     setShowModifyDialog(false);
   };
+
   return (
     <Box sx={{ display: "flex" }}>
       <DashBoard />
@@ -486,7 +567,7 @@ const MenuPage = () => {
             >
               Choose category
             </Typography>
-            <SearchBar
+            {/* <SearchBar
               placeholder="Search category or menu"
               width="130%"
               height="24%"
@@ -494,7 +575,26 @@ const MenuPage = () => {
             />
             {results && results.length > 0 && (
               <SearchResultsList results={results} />
-            )}
+            )} */}
+            <div
+              style={{
+                position: "relative",
+                zIndex: 5,
+              }}
+            >
+              <SearchBar
+                placeholder="Search category or menu"
+                width="130%"
+                height="24%"
+                setResults={handleSearch}
+              />
+              {results.length > 0 && (
+                <SearchResultsList
+                  results={results}
+                  onResultClick={handleResultClick}
+                />
+              )}
+            </div>
           </Box>
           <Box
             className="drinkType"
@@ -576,86 +676,126 @@ const MenuPage = () => {
             />
           </Box>
         </div>
-        <div className="bill-detail">
-          <Typography
-            color="#000009"
-            padding="10%"
-            fontSize="2em"
-            fontWeight="bold"
-          >
-            Bill
-          </Typography>
-          {selectedDrink && (
-            <BillCard
-              billItems={billItems}
-              calculateTotalPrice={calculateTotalPrice}
-            />
-          )}
-          <div className="hehe">
-            --------------------------------------------------
-          </div>
-          {totalPirce > 0 && (
-            <div className="totalPrice">
+        <div className="bill-detail-container">
+          <div className="bill-detail">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "baseline",
+              }}
+            >
+              <Typography
+                color="#000009"
+                padding="10%"
+                fontSize="2em"
+                fontWeight="bold"
+              >
+                Bill
+              </Typography>
+              <Button onClick={() => setBillItems([])}>
+                <Typography color="#000009" fontSize="1em">
+                  Clear All
+                </Typography>
+              </Button>
+            </div>
+
+            {selectedDrink && (
+              <BillCard
+                billItems={billItems}
+                calculateTotalPrice={calculateTotalPrice}
+                clickItem={handleItemClick}
+                inCrease1Quantity={increase1quantity}
+                delete1quantity={delete1quantity}
+              />
+            )}
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleCloseMenu}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  setBillItems(
+                    billItems.filter((_, index) => index !== deleteIndex)
+                  );
+                  handleCloseMenu();
+                }}
+              >
+                Delete drink
+              </MenuItem>
+              <MenuItem onClick={handleCloseMenu}>Cancel</MenuItem>
+            </Menu>
+            <div className="hehe">
+              --------------------------------------------------
+            </div>
+            {totalPirce > 0 && (
+              <div className="totalPrice">
+                <Typography
+                  color="#000009"
+                  padding="10%"
+                  fontSize="1.7em"
+                  fontWeight="bold"
+                  paddingTop="4%"
+                  paddingBottom="0%"
+                  marginBottom="0%"
+                >
+                  Total
+                </Typography>
+                <div className="Price">{totalPirce} VND</div>
+              </div>
+            )}
+            <div className="payment">
               <Typography
                 color="#000009"
                 padding="10%"
                 fontSize="1.7em"
                 fontWeight="bold"
-                paddingTop="4%"
-                paddingBottom="0%"
-                marginBottom="0%"
               >
-                Total
+                Payment Method
               </Typography>
-              <div className="Price">{totalPirce} VND</div>
-            </div>
-          )}
-          <div className="payment">
-            <Typography
-              color="#000009"
-              padding="10%"
-              fontSize="1.7em"
-              fontWeight="bold"
-            >
-              Payment Method
-            </Typography>
-            <div className="PaymentMethod">
-              <div
-                className="momo"
-                style={payment === "Digital" ? selectedPaymentStyle : {}}
-              >
-                <IconButton onClick={() => handlePayment("momo")}>
-                  <WalletOutlinedIcon />
-                </IconButton>
+              <div className="PaymentMethod">
+                <div
+                  className="momo"
+                  style={payment === "Digital" ? selectedPaymentStyle : {}}
+                >
+                  <IconButton onClick={() => handlePayment("momo")}>
+                    <WalletOutlinedIcon />
+                  </IconButton>
+                </div>
+                <div
+                  className="cash"
+                  style={payment === "Cash" ? selectedPaymentStyle : {}}
+                >
+                  <IconButton onClick={() => handlePayment("cash")}>
+                    <LocalAtmOutlinedIcon />
+                  </IconButton>
+                </div>
+                <div
+                  className="bank"
+                  onClick={() => handlePayment("bank")}
+                  style={payment === "Card" ? selectedPaymentStyle : {}}
+                >
+                  <IconButton>
+                    <AccountBalanceOutlinedIcon />
+                  </IconButton>
+                </div>
               </div>
-              <div
-                className="cash"
-                style={payment === "Cash" ? selectedPaymentStyle : {}}
-              >
-                <IconButton onClick={() => handlePayment("cash")}>
-                  <LocalAtmOutlinedIcon />
-                </IconButton>
+              <div className="button">
+                <button
+                  className="add-to-payment"
+                  onClick={handlePrint}
+                  disabled={billItems.length === 0}
+                >
+                  Print Bill
+                </button>
               </div>
-              <div
-                className="bank"
-                onClick={() => handlePayment("bank")}
-                style={payment === "Card" ? selectedPaymentStyle : {}}
-              >
-                <IconButton>
-                  <AccountBalanceOutlinedIcon />
-                </IconButton>
-              </div>
-            </div>
-            <div className="button">
-              <button
-                className="add-to-payment"
-                onClick={handlePrint}
-                disabled={billItems.length === 0}
-              >
-                Print Bill
-              </button>
-            </div>
-            {/* <div ref={componentRef}>
+              {/* <div ref={componentRef}>
               {shouldRenderPrintSection && (
                 <PrintSection
                   shouldRenderPrintSection={shouldRenderPrintSection}
@@ -664,33 +804,34 @@ const MenuPage = () => {
                 />
               )}
             </div> */}
-            <div style={{ display: "none" }}>
-              <div ref={componentRef}>
-                <PrintSection
-                  shouldRenderPrintSection={shouldRenderPrintSection}
-                  Name={Name}
-                  savedBill={savedBillDetails}
-                  billItems={billItems}
-                  totalPrice={totalPirce}
-                  payment={payment}
-                />
+              <div style={{ display: "none" }}>
+                <div ref={componentRef}>
+                  <PrintSection
+                    shouldRenderPrintSection={shouldRenderPrintSection}
+                    Name={Name}
+                    savedBill={savedBillDetails}
+                    billItems={billItems}
+                    totalPrice={totalPirce}
+                    payment={payment}
+                  />
+                </div>
               </div>
+              {showQRCode && savedBillDetails && (
+                <QRCodeDisplay
+                  billId={savedBillDetails._id}
+                  onClose={() => setShowQRCode(false)}
+                />
+              )}
             </div>
-            {showQRCode && savedBillDetails && (
-              <QRCodeDisplay
-                billId={savedBillDetails._id}
-                onClose={() => setShowQRCode(false)}
+            {selectedDrink && (
+              <DeleteConfirmationModal
+                isOpen={showDeleteConfirmation}
+                onClose={() => setShowDeleteConfirmation(false)}
+                onConfirm={handleConfirmDelete}
+                selectedDrink={selectedDrink}
               />
             )}
           </div>
-          {selectedDrink && (
-            <DeleteConfirmationModal
-              isOpen={showDeleteConfirmation}
-              onClose={() => setShowDeleteConfirmation(false)}
-              onConfirm={handleConfirmDelete}
-              selectedDrink={selectedDrink}
-            />
-          )}
         </div>
       </Box>
     </Box>

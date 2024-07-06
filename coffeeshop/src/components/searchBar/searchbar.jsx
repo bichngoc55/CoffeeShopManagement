@@ -19,9 +19,13 @@ const SearchBar = ({ width, height, setResults, placeholder }) => {
         setResults(results);
       });
   };
+  // const handleChange = (value) => {
+  //   setInput(value);
+  //   fetchData(value);
+  // };
   const handleChange = (value) => {
     setInput(value);
-    fetchData(value);
+    setResults(value); // Chỉ truyền giá trị input, không lọc ở đây
   };
 
   return (
