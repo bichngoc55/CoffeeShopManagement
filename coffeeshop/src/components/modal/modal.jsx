@@ -13,28 +13,32 @@ import CloseIcon from "@mui/icons-material/Close";
 const textFieldStyles = {
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      borderColor: "grey", // Default border color
+      borderColor: "#D0D5DD", // Default border color
     },
     "&:hover fieldset": {
       borderColor: "#9398A8", // Border color on hover
     },
     "&.Mui-focused fieldset": {
-      borderColor: "#9398A9", // Border color when focused
+      borderColor: "#714534", // Border color when focused
     },
   },
-  width: "300px",
+  width: "100%",
 };
 
 const style = {
-  position: "absolute",
+  position: "fixed", 
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  bgcolor: "background.paper",
-  boxShadow: 24,
+  maxHeight: "95vh", // Max height to ensure it fits within the viewport
+  overflowY: "auto", // Enable vertical scrolling
+  bgcolor: "#FFFFFF",
+  boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+  borderRadius: "12px",
   p: 4,
-  borderRadius: 2,
+  pt: 3, // Add padding-top
+  pb: 3, // Add padding-bottom
 };
 
 const Modal2 = ({ open, onClose, handleAddDrink }) => {
@@ -64,9 +68,9 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
       Photo: file,
     }));
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    // console.log("new drink",newDrink);
     // Handle image upload and form submission logic here
     handleAddDrink(newDrink);
     onClose();
@@ -86,136 +90,99 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: 2,
+            mb: 3,
           }}
         >
-          <Typography
-            sx={{
-              fontFamily: "Montserrat",
-              marginLeft: "5%",
-            }}
-            id="modal-modal-title"
-            variant="h4"
-            component="h1"
+          <div
+            className="title"
           >
             Add a new drink
-          </Typography>
-          <IconButton onClick={onClose}>
+          </div>
+          <IconButton onClick={onClose} sx={{ color: "#714534" }}>
             <CloseIcon />
           </IconButton>
         </Box>
         <Box
           component="form"
           sx={{
-            "& .MuiTextField-root": { m: 1, width: "25ch" },
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
           }}
           noValidate
           autoComplete="off"
           onSubmit={handleSubmit}
         >
-          <Box sx={{ display: "flex" }}>
-            <Typography
+          {[
+            { label: "Drink Name", name: "Name", type: "text" },
+            { label: "Description", name: "Description", type: "text", multiline: true, rows: 3 },
+            { label: "Drink Price", name: "Price", type: "number" },
+            { label: "Photo", name: "Photo", type: "file", accept: "image/*", onChange: handleFileChange },
+            { label: "Type", name: "LoaiDoUong", type: "select" },
+          ].map((field) => (
+            <Box key={field.name} sx={{ display: "flex", alignItems: "center" }}>
+              <Typography
+                sx={{
+                  width: "40%",
+                  fontFamily: "Montserrat",
+                  fontWeight: 500,
+                  color: "#344054",
+                }}
+              >
+                {field.label}
+              </Typography>
+              {field.type === "select" ? (
+                <TextField
+                  select
+                  label={field.label}
+                  name={field.name}
+                  sx={{ ...textFieldStyles, width: "60%" }}
+                  value={newDrink.LoaiDoUong}
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="Coffee">Coffee</MenuItem>
+                  <MenuItem value="Juice">Juice</MenuItem>
+                  <MenuItem value="Tea">Tea</MenuItem>
+                  <MenuItem value="Milk based">Milk based</MenuItem>
+                  <MenuItem value="Topping">Topping</MenuItem>
+                </TextField>
+              ) : field.type === "file" ? (
+                <input
+                  type="file"
+                  accept={field.accept}
+                  onChange={field.onChange}
+                  style={{ marginLeft: "8px" }}
+                />
+              ) : (
+                <TextField
+                  required
+                  label={field.label}
+                  name={field.name}
+                  type={field.type}
+                  multiline={field.multiline}
+                  rows={field.rows}
+                  sx={{ ...textFieldStyles, width: "60%" }}
+                  value={newDrink[field.name]}
+                  onChange={handleInputChange}
+                />
+              )}
+            </Box>
+          ))}
+
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+            <Button
+              type="submit"
+              variant="contained"
               sx={{
-                alignContent: "center",
+                bgcolor: "#714534",
+                color: "#FFFFFF",
                 fontFamily: "Montserrat",
-                width: "40%",
+                fontWeight: 600,
+                "&:hover": {
+                  bgcolor: "#8B572A",
+                },
               }}
             >
-              Drink Name
-            </Typography>
-            <TextField
-              required
-              label="Drink Name"
-              name="Name"
-              sx={{ ...textFieldStyles, width: "500px" }}
-              value={newDrink.Name}
-              onChange={handleInputChange}
-            />
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Description
-            </Typography>
-            <TextField
-              label="Description"
-              name="Description"
-              sx={{ ...textFieldStyles, width: "500px" }}
-              value={newDrink.Description}
-              onChange={handleInputChange}
-              multiline
-              rows={3}
-            />
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Drink Price
-            </Typography>
-            <TextField
-              required
-              label="Drink Price"
-              sx={textFieldStyles}
-              name="Price"
-              type="number"
-              value={newDrink.Price}
-              onChange={handleInputChange}
-            />
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Photo
-            </Typography>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              style={{ marginLeft: "8px" }}
-            />
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Type
-            </Typography>
-            <TextField
-              select
-              label="Type"
-              name="LoaiDoUong"
-              sx={{ ...textFieldStyles, width: "500px" }}
-              value={newDrink.LoaiDoUong}
-              onChange={handleInputChange}
-            >
-              <MenuItem value="Coffee">Coffee</MenuItem>
-              <MenuItem value="Juice">Juice</MenuItem>
-              <MenuItem value="Tea">Tea</MenuItem>
-              <MenuItem value="Milk based">Milk based</MenuItem>
-              <MenuItem value="Topping">Topping</MenuItem>
-            </TextField>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <Button type="submit" color="primary">
               Add
             </Button>
           </Box>

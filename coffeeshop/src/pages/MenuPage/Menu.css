@@ -57,12 +57,12 @@
   height: 100%;
   position: fixed; /* Giữ bill-detail cố định */
   top: 0; /* Căn chỉnh với đỉnh của viewport */
-  right: 10; /* Căn chỉnh với cạnh phải của viewport */
+  right: 0; /* Căn chỉnh với cạnh phải của viewport */
   width: 300px; /* Giữ cùng chiều rộng với container */
-  /* Cho phép cuộn nội dung bill nếu cần */
+  padding: 10px;
 }
 .bill-detail-container {
-  width: 30%; /* hoặc bất kỳ chiều rộng cố định nào bạn muốn */
+  width: 300px; /* hoặc bất kỳ chiều rộng cố định nào bạn muốn */
   position: relative; /* Đổi từ sticky thành relative */
   height: 100%;
   background-color: #ffffff; /* Đảm bảo container lấp đầy chiều cao của content */

@@ -87,7 +87,7 @@ const CalendarTable = ({ isOpen, onClose }) => {
 
           return {
             id: booking._id,
-            title: `${booking.bookingTime || "NO TIME"} - Bàn ${
+            title: `${booking.bookingTime || "NO TIME"} - Table ${
               table.tableNumber || "N/A"
             }`,
             start: startDate,
@@ -111,7 +111,7 @@ const CalendarTable = ({ isOpen, onClose }) => {
     return (
       <>
         <b>
-          {extendedProps.bookingTime || "NO TIME"} - Bàn{" "}
+          {extendedProps.bookingTime || "NO TIME"} - Table{" "}
           {extendedProps.tableNumber || "N/A"}
         </b>
       </>

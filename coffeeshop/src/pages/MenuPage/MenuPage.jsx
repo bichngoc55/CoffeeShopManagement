@@ -7,10 +7,13 @@ import { useReactToPrint } from "react-to-print";
 import DrinkCard from "../../components/drinkCard/drinkCard";
 import Modal2 from "../../components/modal/modal";
 import DrinkTypeCard from "../../components/drinkType/DrinkType";
-import EmojiFoodBeverageOutlinedIcon from "@mui/icons-material/EmojiFoodBeverageOutlined";
-import FreeBreakfastOutlinedIcon from "@mui/icons-material/FreeBreakfastOutlined";
-import LocalBarOutlinedIcon from "@mui/icons-material/LocalBarOutlined";
-import EggOutlinedIcon from "@mui/icons-material/EggOutlined";
+import { MdOutlineLocalDrink } from "react-icons/md";
+import { TbCoffee } from "react-icons/tb";
+import { MdOutlineEmojiFoodBeverage } from "react-icons/md";
+import { FaGlassMartiniAlt } from "react-icons/fa";
+import { FaBowlFood } from "react-icons/fa6";
+import { LuMilk } from "react-icons/lu";
+
 import { getDrinkInformation } from "../../services/drinkService";
 import axios from "axios";
 import SearchBar from "../../components/searchBar/searchbar";
@@ -72,10 +75,11 @@ const MenuPage = () => {
     setDeleteIndex(index);
   };
 
-  const increase1quantity = (itemIncrease) => {
+  const increase1quantity = (itemIncrease, index) => {
     setBillItems(
-      billItems.map((item) => {
-        if (item.drink._id === itemIncrease.drink._id) {
+      billItems.map((item, indexItem) => {
+        if (item.drink._id === itemIncrease.drink._id && indexItem === index) {
+          console.log(item);
           return {
             ...item,
             quantity: item.quantity + 1,
@@ -85,11 +89,11 @@ const MenuPage = () => {
       })
     );
   };
-  const delete1quantity = (itemDelete) => {
-    if (deleteBillItem.quantity > 1) {
+  const delete1quantity = (itemDelete, index) => {
+    if (itemDelete.quantity > 1) {
       setBillItems(
-        billItems.map((item) => {
-          if (item.drink._id === itemDelete.drink._id && item.quantity > 0) {
+        billItems.map((item, indexItem) => {
+          if (item.drink._id === itemDelete.drink._id && indexItem === index && itemDelete.quantity > 0) {
             return {
               ...item,
               quantity: item.quantity - 1,
@@ -445,6 +449,7 @@ const MenuPage = () => {
       filteredResults.map((item) => item.Name).join(", ")
     );
   };
+  
   useEffect(() => {
     getDrinkInformation().then((res) => {
       setDrinksData(res);
@@ -558,16 +563,16 @@ const MenuPage = () => {
           width: "100%",
           flexDirection: "row",
           backgroundColor: "#4B3621",
+          position:"relative"
         }}
       >
         <div className="menu-section">
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography
-              className="medium_text"
               fontSize={28}
               fontWeight={"bold"}
               color="white"
-            >
+            > 
               Choose category
             </Typography>
             {/* <SearchBar
@@ -608,28 +613,33 @@ const MenuPage = () => {
             }}
           >
             <DrinkTypeCard
+              title="All"
+              icon={MdOutlineLocalDrink}
+              onClick={handleSetSelectedDrinkType}
+            />
+            <DrinkTypeCard
               title="Coffee"
-              icon={EmojiFoodBeverageOutlinedIcon}
+              icon={TbCoffee}
               onClick={handleSetSelectedDrinkType}
             />
             <DrinkTypeCard
               title="Tea"
-              icon={FreeBreakfastOutlinedIcon}
+              icon={MdOutlineEmojiFoodBeverage}
               onClick={handleSetSelectedDrinkType}
             />
             <DrinkTypeCard
               title="Juice"
-              icon={LocalBarOutlinedIcon}
+              icon={FaGlassMartiniAlt}
               onClick={handleSetSelectedDrinkType}
             />
             <DrinkTypeCard
               title="Milk based"
-              icon={EggOutlinedIcon}
+              icon={LuMilk }
               onClick={handleSetSelectedDrinkType}
             />
             <DrinkTypeCard
               title="Topping"
-              icon={EggOutlinedIcon}
+              icon={FaBowlFood}
               onClick={handleSetSelectedDrinkType}
             />
           </Box>
@@ -681,24 +691,26 @@ const MenuPage = () => {
         </div>
         <div className="bill-detail-container">
           <div className="bill-detail">
-            <div
+            <div 
               style={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "baseline",
+                marginTop:"5%",
+                marginBottom:"5%"
               }}
             >
               <Typography
                 color="#000009"
-                padding="10%"
                 fontSize="2em"
                 fontWeight="bold"
+                fontFamily={"Montserrat"}
               >
                 Bill
-              </Typography>
+              </Typography> 
               <Button onClick={() => setBillItems([])}>
-                <Typography color="#000009" fontSize="1em">
+                <Typography fontSize="1.2em" fontFamily="Montserrat" fontWeight="550" color={"red"}>
                   Clear All
                 </Typography>
               </Button>
@@ -734,31 +746,28 @@ const MenuPage = () => {
               </MenuItem>
               <MenuItem onClick={handleCloseMenu}>Cancel</MenuItem>
             </Menu>
-            <div className="hehe">
-              --------------------------------------------------
-            </div>
+            <div style={{borderWidth: "0.6px", borderColor:"black", margin:"5%", width:"90%"}}/>
             {totalPirce > 0 && (
               <div className="totalPrice">
                 <Typography
                   color="#000009"
-                  padding="10%"
-                  fontSize="1.7em"
+                  fontSize="1.2em"
                   fontWeight="bold"
-                  paddingTop="4%"
-                  paddingBottom="0%"
-                  marginBottom="0%"
+                  marginTop="4%"
+                  fontFamily={"Montserrat"}
                 >
                   Total
                 </Typography>
-                <div className="Price">{totalPirce} VND</div>
+                <div className="Price">{totalPirce}.000 VND</div>
               </div>
             )}
             <div className="payment">
               <Typography
                 color="#000009"
                 padding="10%"
-                fontSize="1.7em"
+                fontSize="1.5em"
                 fontWeight="bold"
+                fontFamily={"Montserrat"}
               >
                 Payment Method
               </Typography>

@@ -9,6 +9,7 @@ import {
   TableHead,
   TableBody,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -57,6 +58,7 @@ const StyledCollapse = styled(Collapse)({
 });
 
 const BillRow = ({ data, handleDelete, handleEdit }) => {
+  const { Position } = useSelector((state) => state.auths.user);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open2 = Boolean(anchorEl);
@@ -93,41 +95,45 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
         <StyledTableCell align="center">
           {new Date(data.createdAt).toLocaleString()}
         </StyledTableCell>
-        <StyledTableCell align="center">
-          <IconButton
-            aria-label="more"
-            aria-controls="long-menu"
-            aria-haspopup="true"
-            onClick={handleClick}
-          >
-            <DeleteIcon />
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
+        {Position === 'admin' && (
+          <StyledTableCell align="center">
+            <IconButton
+              aria-label="more"
+              aria-controls="long-menu"
+              aria-haspopup="true"
+              onClick={handleClick}
             >
-              <MenuItem
-                onClick={(event) => {
-                  event.stopPropagation();
-                  handleClose();
-                  handleDelete(data._id);
-                }}
+              <DeleteIcon />
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
               >
-                Delete
-              </MenuItem>
-              <MenuItem
-                onClick={(event) => {
-                  event.stopPropagation();
-                  handleClose();
-                }}
-              >
-                Cancel
-              </MenuItem>
-            </Menu>
-          </IconButton>
-        </StyledTableCell>
+                <MenuItem
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleClose();
+                    handleDelete(data._id);
+                  }}
+                  style={{fontFamily:"Montserrat", color: "black", fontWeight:"450"}}
+                >
+                  Delete
+                </MenuItem>
+                <MenuItem
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleClose();
+                  }}
+                  style={{fontFamily:"Montserrat", color: "black", fontWeight:"450"}}
+                >
+                  Cancel
+                </MenuItem>
+              </Menu>
+            </IconButton>
+          </StyledTableCell>
+        )}
       </StyledTableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>

@@ -494,10 +494,10 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
         }}
       >
         <button className="buttonCancel" onClick={() => resetAllStates()}>
-          Quay lại
+          Cancel
         </button>
         <button className="buttonAdd" onClick={() => handleUpload()}>
-          Thêm
+          Add
         </button>
       </div>
     </div>

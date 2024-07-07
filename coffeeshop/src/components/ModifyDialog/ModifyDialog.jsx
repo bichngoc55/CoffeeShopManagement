@@ -54,8 +54,8 @@ const ModifyDialog = ({ onClose, drink, handleUpdateChange }) => {
           justifyContent: "space-between",
         }}
       >
-        <DialogTitle sx={{ fontFamily: "Montserrat", fontSize: "1.5em" }}>
-          Modify {drink?.Name}
+        <DialogTitle >
+          <p className="title">Modify {drink?.Name}</p>
         </DialogTitle>
         <IconButton sx={{ marginRight: "2%" }} onClick={onClose}>
           <CloseIcon />
@@ -143,7 +143,17 @@ const ModifyDialog = ({ onClose, drink, handleUpdateChange }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => handleUpdateChange(modifiedDrink)}>
+        <Button onClick={() => handleUpdateChange(modifiedDrink)}
+          variant="contained"
+          sx={{
+            bgcolor: "#714534",
+            color: "#FFFFFF",
+            fontFamily: "Montserrat",
+            fontWeight: 600,
+            "&:hover": {
+              bgcolor: "#8B572A",
+            },
+          }}>
           Save Changes
         </Button>
       </DialogActions>

@@ -39,28 +39,28 @@ const BillCard = ({
                 {billItem.drink.LoaiDoUong !== "Topping" && (
                   <div className="notes">
                     <div className="info-row">
-                      <div className="mood">
+                      <div className="option">
                         Mood: <span className="value">{billItem.mood}</span>
                       </div>
-                      <div className="size">
+                      <div className="option">
                         Size: <span className="value">{billItem.size}</span>
                       </div>
                     </div>
                     <div className="info-row">
-                      <div className="ice">
+                      <div className="option">
                         Ice: <span className="value">{billItem.ice}</span>
                       </div>
-                      <div className="sugar">
+                      <div className="option">
                         Sugar: <span className="value">{billItem.sugar}</span>
                       </div>
                     </div>
-                    <div className="quantity">
+                    <div className="option">
                       Count:{" "}
                       <IconButton>
-                        <RemoveIcon onClick={() => delete1quantity(billItem)} />
+                        <RemoveIcon onClick={() => delete1quantity(billItem,index)} />
                       </IconButton>{" "}
                       <span className="value">{billItem.quantity}</span>{" "}
-                      <IconButton onClick={() => inCrease1Quantity(billItem)}>
+                      <IconButton onClick={() => inCrease1Quantity(billItem, index)}>
                         <AddIcon />
                       </IconButton>
                     </div>
@@ -72,7 +72,7 @@ const BillCard = ({
           ))}
         </div>
       ) : (
-        <Typography variant="body1">No items in the billing</Typography>
+        <div className="option">No items in the billing</div>
       )}
     </div>
   );

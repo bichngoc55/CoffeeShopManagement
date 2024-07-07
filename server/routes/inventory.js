@@ -15,7 +15,7 @@ router.get("/", getAllIngredients);
 /* READ */
 router.get("/expired", verifyToken, ktraGanHetHan);
 /* CREATE */
-router.post("/add", createIngredient);
+router.post("/add", verifyToken, createIngredient);
 /* READ */
 router.get("/:ingredientId", verifyToken, getDetailIngredient);
 /* UPDATE */

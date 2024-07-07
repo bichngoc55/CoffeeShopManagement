@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { TableRow, TableCell, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -10,7 +11,7 @@ import { tableCellClasses } from "@mui/material/TableCell";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
     fontSize: "14px",
-    color: "#70768C",
+    color: "black",
   },
 }));
 
@@ -35,6 +36,7 @@ const InventoryRow = ({
   handleEdit,
   handleDelete,
 }) => {
+  const { Position } = useSelector((state) => state.auths.user);
   const [editData, setEditData] = useState({ ...data });
   const toggleEdit = () => {
     setEditingId(isEditing ? null : data._id);
@@ -157,22 +159,24 @@ const InventoryRow = ({
           new Date(data.ExpiryDate).toLocaleDateString()
         )}
       </StyledTableCell>
-      <StyledTableCell
-        align="center"
-        sx={{
-          alignItems: "center",
-          width: "10%",
-          height: "100%",
-          justifyContent: "space-between",
-        }}
-      >
-        <IconButton sx={{  }} onClick={toggleEdit}>
-          {isEditing ? <DoneOutlineOutlinedIcon /> : <EditIcon />}
-        </IconButton>
-        <IconButton sx={{  }} onClick={() => handleDelete(data._id)}>
-          <DeleteIcon />
-        </IconButton>
-      </StyledTableCell>
+      {Position === 'admin' && (
+        <StyledTableCell
+          align="center"
+          sx={{
+            alignItems: "center",
+            width: "10%",
+            height: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <IconButton sx={{  }} onClick={toggleEdit}>
+            {isEditing ? <DoneOutlineOutlinedIcon /> : <EditIcon />}
+          </IconButton>
+          <IconButton sx={{  }} onClick={() => handleDelete(data._id)}>
+            <DeleteIcon />
+          </IconButton>
+        </StyledTableCell>
+      )}
     </StyledTableRow >
   );
 };

@@ -50,11 +50,9 @@ const Stuff = () => {
     } else {
       const lowercasedFilter = searchTerm.toLowerCase();
       const filteredData = users.filter((user) => {
-        const nameParts = user.Name.split(" ");
-        const firstName = nameParts[nameParts.length - 1].toLowerCase();
-        return firstName[0].includes(lowercasedFilter);
+        return user.Name.toLowerCase().includes(lowercasedFilter);
       });
-      setSearchResult(filteredData);
+      setSearchResult(filteredData); 
     }
   };
   const handleClickSearch = (result) => {
@@ -115,9 +113,9 @@ const Stuff = () => {
 
   const items = [
     {
-      title: "Hồ sơ nhân viên",
+      title: "Staff profile",
       content: (
-        <div style={{ overflow: "scroll" }}>
+        <div style={{  }}>
           {users.map((user, index) => {
             return (
               <div id={user._id} className="container-card">
@@ -187,7 +185,7 @@ const Stuff = () => {
       ),
     },
     {
-      title: "Thêm nhân viên",
+      title: "Add staff",
       content: (
         <div>
           <AddStaffComponent onCloseUpdate={closeModalAndUpdate} />
@@ -195,7 +193,7 @@ const Stuff = () => {
       ),
     },
     {
-      title: "Thông tin cá nhân",
+      title: "Personal information",
       content: (
         <div>
           <StaffInfo></StaffInfo>
@@ -206,9 +204,9 @@ const Stuff = () => {
   return (
     <Box ref={inputRef} sx={{ display: "flex" }}>
       <DashBoard />
-      <div style={{ backgroundColor: "#f9f8fb", width: "100%" }}>
+      <div style={{ backgroundColor: "#f9f8fb", width: "100%" , paddingLeft:"2.64%", paddingRight: "2.64%", paddingTop:"2.15%"}}>
         <p className="Header">
-          <strong>Quản lý nhân viên</strong>
+          <label className="medium_text">Staff Management</label>
           <div style={{ position: "relative" }}>
             <div className="search-bar-staff">
               <input

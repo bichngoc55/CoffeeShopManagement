@@ -31,18 +31,18 @@
   display: flex;
   color: #38cf36;
   width: 120px;
-  justify-content: space-between;
+  justify-content: center;
 }
 .workheader {
   display: flex;
   color: #d63c3c;
   width: 145px;
-  justify-content: space-between;
+  justify-content: center;
 }
 .bookheader {
   display: flex;
   width: 125px;
-  justify-content: space-between;
+  justify-content: center;
 }
 .containerGrid {
   display: grid;

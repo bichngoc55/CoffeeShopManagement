@@ -239,20 +239,20 @@ const Booking = () => {
           textAlign: "left",
         }}
       >
-        <label className="headerBooking">Quản lý đặt bàn</label>
+        <label className="headerBooking">Table & Booking</label>
 
         <div className="number">
           <div className="emptyheader">
-            <CheckCircleIcon />
-            <label>Bàn trống: {availableTables}</label>
+            <CheckCircleIcon sx = {{marginRight: '5px'}}/>
+            <label>Available: {availableTables}</label>
           </div>
           <div className="workheader">
-            <LocalCafeIcon />
-            <label>Bàn có khách: {occupiedTables}</label>
+            <LocalCafeIcon sx = {{marginRight: '5px'}}/>
+            <label>Occupied: {occupiedTables}</label>
           </div>
           <div className="bookheader">
-            <CalendarMonthIcon />
-            <label>Bàn đã đặt: {bookedTables}</label>
+            <CalendarMonthIcon sx = {{marginRight: '5px'}}/>
+            <label>Booked: {bookedTables}</label>
           </div>
         </div>
 
@@ -288,7 +288,7 @@ const Booking = () => {
                   }}
                 >
                   <TableRestaurantIcon />
-                  <label className="tableNumber">Bàn {item.tableNumber}</label>
+                  <label className="tableNumber">T. {item.tableNumber}</label>
                 </button>
               );
             })}

@@ -5,9 +5,9 @@ html {
 }
 
 .medium_text {
-    font-size: 2rem; /* Kích thước chữ là 2 lần kích thước cơ sở */
-    text-align: left;
-    font-weight: bold;
+  font-size: 2rem; /* Kích thước chữ là 2 lần kích thước cơ sở */
+  text-align: left;
+  font-weight: bold;
 }
 
 .large_text {

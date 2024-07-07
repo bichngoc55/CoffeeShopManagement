@@ -8,219 +8,120 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-// const textFieldStyles = {
-//   "& .MuiOutlinedInput-root": {
-//     "& fieldset": {
-//       borderColor: "grey", // Default border color
-//     },
-//     "&:hover fieldset": {
-//       borderColor: "#9398A8", // Border color on hover
-//     },
-//     "&.Mui-focused fieldset": {
-//       borderColor: "#9398A9", // Border color when focused
-//     },
-//   },
-// };
+
 const textFieldStyles = {
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      borderColor: "grey", // Default border color
+      borderColor: "#D0D5DD",
     },
     "&:hover fieldset": {
-      borderColor: "#9398A8", // Border color on hover
+      borderColor: "#9398A8",
     },
     "&.Mui-focused fieldset": {
-      borderColor: "#9398A9", // Border color when focused
+      borderColor: "#714534",
     },
   },
-  width: "300px",
+  width: "100%",
 };
 
 const style = {
-  position: "absolute",
+  position: "fixed",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  bgcolor: "background.paper",
-  boxShadow: 24,
+  maxHeight: "95vh", // Max height to ensure it fits within the viewport
+  overflowY: "auto", // Enable vertical scrolling
+  bgcolor: "#FFFFFF",
+  boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+  borderRadius: "12px",
   p: 4,
-  borderRadius: 2,
+  pt: 3, // Add padding-top
+  pb: 3, // Add padding-bottom
 };
 
 const ModalAddIngredients = ({ open, handleClose, handleSubmit }) => {
   return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
+    <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mb: 2,
+            mb: 3,
           }}
         >
-          <Typography
-            sx={{
-              fontFamily: "Montserrat",
-              marginLeft: "5%",
-            }}
-            id="modal-modal-title"
-            variant="h4"
-            component="h1"
+          <span className="title"
           >
             Add New Ingredient
-          </Typography>
-          <IconButton onClick={handleClose}>
+          </span>
+          <IconButton onClick={handleClose} sx={{ color: "#714534" }}>
             <CloseIcon />
           </IconButton>
         </Box>
         <Box
           component="form"
           sx={{
-            "& .MuiTextField-root": { m: 1, width: "25ch" },
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
           }}
           noValidate
           autoComplete="off"
           onSubmit={handleSubmit}
         >
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Nhập tên nguyên liệu
-            </Typography>
-            <TextField
-              required
-              label="Ingredient Name"
-              name="name"
-              sx={{ ...textFieldStyles, width: "500px" }}
-            />
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Nhập số lượng
-            </Typography>
-            <TextField
-              required
-              label="Quantity"
-              sx={textFieldStyles}
-              name="quantity"
-              type="number"
-            />
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Nhập miêu tả bảo quản
-            </Typography>
-            <TextField
-              label="Description"
-              sx={textFieldStyles}
-              name="description"
-              multiline
-              rows={3}
-            />
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Nhập đơn vị
-            </Typography>
-            <TextField
-              required
-              sx={textFieldStyles}
-              label="Unit"
-              name="unit"
-              placeholder="Nhập đơn vị"
-            />
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Nhập giá tiền
-            </Typography>
-            <TextField
-              sx={textFieldStyles}
-              required
-              label="Price"
-              name="price"
-              type="number"
-            />
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Nhập ngày hết hạn
-            </Typography>
-            <TextField
-              label="Expiry Date"
-              name="expiryDate"
-              sx={textFieldStyles}
-              type="date"
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <Typography
-              sx={{
-                alignContent: "center",
-                fontFamily: "Montserrat",
-                width: "40%",
-              }}
-            >
-              Nhập ngày nhập hàng
-            </Typography>
-            <TextField
-              label="Storage Date"
-              sx={textFieldStyles}
-              name="storageDate"
-              type="date"
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </Box>
+          {[
+            { label: "Ingredient Name", name: "name", type: "text" },
+            { label: "Quantity", name: "quantity", type: "number" },
+            { label: "Description", name: "description", type: "text", multiline: true, rows: 3 },
+            { label: "Unit", name: "unit", type: "text" },
+            { label: "Price", name: "price", type: "number" },
+            { label: "Expiry Date", name: "expiryDate", type: "date" },
+            { label: "Storage Date", name: "storageDate", type: "date" },
+          ].map((field) => (
+            <Box key={field.name} sx={{ display: "flex", alignItems: "center" }}>
+              <Typography
+                sx={{
+                  width: "40%",
+                  fontFamily: "Montserrat",
+                  fontWeight: 500,
+                  color: "#344054",
+                }}
+              >
+                {field.label}
+              </Typography>
+              <TextField
+                required
+                label={field.label}
+                name={field.name}
+                type={field.type}
+                multiline={field.multiline}
+                rows={field.rows}
+                sx={textFieldStyles}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Box>
+          ))}
 
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <Button type="submit">Submit</Button>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                bgcolor: "#714534",
+                color: "#FFFFFF",
+                fontFamily: "Montserrat",
+                fontWeight: 600,
+                "&:hover": {
+                  bgcolor: "#8B572A",
+                },
+              }}
+            >
+              Submit
+            </Button>
           </Box>
         </Box>
       </Box>

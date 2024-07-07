@@ -491,10 +491,10 @@ const StaffInfoComponent = () => {
         }}
       >
         <button className="buttonCancel" onClick={() => resetAllStates()}>
-          Hủy thay đổi
+          Dismiss changes
         </button>
         <button className="buttonAdd" onClick={() => handleUpload()}>
-          Lưu thay đổi
+          Save changes
         </button>
       </div>
     </div>

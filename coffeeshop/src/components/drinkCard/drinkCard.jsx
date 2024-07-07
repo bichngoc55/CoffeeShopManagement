@@ -13,7 +13,7 @@ const DrinkCard = ({
   onDrinkSelected,
   selectedDrinkType,
 }) => {
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMood, setMood] = useState("");
   const [selectedSize, setSize] = useState("");
@@ -73,9 +73,20 @@ const DrinkCard = ({
     }
 
     if (selectedDrinkType) {
-      filteredItems = filteredItems.filter(
-        (item) => item.LoaiDoUong === selectedDrinkType.title
-      );
+      if (selectedDrinkType.title === "All") {
+        filteredItems = filteredItems.filter(
+          (item) =>
+            item.LoaiDoUong === "Coffee" ||
+            item.LoaiDoUong === "Tea" ||
+            item.LoaiDoUong === "Topping" ||
+            item.LoaiDoUong === "Milk based" ||
+            item.LoaiDoUong === "Juice"
+        );
+      } else {
+        filteredItems = filteredItems.filter(
+          (item) => item.LoaiDoUong === selectedDrinkType.title
+        );
+      }
     }
     filteredItems = filteredItems.map((item) => ({
       ...item,
@@ -138,7 +149,7 @@ const DrinkCard = ({
                         <div className="Mood">
                           <Typography
                             fontSize="1.2em"
-                            fontFamily="Montserrat"
+                            fontFamily="Montserrat" 
                             fontWeight="bold"
                             paddingTop="8%"
                           >
@@ -198,9 +209,9 @@ const DrinkCard = ({
                               }`}
                               onClick={() => handleSizeClick("S")}
                             >
-                              <Typography onClick={() => handleSizeClick("S")}>
+                              <div className="option_text" onClick={() => handleSizeClick("S")}>
                                 S
-                              </Typography>
+                              </div>
                             </div>
                             <div
                               className={`mediumSize ${
@@ -211,9 +222,9 @@ const DrinkCard = ({
                               }`}
                               onClick={() => handleSizeClick("M")}
                             >
-                              <Typography onClick={() => handleSizeClick("M")}>
+                              <div className="option_text" onClick={() => handleSizeClick("M")}>
                                 M
-                              </Typography>
+                              </div>
                             </div>
                             <div
                               className={`largeSize ${
@@ -224,9 +235,9 @@ const DrinkCard = ({
                               }`}
                               onClick={() => handleSizeClick("L")}
                             >
-                              <Typography onClick={() => handleSizeClick("L")}>
+                              <div className="option_text" onClick={() => handleSizeClick("L")}>
                                 L
-                              </Typography>
+                              </div>
                             </div>
                           </div>
                         </div>{" "}
@@ -252,11 +263,10 @@ const DrinkCard = ({
                               }`}
                               onClick={() => handleSugarClick("30")}
                             >
-                              <Typography
-                                onClick={() => handleSugarClick("30")}
-                              >
+                              <div className="option_text"
+                                onClick={() => handleSugarClick("30")}>
                                 30
-                              </Typography>
+                              </div>
                             </div>
                             <div
                               className={`mediumSugar ${
@@ -267,11 +277,11 @@ const DrinkCard = ({
                               }`}
                               onClick={() => handleSugarClick("50")}
                             >
-                              <Typography
+                              <div className="option_text"
                                 onClick={() => handleSugarClick("50")}
                               >
                                 50
-                              </Typography>
+                              </div>
                             </div>
                             <div
                               className={`defaultSugar ${
@@ -282,11 +292,11 @@ const DrinkCard = ({
                               }`}
                               onClick={() => handleSugarClick("100")}
                             >
-                              <Typography
+                              <div className="option_text"
                                 onClick={() => handleSugarClick("100")}
                               >
                                 100
-                              </Typography>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -310,7 +320,7 @@ const DrinkCard = ({
                               }`}
                               onClick={() => handleIceClick("0")}
                             >
-                              <Typography>0</Typography>
+                              <div className="option_text">0</div>
                             </div>
                             <div
                               className={`mediumIce ${
@@ -321,7 +331,7 @@ const DrinkCard = ({
                               }`}
                               onClick={() => handleIceClick("50")}
                             >
-                              <Typography>50</Typography>
+                              <div className="option_text">50</div>
                             </div>
                             <div
                               className={`defaultIce ${
@@ -332,7 +342,7 @@ const DrinkCard = ({
                               }`}
                               onClick={() => handleIceClick("100")}
                             >
-                              <Typography>100</Typography>
+                              <div className="option_text">100</div>
                             </div>
                           </div>
                         </div>

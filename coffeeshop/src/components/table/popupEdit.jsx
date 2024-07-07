@@ -23,8 +23,8 @@ const modalStyles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "430px",
-    height: "530px",
+    width: "35%",
+    height: "90%",
     alignItems: "center",
     border: "1px solid #ccc",
     borderRadius: " 20px",
@@ -205,7 +205,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose} style={modalStyles}>
       <div className="sbtnt">
-        <label>Thông tin nhân viên</label>
+        <label>Staff information</label>
         <button onClick={onClose} className="sbtnx">
           x
         </button>
@@ -237,12 +237,12 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         </div>
         <div>
           <div className="slabel-input">
-            <label className="slabel">Họ tên:</label>
+            <label className="slabel">Full Name:</label>
             <div className="sinput-container">
               <AccountCircleIcon className="iconH" />
               <input
                 type="text"
-                placeholder="Nhập họ tên"
+                placeholder="Enter staff's full name"
                 name="Name"
                 className="susername"
                 defaultValue={user.Name}
@@ -257,7 +257,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
               <EmailIcon className="iconH" />
               <input
                 type="text"
-                placeholder="Nhập email"
+                placeholder="Enter email"
                 className="semail"
                 name="email"
                 defaultValue={user.email}
@@ -267,12 +267,12 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
           </div>
 
           <div className="slabel-input">
-            <label className="slabel">SDT:</label>
+            <label className="slabel">Phone:</label>
             <div className="sinput-container">
               <PhoneIphoneIcon className="iconH" />
               <input
                 type="text"
-                placeholder="Nhập sdt"
+                placeholder="Enter phone number"
                 className="sphonea"
                 name="Phone"
                 defaultValue={user.Phone}
@@ -284,7 +284,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
       </div>
       <div className="sfirst">
         <div style={{ display: "flex", alignItems: "center" }}>
-          <label className="slabel">Ngày sinh:</label>
+          <label className="slabel">Date of Birth:</label>
           <input
             type="date"
             className="sdatepick"
@@ -296,7 +296,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
       </div>
       <div className="sfirst" style={{ justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <label className="slabelGender">Giới tính</label>
+          <label className="slabelGender">Gender</label>
           <Select
             value={user.gender}
             name="gender"
@@ -318,7 +318,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         </div>
 
         <div style={{ display: "flex", alignItems: "center" }}>
-          <label className="slabelGender">Chức vụ</label>
+          <label className="slabelGender">Position</label>
           <Select
             name="Position"
             value={user.Position}
@@ -335,7 +335,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
             }}
           >
             <MenuItem value={"admin"}>Admin</MenuItem>
-            <MenuItem value={"staff"}>Nhân viên</MenuItem>
+            <MenuItem value={"staff"}>Staff</MenuItem>
           </Select>
         </div>
       </div>
@@ -344,12 +344,12 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         className="sfirst"
         style={{ alignItems: "center", justifyContent: "space-between" }}
       >
-        <label className="slabelLocation">Địa chỉ:</label>
+        <label className="slabelLocation">Address:</label>
         <div className="sinputlocation">
           <LocationOnIcon className="iconH" />
           <input
             type="text"
-            placeholder="Nhập địa chỉ"
+            placeholder="Enter address"
             name="location"
             className="slocation"
             value={user.location || "unknown"}
@@ -362,12 +362,12 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         className="sfirst"
         style={{ alignItems: "center", justifyContent: "space-between" }}
       >
-        <label className="slabelLocation">Mật khẩu:</label>
+        <label className="slabelLocation">Password:</label>
         <div className="sinputpassword">
           <VpnKeyIcon className="iconH" />
           <input
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
             name="password"
             className="spass1"
             onChange={handleChange}
@@ -379,12 +379,12 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         className="sfirst"
         style={{ alignItems: "center", justifyContent: "space-between" }}
       >
-        <label className="slabelLocation">Xác nhận mật khẩu:</label>
+        <label className="slabelLocation">Confirm Password:</label>
         <div className="sinputpassword">
           <VpnKeyIcon className="iconH" />
           <input
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
             className="spass1"
           />
         </div>
@@ -400,7 +400,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         }}
       >
         <button className="sbtnCN" onClick={() => handleUpload()}>
-          Cập nhập
+          Update
         </button>
       </div>
     </Modal>

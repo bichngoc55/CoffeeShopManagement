@@ -44,7 +44,7 @@
   border-radius: 10px;
   border: 1px solid #d9d9d9;
   font-size: 14px;
-  width: 260px;
+  flex: 1;
   height: 30px;
   margin-left: 10px;
 }
@@ -52,7 +52,8 @@
   border-radius: 10px;
   border: 1px solid #d9d9d9;
   font-size: 14px;
-  width: 260px;
+  /* width: 260px; */
+  flex: 1;
   height: 30px;
   margin-left: 10px;
 }
@@ -67,10 +68,10 @@
 .date-picker1 {
   border: 1px solid #d9d9d9;
   border-radius: 10px;
-  margin-left: 10px;
   font-size: 12px;
   width: 130px;
   height: 30px;
+  margin-left: 5px;
 }
 .time {
   border: 1px solid #d9d9d9;
@@ -84,7 +85,7 @@
   border-radius: 10px;
   border: 1px solid #d9d9d9;
   font-size: 14px;
-  width: 150px;
+  width: 120px;
   height: 30px;
   margin-left: 10px;
 }

@@ -54,10 +54,10 @@ export const DeleteConfirmationModal = ({
         </IconButton>
       </StyledDialogTitle>
       <DialogContent>
-        <Typography variant="body1" gutterBottom>
+        <div className="small_text" gutterBottom>
           Are you sure you want to delete {selectedDrink?.Name} drink? This
           action cannot be undone.
-        </Typography>
+        </div>
       </DialogContent>
       <DialogActions>
         <StyledButton onClick={onClose} color="primary" variant="outlined">
