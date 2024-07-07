@@ -28,18 +28,33 @@ const History = () => {
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: "#EFF0F6",
-      color: "#4F5E74",
-      fontSize: "15px",
+      color: "black",
+      fontSize: "14.5px",
       fontWeight: "bold",
       fontFamily: "Montserrat",
       padding: "10px",
     },
     [`&.${tableCellClasses.body}`]: {
-      fontSize: "18px",
+      fontSize: "14px",
       fontWeight: "normal",
-      fontFamily: "Arial",
+      fontFamily: "Montserrat",
     },
   }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+      border: 0,
+    },
+    // Add this line to create a border for each row
+    '& td': {
+      borderBottom: '1px solid rgba(224, 224, 224, 1)',
+    },
+  }));
+  
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`http://localhost:3005/history/${id}`, {
@@ -121,6 +136,7 @@ const History = () => {
 
     return csvRows.join("\n");
   };
+  
   const fetchBillData = async (startDate, endDate) => {
     try {
       const query =
@@ -209,17 +225,18 @@ const History = () => {
       <DashBoard />
       <div
         style={{
-          paddingLeft: "16px",
-          textAlign: "left",
+          marginLeft:"2.64%",
+          marginRight: "2.64%",
+          textAlign: "left", 
+          width: "100%"
         }}
       >
-        <label className="headerBooking">Lịch Sử Giao Dịch</label>
+        <label className="medium_text" style={{ marginTop: "2.15%" }}>Transaction History</label>
         <Box
-          sx={{
+          sx={{ 
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            width: "100%",
           }}
         >
           <Box
@@ -267,14 +284,16 @@ const History = () => {
               color="#9398A9"
               fontSize="1.2em"
               fontWeight="bold"
+              fontFamily={"Montserrat"}
             >
               Details
             </Typography>
             <Typography
               marginLeft="3%"
-              color="#412D26"
+              color="black"
               fontSize="1.2em"
               fontWeight="bold"
+              fontFamily={"Montserrat"}
             >
               {billCount} bills
             </Typography>
@@ -296,7 +315,7 @@ const History = () => {
         </Box>
 
         <TableContainer component={Paper}>
-          <Table style={{ width: 1150 }} aria-label="customized table">
+          <Table style={{ width: "100%", alignSelf:"center" }} aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell

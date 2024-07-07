@@ -12,6 +12,7 @@ import {
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 
@@ -19,7 +20,7 @@ const StyledTableRow = styled(TableRow)(({ theme, index }) => ({
   backgroundColor: index % 2 === 0 ? "#F5F5DC" : "white",
   "&:hover": {
     backgroundColor: "#F9F8FB",
-    color: "#70768C",
+    color: "black",
   },
   "&:last-child td, &:last-child th": {
     borderBottom: 0,
@@ -37,15 +38,15 @@ const StyledCollapseBox = styled(Box)(({ theme }) => ({
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#B49D96",
-    color: "#70768C",
-    fontSize: "10px",
-    fontWeight: "bold",
+    color: "black",
+    fontSize: "14px",
+    fontWeight: "550",
     fontFamily: "Montserrat",
     padding: "10px",
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: "15px",
-    color: "#70768C",
+    fontSize: "14px",
+    color: "black",
     fontWeight: "normal",
     fontFamily: "Montserrat",
   },
@@ -99,7 +100,7 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
             aria-haspopup="true"
             onClick={handleClick}
           >
-            <MoreVertIcon />
+            <DeleteIcon />
             <Menu
               id="simple-menu"
               anchorEl={anchorEl}
@@ -116,6 +117,14 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
               >
                 Delete
               </MenuItem>
+              <MenuItem
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleClose();
+                }}
+              >
+                Cancel
+              </MenuItem>
             </Menu>
           </IconButton>
         </StyledTableCell>
@@ -126,9 +135,9 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
             <StyledCollapseBox margin={1}>
               <Typography
                 marginLeft="3%"
-                color="#9398A9"
-                fontSize="1.7em"
-                fontWeight="bold"
+                color="black"
+                fontSize="1.5em"
+                fontWeight="550"
               >
                 Drink Details
               </Typography>
