@@ -6,6 +6,8 @@ html {
 
 .medium_text {
     font-size: 2rem; /* Kích thước chữ là 2 lần kích thước cơ sở */
+    text-align: left;
+    font-weight: bold;
 }
 
 .large_text {
@@ -19,6 +21,7 @@ html {
 
 .label_text {
   font-size: 0.8rem;
+  font-weight: 600;
   /* white-space: nowrap; */
 }
 
@@ -87,7 +90,7 @@ p {
 }
 
 .squareCard {
-  width:  35%;
+  width:  36%;
   height: 35%;
   /* background-color: #714534; */
   flex-direction: column;
@@ -99,9 +102,10 @@ p {
   height: 30%;
   width:  100%;
   flex-direction: column;
+  position: relative;
 }
 
 .bigRectangleCard {
-  width: 48%;
+  width: 49%;
   height: auto
 }
