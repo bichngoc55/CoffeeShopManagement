@@ -208,9 +208,24 @@ const FormTable = ({
               placeholder="Enter PN"
               onChange={(e) => {
                 handleChange(e);
-                if (errors.phoneNumberBooking) {
-                  setErrors({ ...errors, phoneNumberBooking: false });
-                }
+                // const input = e.target.value;
+
+                //     // Kiểm tra nếu input chỉ chứa số
+                //     if (/^\d*$/.test(input)) {
+                //       setPhone(input.toString());
+
+                //       // Kiểm tra nếu input có ít nhất 10 chữ số
+                //       if (input.length >= 10) {
+                //         console.log("hihi" + input.length);
+                //         setErrors({ ...errors, phoneNumberBooking: false });
+                //       } else {
+                //         console.log(input.length);
+                //         setErrors({ ...errors, phoneNumberBooking: true });
+                //       }
+                //     } else {
+                //       // Nếu có ký tự không phải số, đặt lỗi
+                //       setErrors({ ...errors, phone: true });
+                //     }
               }}
               value={table.phoneNumberBooking}
             />
@@ -261,11 +276,7 @@ const FormTable = ({
             control={<Radio />}
             label="Occupied"
           />
-          <FormControlLabel
-            value="booked"
-            control={<Radio />}
-            label="Booked"
-          />
+          <FormControlLabel value="booked" control={<Radio />} label="Booked" />
         </RadioGroup>
         <div className="label-Input">
           <label style={{ fontWeight: "bold" }}>Note: </label>

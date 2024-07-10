@@ -209,13 +209,15 @@ const DashBoard = () => {
             selected={selected}
             setSelected={setSelected}
           />
-          <Item
-            title="Analytics"
-            to="/analytics"
-            icon={<PieChartOutlineOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
+          {isAdmin && (
+            <Item
+              title="Analytics"
+              to="/analytics"
+              icon={<PieChartOutlineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          )}
         </Box>
         <Box
           onClick={handleLogout}
