@@ -153,7 +153,7 @@ const StaffInfoComponent = () => {
     let tempErrors = {};
     if (!nameInput) tempErrors.name = true;
     if (!emailInput) tempErrors.email = true;
-    if (!phoneInput) tempErrors.phone = true;
+    if (!phoneInput && phoneInput < 8) tempErrors.phone = true;
     if (!dateOfBirthInput) tempErrors.dateOfBirth = true;
     if (!genderInput) tempErrors.gender = true;
     if (!positionInput) tempErrors.position = true;
@@ -278,9 +278,23 @@ const StaffInfoComponent = () => {
                   placeholder="Enter your phone number"
                   value={phoneInput}
                   onChange={(event) => {
-                    setPhone(event.target.value);
-                    if (errors.phone && phoneInput.length >= 9) {
-                      setErrors({ ...errors, phone: false });
+                    const input = event.target.value;
+
+                    // Kiểm tra nếu input chỉ chứa số
+                    if (/^\d*$/.test(input)) {
+                      setPhone(input.toString());
+
+                      // Kiểm tra nếu input có ít nhất 10 chữ số
+                      if (input.length >= 10) {
+                        console.log("hihi" + input.length);
+                        setErrors({ ...errors, phone: false });
+                      } else {
+                        console.log(input.length);
+                        setErrors({ ...errors, phone: true });
+                      }
+                    } else {
+                      // Nếu có ký tự không phải số, đặt lỗi
+                      setErrors({ ...errors, phone: true });
                     }
                   }}
                 />
