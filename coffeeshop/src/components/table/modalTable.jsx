@@ -163,6 +163,7 @@ const FormTable = ({
               type="date"
               id="date"
               name="bookingDate"
+              min={format(table.bookingDate, "yyyy-MM-dd")}
               className={`date-picker1 ${
                 errors.bookingDate ? "error-input" : ""
               }`}

@@ -165,6 +165,7 @@ const TableAdd = ({
             <label style={{ fontWeight: "bold" }}>Booked date: </label>
             <input
               type="date"
+              min={format(new Date(), "yyyy-MM-dd")}
               id="date"
               name="bookingDate"
               className={`date-picker1 ${
