@@ -573,7 +573,7 @@ const MenuPage = () => {
               fontWeight={"bold"}
               color="white"
             > 
-              Choose category
+              Menu category
             </Typography>
             {/* <SearchBar
               placeholder="Search category or menu"
@@ -650,7 +650,7 @@ const MenuPage = () => {
               fontWeight={"bold"}
               color="white"
             >
-              Coffee Menu
+              Menu Items
             </Typography>
             <div className="ButtonComponent">
               <button className="btn" onClick={handleAddDrink}>

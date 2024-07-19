@@ -206,7 +206,7 @@ export const forgotPassword = async (req, res) => {
       }
     });
 
-    res.json({ status: "Check your new passworn in email" });
+    res.json({ status: "Check your new password in email" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
