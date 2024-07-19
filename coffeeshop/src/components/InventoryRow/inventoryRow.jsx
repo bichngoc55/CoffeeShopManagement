@@ -169,15 +169,17 @@ const InventoryRow = ({
             justifyContent: "space-between",
           }}
         >
-          <IconButton sx={{  }} onClick={toggleEdit}>
+          <IconButton           aria-label="Edit ingredient"
+  sx={{  }} onClick={toggleEdit}>
             {isEditing ? <DoneOutlineOutlinedIcon /> : <EditIcon />}
           </IconButton>
-          <IconButton sx={{  }} onClick={() => handleDelete(data._id)}>
+          <IconButton           aria-label="Delete ingredient"
+ sx={{  }} onClick={() => handleDelete(data._id)}>
             <DeleteIcon />
           </IconButton>
         </StyledTableCell>
       )}
-    </StyledTableRow >
+    </StyledTableRow > 
   );
 };
 

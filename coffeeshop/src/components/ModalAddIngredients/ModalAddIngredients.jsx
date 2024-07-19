@@ -62,6 +62,7 @@ const ModalAddIngredients = ({ open, handleClose, handleSubmit }) => {
         </Box>
         <Box
           component="form"
+          role="form"
           sx={{
             display: "flex",
             flexDirection: "column",

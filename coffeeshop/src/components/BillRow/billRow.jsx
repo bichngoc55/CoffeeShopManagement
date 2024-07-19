@@ -103,9 +103,11 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
               aria-haspopup="true"
               onClick={handleClick}
             >
+
               <DeleteIcon />
               <Menu
                 id="simple-menu"
+                aria-label="delete"
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
