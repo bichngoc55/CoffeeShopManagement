@@ -93,7 +93,11 @@ const MenuPage = () => {
     if (itemDelete.quantity > 1) {
       setBillItems(
         billItems.map((item, indexItem) => {
-          if (item.drink._id === itemDelete.drink._id && indexItem === index && itemDelete.quantity > 0) {
+          if (
+            item.drink._id === itemDelete.drink._id &&
+            indexItem === index &&
+            itemDelete.quantity > 0
+          ) {
             return {
               ...item,
               quantity: item.quantity - 1,
@@ -449,7 +453,7 @@ const MenuPage = () => {
       filteredResults.map((item) => item.Name).join(", ")
     );
   };
-  
+
   useEffect(() => {
     getDrinkInformation().then((res) => {
       setDrinksData(res);
@@ -563,17 +567,13 @@ const MenuPage = () => {
           width: "100%",
           flexDirection: "row",
           backgroundColor: "#4B3621",
-          position:"relative"
+          position: "relative",
         }}
       >
         <div className="menu-section">
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography
-              fontSize={28}
-              fontWeight={"bold"}
-              color="white"
-            > 
-              Menu category
+            <Typography fontSize={28} fontWeight={"bold"} color="white">
+              Menu Category
             </Typography>
             {/* <SearchBar
               placeholder="Search category or menu"
@@ -634,7 +634,7 @@ const MenuPage = () => {
             />
             <DrinkTypeCard
               title="Milk based"
-              icon={LuMilk }
+              icon={LuMilk}
               onClick={handleSetSelectedDrinkType}
             />
             <DrinkTypeCard
@@ -691,14 +691,14 @@ const MenuPage = () => {
         </div>
         <div className="bill-detail-container">
           <div className="bill-detail">
-            <div 
+            <div
               style={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "baseline",
-                marginTop:"5%",
-                marginBottom:"5%"
+                marginTop: "5%",
+                marginBottom: "5%",
               }}
             >
               <Typography
@@ -708,9 +708,14 @@ const MenuPage = () => {
                 fontFamily={"Montserrat"}
               >
                 Bill
-              </Typography> 
+              </Typography>
               <Button onClick={() => setBillItems([])}>
-                <Typography fontSize="1.2em" fontFamily="Montserrat" fontWeight="550" color={"red"}>
+                <Typography
+                  fontSize="1.2em"
+                  fontFamily="Montserrat"
+                  fontWeight="550"
+                  color={"red"}
+                >
                   Clear All
                 </Typography>
               </Button>
@@ -746,7 +751,14 @@ const MenuPage = () => {
               </MenuItem>
               <MenuItem onClick={handleCloseMenu}>Cancel</MenuItem>
             </Menu>
-            <div style={{borderWidth: "0.6px", borderColor:"black", margin:"5%", width:"90%"}}/>
+            <div
+              style={{
+                borderWidth: "0.6px",
+                borderColor: "black",
+                margin: "5%",
+                width: "90%",
+              }}
+            />
             {totalPirce > 0 && (
               <div className="totalPrice">
                 <Typography

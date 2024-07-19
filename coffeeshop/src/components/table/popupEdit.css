@@ -187,3 +187,8 @@
   padding-left: 35px;
   z-index: 1;
 }
+.error-input {
+  border: 1px solid red;
+  z-index: auto !important;
+  position: static !important;
+}
