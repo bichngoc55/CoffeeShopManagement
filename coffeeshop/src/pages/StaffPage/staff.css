@@ -1,11 +1,55 @@
 .Header {
   font-size: 20px;
-  position: sticky;
+  /* position: sticky; */
   top: 0px;
-  padding: 16px;
   background-color: #f9f8fb;
   z-index: 5;
   text-align: left;
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.search-bar-staff {
+  display: flex;
+  transition: border-color 0.3s ease-in-out;
+  position: relative;
+  border-radius: 16px;
+  padding: 4px 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  height: 50%;
+  align-items: center;
+}
+
+.search-bar-staff:hover {
+  border-color: #000000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.searchitem {
+  width: 100%;
+  text-align: left;
+  padding: 8px 16px;
+  border-bottom: 1px solid #ddd;
+  background: white;
+  border-bottom: 1px solid lightgrey;
+  cursor: pointer;
+  font-size: 12px;
+}
+.searchListContainer {
+  margin-top: 5px;
+  padding-top: 5px;
+  padding-bottom: 15px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 16px;
+  background-color: white;
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .container-card {
   display: flex;

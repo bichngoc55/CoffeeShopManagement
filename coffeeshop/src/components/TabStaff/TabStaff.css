@@ -22,7 +22,7 @@
 
 .header {
   display: flex;
-  position: sticky;
+  /* position: sticky; */
   top: 62px;
   background-color: #f9f8fb;
   z-index: 3;

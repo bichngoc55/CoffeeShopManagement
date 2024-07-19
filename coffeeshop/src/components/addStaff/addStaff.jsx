@@ -31,6 +31,7 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
     whiteSpace: "nowrap",
     width: 1,
   });
+  const [message, setMessage] = useState("");
   const [nameInput, setName] = useState("");
   const [positionInput, setPosition] = useState();
   const [genderInput, setGender] = useState();
@@ -90,14 +91,23 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
               Position: positionInput,
               gender: genderInput,
               email: emailInput,
-              Phone: phoneInput,
+              Phone: phoneInput.toString(),
               dateOfBirth: dateOfBirthInput,
               location: locationInput,
               Ava: responseCloud.data.url,
               password: passwordInput,
             };
-            registerUser(updatedUserData, dispatch, navigate);
-            handleClick();
+            const result = await registerUser(
+              updatedUserData,
+              dispatch,
+              navigate
+            );
+            if (result) {
+              console.log(result);
+              if (result.status === 400) {
+                handleClick("Bad Request, this email has already been");
+              } else if (result.status === 201) handleClick("Add successfully");
+            }
           } catch (err) {
             console.log(err);
           }
@@ -117,8 +127,9 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
   };
   const [open, setOpen] = React.useState(false);
 
-  const handleClick = () => {
+  const handleClick = (message) => {
     setOpen(true);
+    setMessage(message);
   };
 
   const handleClose = (event, reason) => {
@@ -146,11 +157,11 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
       >
         <Alert
           onClose={handleClose}
-          severity="success"
+          severity="info"
           variant="filled"
-          sx={{ width: "100%", fontSize: "14px", backgroundColor: "#4BB543" }}
+          sx={{ width: "100%", fontSize: "14px", backgroundColor: "#61a7fc" }}
         >
-          Add successfully!
+          {message}
         </Alert>
       </Snackbar>
       <div
@@ -235,7 +246,7 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
                   className={`email ${errors.email ? "error-input" : ""}`}
                   type="text"
                   value={emailInput}
-                  placeholder="Nhập email"
+                  placeholder="Enter email"
                   onChange={(event) => {
                     setEmail(event.target.value);
                     if (errors.email) {
@@ -263,9 +274,23 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
                   value={phoneInput}
                   placeholder="Enter phone number"
                   onChange={(event) => {
-                    setPhone(event.target.value);
-                    if (errors.phone && phoneInput.length >= 9) {
-                      setErrors({ ...errors, phone: false });
+                    const input = event.target.value;
+
+                    // Kiểm tra nếu input chỉ chứa số
+                    if (/^\d*$/.test(input)) {
+                      setPhone(input.toString());
+
+                      // Kiểm tra nếu input có ít nhất 10 chữ số
+                      if (input.length >= 10) {
+                        console.log("hihi" + input.length);
+                        setErrors({ ...errors, phone: false });
+                      } else {
+                        console.log(input.length);
+                        setErrors({ ...errors, phone: true });
+                      }
+                    } else {
+                      // Nếu có ký tự không phải số, đặt lỗi
+                      setErrors({ ...errors, phone: true });
                     }
                   }}
                 />
@@ -274,7 +299,7 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
                 <label
                   style={{ color: "red", margin: "5px 0 0", fontSize: "14px" }}
                 >
-                  *Please fill out the phone number
+                  *Please fill out the phone number at least 10 number
                 </label>
               )}
             </div>
@@ -302,7 +327,7 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
           <div className="iconContainer">
             <CakeIcon />
           </div>
-          <label className="label">Ngày sinh: </label>
+          <label className="label">Birthday: </label>
           <div className="date-picker">
             <input
               type="date"
@@ -332,7 +357,7 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
           <div className="iconContainer">
             <WcIcon />
           </div>
-          <label className="label">Giới tính: </label>
+          <label className="label">Gender: </label>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
@@ -372,7 +397,7 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
           <div className="iconContainer">
             <BadgeIcon />
           </div>
-          <label className="label">Chức vụ: </label>
+          <label className="label">Position: </label>
           <div
             style={{
               width: "100px",
@@ -439,11 +464,11 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
         }}
       >
         <div>
-          <label className="labelUsername">Mật khẩu</label>
+          <label className="labelUsername">Password</label>
           <input
             className={`passwordInput ${errors.password ? "error-input" : ""}`}
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
             //value={passwordInput}
             onChange={(event) => {
               setPassword(event.target.value);
@@ -461,11 +486,11 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
           )}
         </div>
         <div>
-          <label className="labelUsername">Xác nhận mật khẩu</label>
+          <label className="labelUsername">Confirm Password</label>
           <input
             className={`passwordInput ${errors.password2 ? "error-input" : ""}`}
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
             onChange={(event) => {
               setPassword2(event.target.value);
               if (errors.password2 && password2Input === passwordInput) {
@@ -494,10 +519,10 @@ const AddStaffComponent = ({ onCloseUpdate }) => {
         }}
       >
         <button className="buttonCancel" onClick={() => resetAllStates()}>
-          Quay lại
+          Cancel
         </button>
         <button className="buttonAdd" onClick={() => handleUpload()}>
-          Thêm
+          Add
         </button>
       </div>
     </div>

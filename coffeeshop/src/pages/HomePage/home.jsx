@@ -13,8 +13,6 @@ import { Box, TextField, Button, Typography } from "@mui/material";
 import "./home.css";
 import WorkScheduleTable from "./WorkSchedule";
 import NotificationButton from "./Notification";
-import SearchBar from "../../components/searchBar/searchbar";
-import { SearchResultsList } from "../../components/searchBar/searchResultList";
 
 const HomePage = () => {
   const { token } = useSelector((state) => state.auths);
@@ -23,7 +21,27 @@ const HomePage = () => {
   const [isEditing, setIsEditing] = useState([false, false, false]);
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [isNotificationShown, setNotificationShown] = useState(false);
-  const [results, setResults] = useState([]);
+  const [expiredCount, setExpiredCount] = useState(0);
+
+  const fetchExpiredData = async () => {
+    try {
+      const response = await fetch("http://localhost:3005/inventory/expired", {
+        method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,  
+          },
+      });
+      if (response.ok) {
+        const expired = await response.json();
+        setExpiredCount(expired.count);
+      } else {
+        console.error("Request get expire data failed with status:", response.status);
+      }
+    } catch (error) {
+      console.error("Failed to fetch expired data:", error);
+    }
+  };
 
   const handleToggleClick = () => {
     setIsContentVisible(!isContentVisible);
@@ -291,6 +309,7 @@ const HomePage = () => {
   useEffect(() => {
     fetchWorkSchedule();
     fetchWelcome();
+    fetchExpiredData()
   }, []);
 
   return (
@@ -299,25 +318,22 @@ const HomePage = () => {
       <div className="container">
         <div
           className="flex justify-between "
-          style={{ marginTop: "2.15%", flexDirection: "row" }}
-        >
+          style={{ marginTop: "2.15%", flexDirection: "row" }}>
           <div className=" font-semibold medium_text">Home Page</div>
-          <div className=" bg-white " style={{ width: '27.08%'}}>
-            <SearchBar type="text" setResults={setResults} placeholder="Search..." />
-            {results && results.length > 0 && (
-              <SearchResultsList results={results} />
-            )}
-          </div>
+          
           <div
             style={{
+              // marginRight:"5%",
               width: "10%",
               justifyItems: "center",
               alignItems: "center",
+              padding: "5px"
             }}
           >
             <button
               className="notification-button"
               onClick={toggleNotificationList}
+              style={{ position: 'relative' }}
             >
               <div style={{ width: "70%", position: "relative",  aspectRatio: "1/1", overflow: "hidden", }}>
                 <div style={{aspectRatio: "1/1", overflow: "hidden", borderRadius:"100%"}}>
@@ -330,21 +346,24 @@ const HomePage = () => {
                 </div>
                 <NotificationsNoneRoundedIcon
                   className="notification-icon"
-                  style={{ color: isNotificationShown ? "red" : "inherit" }}
+                  style={{ color: (expiredCount > 0) ? "red" : "inherit" }}
                 />
+                {expiredCount > 0 && (
+                  <span className="notification-count">{expiredCount}</span>
+                )}
               </div>
-              {isNotificationShown && (
-                <div className="notification-list">
-                  <NotificationButton />
-                </div>
-              )}
             </button>
+            {isNotificationShown && (
+              <div className="notification-list" >
+                <NotificationButton/>
+              </div>
+            )}
           </div>
         </div>
         <div className="content">
           <a
             className="large_text font-semibold"
-            style={{ marginTop: "4%", textAlign: "left", color: "#714534" }}
+            style={{ marginTop: "1%", textAlign: "left", color: "#714534" }}
           >
             Hello {Name}!
           </a>

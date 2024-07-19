@@ -41,6 +41,8 @@ const getAllBooking = async (req, res) => {
 
         if (isBooked) {
           table.status = "booked";
+        } else if (table.status !== "occupied" && table.status === "booked") {
+          table.status = "available";
         }
       }
 

@@ -14,7 +14,7 @@ const modalStyles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "430px",
+    width: "470px",
     height: "440px",
     alignItems: "center",
     border: "1px solid #ccc",
@@ -53,7 +53,8 @@ const TableAdd = ({
     if (!table.bookingDate) tempErrors.bookingDate = true;
     if (!table.bookingTime) tempErrors.bookingTime = true;
     if (!table.numberOfPeople) tempErrors.numberOfPeople = true;
-    if (!table.phoneNumberBooking) tempErrors.phoneNumberBooking = true;
+    if (table.phoneNumberBooking.length < 8)
+      tempErrors.phoneNumberBooking = true;
     if (!table.note) tempErrors.note = true;
     if (!table.status) tempErrors.status = true;
     setErrors(tempErrors);
@@ -131,22 +132,22 @@ const TableAdd = ({
   return (
     <Modal isOpen={isOpenAdd} onRequestClose={onCloseAdd} style={modalStyles}>
       <div className="closebtn">
-        <label>Thông tin đặt bàn</label>
+        <label>Booking Information</label>
         <button className="buttonx" onClick={onCloseAdd}>
           x
         </button>
       </div>
       <div style={{ marginLeft: "5px", marginRight: "5px" }}>
         <div className="label-Input">
-          <label style={{ fontWeight: "bold" }}>Mã bàn: </label>
+          <label style={{ fontWeight: "bold" }}>Table Number: </label>
           <input type="text" className="inputH" value={tableNumber} />
         </div>
 
         <div className="label-Input">
-          <label style={{ fontWeight: "bold" }}>Tên khách hàng: </label>
+          <label style={{ fontWeight: "bold" }}>Customer: </label>
           <input
             type="text"
-            placeholder="Nhập họ tên"
+            placeholder="Enter name"
             name="customerName"
             className={`input2 ${errors.customerName ? "error-input" : ""}`}
             value={table.customerName}
@@ -161,9 +162,10 @@ const TableAdd = ({
 
         <div className="label-Input">
           <div style={{ display: "flex", alignItems: "center" }}>
-            <label style={{ fontWeight: "bold" }}>Ngày đặt: </label>
+            <label style={{ fontWeight: "bold" }}>Booked date: </label>
             <input
               type="date"
+              min={format(new Date(), "yyyy-MM-dd")}
               id="date"
               name="bookingDate"
               className={`date-picker1 ${
@@ -183,7 +185,7 @@ const TableAdd = ({
             />
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <label style={{ fontWeight: "bold" }}>Giờ đặt: </label>
+            <label style={{ fontWeight: "bold" }}>Time: </label>
             <input
               type="time"
               className={`time ${errors.bookingTime ? "error-input" : ""}`}
@@ -201,25 +203,39 @@ const TableAdd = ({
 
         <div className="label-Input">
           <div style={{ display: "flex", alignItems: "center" }}>
-            <label style={{ fontWeight: "bold" }}>SDT: </label>
+            <label style={{ fontWeight: "bold" }}>Phone Number: </label>
             <input
               type="text"
               className={`SDT ${
                 errors.phoneNumberBooking ? "error-input" : ""
               }`}
               name="phoneNumberBooking"
-              placeholder="Nhập số điện thoại"
+              placeholder="Enter PN"
               onChange={(e) => {
-                handleChange(e);
-                if (errors.phoneNumberBooking) {
-                  setErrors({ ...errors, phoneNumberBooking: false });
+                const input = e.target.value;
+
+                // Kiểm tra nếu input chỉ chứa số
+                if (/^\d*$/.test(input)) {
+                  handleChange(e);
+                  // Kiểm tra nếu input có ít nhất 10 chữ số
+                  if (input.length >= 9) {
+                    console.log("hihi" + input.length);
+                    setErrors({ ...errors, phoneNumberBooking: false });
+                  } else {
+                    console.log(input.length);
+                    setErrors({ ...errors, phoneNumberBooking: true });
+                  }
+                } else {
+                  // Nếu có ký tự không phải số, đặt lỗi
+                  console.log("ko phai so");
+                  setErrors({ ...errors, phoneNumberBooking: true });
                 }
               }}
               value={table.phoneNumberBooking}
             />
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <label style={{ fontWeight: "bold" }}>Số lượng khách </label>
+            <label style={{ fontWeight: "bold" }}>Guest Number: </label>
             <input
               type="number"
               min="1"
@@ -240,7 +256,7 @@ const TableAdd = ({
           </div>
         </div>
         <label className="label-Input" style={{ fontWeight: "bold" }}>
-          Chọn trạng thái bàn:{" "}
+          Choose status of table:{" "}
         </label>
         <RadioGroup
           row
@@ -257,24 +273,20 @@ const TableAdd = ({
           <FormControlLabel
             value="available"
             control={<Radio />}
-            label="Trống"
+            label="Available"
           />
           <FormControlLabel
             value="occupied"
             control={<Radio />}
-            label="Đang có khách"
+            label="Serving"
           />
-          <FormControlLabel
-            value="booked"
-            control={<Radio />}
-            label="Đặt trước"
-          />
+          <FormControlLabel value="booked" control={<Radio />} label="Booked" />
         </RadioGroup>
         <div className="label-Input">
           <label style={{ fontWeight: "bold" }}>Note: </label>
           <input
             type="text"
-            placeholder="Nhập ghi chú"
+            placeholder="Enter note"
             name="note"
             className={`input3 ${errors.note ? "error-input" : ""}`}
             value={table.note}

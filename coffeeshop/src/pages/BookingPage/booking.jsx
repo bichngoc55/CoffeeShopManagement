@@ -36,6 +36,15 @@ const Booking = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const [anchorE2, setAnchorE2] = useState(null);
+  const open2 = Boolean(anchorE2);
+  const handleClick2 = (event) => {
+    setAnchorE2(event.currentTarget);
+  };
+  const handleClose2 = () => {
+    setAnchorE2(null);
+  };
+  const [deleteSchedule, setDeleteSchedule] = useState();
 
   const [availableTables, setAvailableTables] = useState(0);
   const [occupiedTables, setOccupiedTables] = useState(0);
@@ -85,7 +94,6 @@ const Booking = () => {
   const AddTable = async () => {
     const newTable = {
       tableNumber: table.length + 1,
-      status: "available",
     };
     const response = await fetch("http://localhost:3005/booking/add", {
       method: "POST",
@@ -112,6 +120,7 @@ const Booking = () => {
     } else fetchData();
   };
   const deleteBooking = async (booking) => {
+    handleClose();
     const response = await fetch(
       `http://localhost:3005/booking/${selectedNumber}/${booking._id}`,
       {
@@ -141,6 +150,7 @@ const Booking = () => {
       });
 
       if (response.ok) {
+        console.log("goi fetch data trong booking");
         const data = await response.json();
         setTable(data);
         const statusCount = data.reduce((count, item) => {
@@ -189,8 +199,35 @@ const Booking = () => {
 
   useEffect(() => {
     fetchData();
-    fetchBookings();
-  }, []);
+    if (selectedTable) {
+      fetchBookings();
+    }
+  }, [selectedTable]);
+  const ClickTable = (item) => {
+    setSelectedTable(item._id);
+    setSelectedNumber(item.tableNumber);
+  };
+
+  const UpdateStatus = async (value) => {
+    handleClose2();
+    const response = await fetch(
+      `http://localhost:3005/booking/${selectedTable}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: value }),
+      }
+    );
+    if (!response.ok) {
+      if (response.status === 500) {
+        alert("Lỗi kết nối đến máy chủ");
+        navigate("/login");
+      }
+    } else fetchData();
+  };
 
   return (
     <Box sx={{ display: "flex", backgroundColor: "#f9f8fb" }}>
@@ -202,20 +239,20 @@ const Booking = () => {
           textAlign: "left",
         }}
       >
-        <label className="headerBooking">Quản lý đặt bàn</label>
+        <label className="headerBooking">Table & Booking</label>
 
         <div className="number">
           <div className="emptyheader">
-            <CheckCircleIcon />
-            <label>Bàn trống: {availableTables}</label>
+            <CheckCircleIcon sx = {{marginRight: '5px'}}/>
+            <label>Available: {availableTables}</label>
           </div>
           <div className="workheader">
-            <LocalCafeIcon />
-            <label>Bàn có khách: {occupiedTables}</label>
+            <LocalCafeIcon sx = {{marginRight: '5px'}}/>
+            <label>Occupied: {occupiedTables}</label>
           </div>
           <div className="bookheader">
-            <CalendarMonthIcon />
-            <label>Bàn đã đặt: {bookedTables}</label>
+            <CalendarMonthIcon sx = {{marginRight: '5px'}}/>
+            <label>Booked: {bookedTables}</label>
           </div>
         </div>
 
@@ -247,13 +284,11 @@ const Booking = () => {
                   key={item._id}
                   style={{ color: containerColor }}
                   onClick={() => {
-                    setSelectedTable(item._id);
-                    setSelectedNumber(item.tableNumber);
-                    fetchBookings();
+                    ClickTable(item);
                   }}
                 >
                   <TableRestaurantIcon />
-                  <label className="tableNumber">Bàn {item.tableNumber}</label>
+                  <label className="tableNumber">T. {item.tableNumber}</label>
                 </button>
               );
             })}
@@ -331,9 +366,28 @@ const Booking = () => {
         }}
       >
         <div className="bookinglist">
-          <label style={{ fontSize: "14px", fontWeight: "bold" }}>
+          <Button
+            onClick={handleClick2}
+            style={{ fontSize: "14px", fontWeight: "bold" }}
+          >
             Table {selectedNumber}
-          </label>
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorE2}
+            open={open2}
+            onClose={handleClose2}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={() => UpdateStatus("available")}>
+              Available
+            </MenuItem>
+            <MenuItem onClick={() => UpdateStatus("occupied")}>
+              Ocuppied
+            </MenuItem>
+          </Menu>
           <Button
             sx={{ fontSize: "14px", fontWeight: "bold" }}
             onClick={openModalAdd}
@@ -348,6 +402,7 @@ const Booking = () => {
             tableNumber={selectedNumber}
           />
         </div>
+
         <TableContainer component={Paper}>
           <Table aria-label="simple table">
             <TableHead>
@@ -397,7 +452,12 @@ const Booking = () => {
                       <EditIcon fontSize="small" sx={{ marginRight: "5px" }} />
                       Edit
                     </Button>
-                    <Button onClick={handleClick}>
+                    <Button
+                      onClick={(e) => {
+                        handleClick(e);
+                        setDeleteSchedule(booking);
+                      }}
+                    >
                       <DeleteIcon
                         fontSize="small"
                         sx={{ marginRight: "5px" }}
@@ -413,7 +473,7 @@ const Booking = () => {
                         "aria-labelledby": "basic-button",
                       }}
                     >
-                      <MenuItem onClick={() => deleteBooking(booking)}>
+                      <MenuItem onClick={() => deleteBooking(deleteSchedule)}>
                         Sure
                       </MenuItem>
                       <MenuItem onClick={handleClose}>Cancel</MenuItem>

@@ -7,10 +7,13 @@ import { useReactToPrint } from "react-to-print";
 import DrinkCard from "../../components/drinkCard/drinkCard";
 import Modal2 from "../../components/modal/modal";
 import DrinkTypeCard from "../../components/drinkType/DrinkType";
-import EmojiFoodBeverageOutlinedIcon from "@mui/icons-material/EmojiFoodBeverageOutlined";
-import FreeBreakfastOutlinedIcon from "@mui/icons-material/FreeBreakfastOutlined";
-import LocalBarOutlinedIcon from "@mui/icons-material/LocalBarOutlined";
-import EggOutlinedIcon from "@mui/icons-material/EggOutlined";
+import { MdOutlineLocalDrink } from "react-icons/md";
+import { TbCoffee } from "react-icons/tb";
+import { MdOutlineEmojiFoodBeverage } from "react-icons/md";
+import { FaGlassMartiniAlt } from "react-icons/fa";
+import { FaBowlFood } from "react-icons/fa6";
+import { LuMilk } from "react-icons/lu";
+
 import { getDrinkInformation } from "../../services/drinkService";
 import axios from "axios";
 import SearchBar from "../../components/searchBar/searchbar";
@@ -24,6 +27,10 @@ import PrintSection from "./printSection";
 import ModifyDialog from "../../components/ModifyDialog/ModifyDialog";
 import { QRCodeDisplay } from "./QRCode";
 import { DeleteConfirmationModal } from "../../components/DeleteConfirmationModal";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+
 const MenuPage = () => {
   const [drinksData, setDrinksData] = useState([]);
   const [results, setResults] = useState([]);
@@ -49,6 +56,62 @@ const MenuPage = () => {
   const [showModifyDialog, setShowModifyDialog] = useState(false);
   const [payment, setPayment] = useState("");
   const [showQRCode, setShowQRCode] = useState(false);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+  const [deleteBillItem, setDeleteBillItem] = useState();
+  const [deleteIndex, setDeleteIndex] = useState(0);
+  const handleItemClick = (e, billItem, index) => {
+    // Thực hiện các hành động bạn muốn ở đây
+    console.log("Clicked item:", billItem);
+    setAnchorEl(e.currentTarget);
+    setDeleteBillItem(billItem);
+    setDeleteIndex(index);
+  };
+
+  const increase1quantity = (itemIncrease, index) => {
+    setBillItems(
+      billItems.map((item, indexItem) => {
+        if (item.drink._id === itemIncrease.drink._id && indexItem === index) {
+          console.log(item);
+          return {
+            ...item,
+            quantity: item.quantity + 1,
+          };
+        }
+        return item;
+      })
+    );
+  };
+  const delete1quantity = (itemDelete, index) => {
+    if (itemDelete.quantity > 1) {
+      setBillItems(
+        billItems.map((item, indexItem) => {
+          if (
+            item.drink._id === itemDelete.drink._id &&
+            indexItem === index &&
+            itemDelete.quantity > 0
+          ) {
+            return {
+              ...item,
+              quantity: item.quantity - 1,
+            };
+          }
+          return item;
+        })
+      );
+      console.log(deleteBillItem);
+    } else {
+      setBillItems(billItems.filter((_, index) => index !== deleteIndex));
+      handleCloseMenu();
+    }
+  };
   //payment
   const handlePayment = async (type) => {
     if (type === "cash") {
@@ -118,31 +181,34 @@ const MenuPage = () => {
         },
         body: JSON.stringify({ status: "occupied" }),
       });
-      const bookingData = {
-        customerName: "N/A",
-        bookingDate: currentDate,
-        bookingTime: currentTime,
-      };
-
-      const bookingResponse = await fetch(
-        `http://localhost:3005/booking/add/hehe/${tableId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(bookingData),
-        }
-      );
-
-      if (!bookingResponse.ok) {
-        throw new Error(`HTTP error! status: ${bookingResponse.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      // const bookingData = {
+      //   customerName: "N/A",
+      //   bookingDate: currentDate,
+      //   bookingTime: currentTime,
+      // };
 
-      // console.log("Table status and booking information updated");
-      console.log("Table status updated", bookingResponse);
-      console.log("Table status updated", response);
+      // const bookingResponse = await fetch(
+      //   `http://localhost:3005/booking/add/hehe/${tableId}`,
+      //   {
+      //     method: "PATCH",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //     body: JSON.stringify(bookingData),
+      //   }
+      // );
+
+      // if (!bookingResponse.ok) {
+      //   throw new Error(`HTTP error! status: ${bookingResponse.status}`);
+      // }
+
+      // // console.log("Table status and booking information updated");
+      // console.log("Table status updated", bookingResponse);
+      // console.log("Table status updated", response);
 
       fetchAvailableTables();
     } catch (error) {
@@ -161,9 +227,41 @@ const MenuPage = () => {
 
       const data = await response.json();
       console.log("table data: ", data);
-      const availableData = data.filter(
-        (table) => table.status === "available"
-      );
+      // const availableData = data.filter(
+      //   (table) => table.status === "available"
+      // );
+      // if (availableData.length === 0) {
+      //   console.log("Không còn bàn trống");
+      //   return;
+      // }
+      // setAvailableTables(availableData);
+      const currentDate = new Date();
+      const availableData = data.filter((table) => {
+        if (table.status !== "available") return false;
+
+        if (table.Booking.length === 0) return true;
+
+        return !table.Booking.some((booking) => {
+          const bookingDate = new Date(booking.bookingDate);
+          const bookingTime = booking.bookingTime.split(":");
+          bookingDate.setHours(
+            parseInt(bookingTime[0]),
+            parseInt(bookingTime[1])
+          );
+          if (
+            bookingDate.getDate() === currentDate.getDate() &&
+            bookingDate.getMonth() === currentDate.getMonth() &&
+            bookingDate.getFullYear() === currentDate.getFullYear()
+          ) {
+            // Tính khoảng thời gian giữa thời gian hiện tại và bookingTime
+            const timeDiff = (bookingDate - currentDate) / (1000 * 60 * 60); // Chuyển đổi thành giờ
+
+            // Nếu khoảng thời gian nhỏ hơn 4 giờ, không thêm vào danh sách available
+            return timeDiff >= 0 && timeDiff < 3;
+          }
+          return false;
+        });
+      });
       if (availableData.length === 0) {
         console.log("Không còn bàn trống");
         return;
@@ -301,7 +399,7 @@ const MenuPage = () => {
     }
     const existingItemIndex = billItems.findIndex(
       (item) =>
-        item.drink.id === drink.id &&
+        item.drink._id === drink._id &&
         item.mood === selectedMood &&
         item.size === selectedSize &&
         item.ice === selectedIce &&
@@ -311,6 +409,7 @@ const MenuPage = () => {
       const newBillItems = [...billItems];
       newBillItems[existingItemIndex].quantity += 1;
       setBillItems(newBillItems);
+      console.log(billItems);
     } else {
       const newBillItem = {
         drink: { ...drink, Price: adjustedPrice },
@@ -324,17 +423,37 @@ const MenuPage = () => {
       setBillItems([...billItems, newBillItem]);
     }
   };
-  const handleSearch = (searchTerm) => {
-    if (!searchTerm) {
+  // const handleSearch = (searchTerm) => {
+  //   if (!searchTerm) {
+  //     setResults([]);
+  //     return;
+  //   }
+
+  //   const filteredResults = drinksData.filter((item) =>
+  //     item.Name.toLowerCase().includes(searchTerm.toLowerCase())
+  //   );
+  //   setResults(filteredResults);
+  // };
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    if (!term) {
       setResults([]);
       return;
     }
 
     const filteredResults = drinksData.filter((item) =>
-      item.Name.toLowerCase().includes(searchTerm.toLowerCase())
+      item.Name.toLowerCase().includes(term.toLowerCase())
     );
     setResults(filteredResults);
+    console.log(
+      "Kết quả search của '" + term + "' là:",
+      filteredResults.map((item) => item.Name).join(", ")
+    );
   };
+
   useEffect(() => {
     getDrinkInformation().then((res) => {
       setDrinksData(res);
@@ -345,6 +464,11 @@ const MenuPage = () => {
   };
   const handleHideModal = () => {
     setShowModal(false);
+  };
+  const handleResultClick = (result) => {
+    // Thêm bất kỳ xử lý nào bạn muốn khi một kết quả được click
+    setResults([]);
+    console.log(`Selected: ${result.Name}`);
   };
   const handleAddDrink = async (drink) => {
     setShowModal(true);
@@ -433,6 +557,7 @@ const MenuPage = () => {
   const handleHideModifyDialog = () => {
     setShowModifyDialog(false);
   };
+
   return (
     <Box sx={{ display: "flex" }}>
       <DashBoard />
@@ -442,19 +567,15 @@ const MenuPage = () => {
           width: "100%",
           flexDirection: "row",
           backgroundColor: "#4B3621",
+          position: "relative",
         }}
       >
         <div className="menu-section">
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography
-              className="medium_text"
-              fontSize={28}
-              fontWeight={"bold"}
-              color="white"
-            >
-              Choose category
+            <Typography fontSize={28} fontWeight={"bold"} color="white">
+              Menu Category
             </Typography>
-            <SearchBar
+            {/* <SearchBar
               placeholder="Search category or menu"
               width="130%"
               height="24%"
@@ -462,7 +583,26 @@ const MenuPage = () => {
             />
             {results && results.length > 0 && (
               <SearchResultsList results={results} />
-            )}
+            )} */}
+            <div
+              style={{
+                position: "relative",
+                zIndex: 5,
+              }}
+            >
+              <SearchBar
+                placeholder="Search category or menu"
+                width="130%"
+                height="24%"
+                setResults={handleSearch}
+              />
+              {results.length > 0 && (
+                <SearchResultsList
+                  results={results}
+                  onResultClick={handleResultClick}
+                />
+              )}
+            </div>
           </Box>
           <Box
             className="drinkType"
@@ -473,28 +613,33 @@ const MenuPage = () => {
             }}
           >
             <DrinkTypeCard
+              title="All"
+              icon={MdOutlineLocalDrink}
+              onClick={handleSetSelectedDrinkType}
+            />
+            <DrinkTypeCard
               title="Coffee"
-              icon={EmojiFoodBeverageOutlinedIcon}
+              icon={TbCoffee}
               onClick={handleSetSelectedDrinkType}
             />
             <DrinkTypeCard
               title="Tea"
-              icon={FreeBreakfastOutlinedIcon}
+              icon={MdOutlineEmojiFoodBeverage}
               onClick={handleSetSelectedDrinkType}
             />
             <DrinkTypeCard
               title="Juice"
-              icon={LocalBarOutlinedIcon}
+              icon={FaGlassMartiniAlt}
               onClick={handleSetSelectedDrinkType}
             />
             <DrinkTypeCard
               title="Milk based"
-              icon={EggOutlinedIcon}
+              icon={LuMilk}
               onClick={handleSetSelectedDrinkType}
             />
             <DrinkTypeCard
               title="Topping"
-              icon={EggOutlinedIcon}
+              icon={FaBowlFood}
               onClick={handleSetSelectedDrinkType}
             />
           </Box>
@@ -505,7 +650,7 @@ const MenuPage = () => {
               fontWeight={"bold"}
               color="white"
             >
-              Coffee Menu
+              Menu Items
             </Typography>
             <div className="ButtonComponent">
               <button className="btn" onClick={handleAddDrink}>
@@ -544,86 +689,137 @@ const MenuPage = () => {
             />
           </Box>
         </div>
-        <div className="bill-detail">
-          <Typography
-            color="#000009"
-            padding="10%"
-            fontSize="2em"
-            fontWeight="bold"
-          >
-            Bill
-          </Typography>
-          {selectedDrink && (
-            <BillCard
-              billItems={billItems}
-              calculateTotalPrice={calculateTotalPrice}
+        <div className="bill-detail-container">
+          <div className="bill-detail">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "baseline",
+                marginTop: "5%",
+                marginBottom: "5%",
+              }}
+            >
+              <Typography
+                color="#000009"
+                fontSize="2em"
+                fontWeight="bold"
+                fontFamily={"Montserrat"}
+              >
+                Bill
+              </Typography>
+              <Button onClick={() => setBillItems([])}>
+                <Typography
+                  fontSize="1.2em"
+                  fontFamily="Montserrat"
+                  fontWeight="550"
+                  color={"red"}
+                >
+                  Clear All
+                </Typography>
+              </Button>
+            </div>
+
+            {selectedDrink && (
+              <BillCard
+                billItems={billItems}
+                calculateTotalPrice={calculateTotalPrice}
+                clickItem={handleItemClick}
+                inCrease1Quantity={increase1quantity}
+                delete1quantity={delete1quantity}
+              />
+            )}
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleCloseMenu}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  setBillItems(
+                    billItems.filter((_, index) => index !== deleteIndex)
+                  );
+                  handleCloseMenu();
+                }}
+              >
+                Delete drink
+              </MenuItem>
+              <MenuItem onClick={handleCloseMenu}>Cancel</MenuItem>
+            </Menu>
+            <div
+              style={{
+                borderWidth: "0.6px",
+                borderColor: "black",
+                margin: "5%",
+                width: "90%",
+              }}
             />
-          )}
-          <div className="hehe">
-            --------------------------------------------------
-          </div>
-          {totalPirce > 0 && (
-            <div className="totalPrice">
+            {totalPirce > 0 && (
+              <div className="totalPrice">
+                <Typography
+                  color="#000009"
+                  fontSize="1.2em"
+                  fontWeight="bold"
+                  marginTop="4%"
+                  fontFamily={"Montserrat"}
+                >
+                  Total
+                </Typography>
+                <div className="Price">{totalPirce}.000 VND</div>
+              </div>
+            )}
+            <div className="payment">
               <Typography
                 color="#000009"
                 padding="10%"
-                fontSize="1.7em"
+                fontSize="1.5em"
                 fontWeight="bold"
-                paddingTop="4%"
-                paddingBottom="0%"
-                marginBottom="0%"
+                fontFamily={"Montserrat"}
               >
-                Total
+                Payment Method
               </Typography>
-              <div className="Price">{totalPirce} VND</div>
-            </div>
-          )}
-          <div className="payment">
-            <Typography
-              color="#000009"
-              padding="10%"
-              fontSize="1.7em"
-              fontWeight="bold"
-            >
-              Payment Method
-            </Typography>
-            <div className="PaymentMethod">
-              <div
-                className="momo"
-                style={payment === "Digital" ? selectedPaymentStyle : {}}
-              >
-                <IconButton onClick={() => handlePayment("momo")}>
-                  <WalletOutlinedIcon />
-                </IconButton>
+              <div className="PaymentMethod">
+                <div
+                  className="momo"
+                  style={payment === "Digital" ? selectedPaymentStyle : {}}
+                >
+                  <IconButton onClick={() => handlePayment("momo")}>
+                    <WalletOutlinedIcon />
+                  </IconButton>
+                </div>
+                <div
+                  className="cash"
+                  style={payment === "Cash" ? selectedPaymentStyle : {}}
+                >
+                  <IconButton onClick={() => handlePayment("cash")}>
+                    <LocalAtmOutlinedIcon />
+                  </IconButton>
+                </div>
+                <div
+                  className="bank"
+                  onClick={() => handlePayment("bank")}
+                  style={payment === "Card" ? selectedPaymentStyle : {}}
+                >
+                  <IconButton>
+                    <AccountBalanceOutlinedIcon />
+                  </IconButton>
+                </div>
               </div>
-              <div
-                className="cash"
-                style={payment === "Cash" ? selectedPaymentStyle : {}}
-              >
-                <IconButton onClick={() => handlePayment("cash")}>
-                  <LocalAtmOutlinedIcon />
-                </IconButton>
+              <div className="button">
+                <button
+                  className="add-to-payment"
+                  onClick={handlePrint}
+                  disabled={billItems.length === 0}
+                >
+                  Print Bill
+                </button>
               </div>
-              <div
-                className="bank"
-                onClick={() => handlePayment("bank")}
-                style={payment === "Card" ? selectedPaymentStyle : {}}
-              >
-                <IconButton>
-                  <AccountBalanceOutlinedIcon />
-                </IconButton>
-              </div>
-            </div>
-            <div className="button">
-              <button
-                className="add-to-payment"
-                onClick={handlePrint}
-                disabled={billItems.length === 0}
-              >
-                Print Bill
-              </button>
-            </div>
-            {/* <div ref={componentRef}>
+              {/* <div ref={componentRef}>
               {shouldRenderPrintSection && (
                 <PrintSection
                   shouldRenderPrintSection={shouldRenderPrintSection}
@@ -632,33 +828,34 @@ const MenuPage = () => {
                 />
               )}
             </div> */}
-            <div style={{ display: "none" }}>
-              <div ref={componentRef}>
-                <PrintSection
-                  shouldRenderPrintSection={shouldRenderPrintSection}
-                  Name={Name}
-                  savedBill={savedBillDetails}
-                  billItems={billItems}
-                  totalPrice={totalPirce}
-                  payment={payment}
-                />
+              <div style={{ display: "none" }}>
+                <div ref={componentRef}>
+                  <PrintSection
+                    shouldRenderPrintSection={shouldRenderPrintSection}
+                    Name={Name}
+                    savedBill={savedBillDetails}
+                    billItems={billItems}
+                    totalPrice={totalPirce}
+                    payment={payment}
+                  />
+                </div>
               </div>
+              {showQRCode && savedBillDetails && (
+                <QRCodeDisplay
+                  billId={savedBillDetails._id}
+                  onClose={() => setShowQRCode(false)}
+                />
+              )}
             </div>
-            {showQRCode && savedBillDetails && (
-              <QRCodeDisplay
-                billId={savedBillDetails._id}
-                onClose={() => setShowQRCode(false)}
+            {selectedDrink && (
+              <DeleteConfirmationModal
+                isOpen={showDeleteConfirmation}
+                onClose={() => setShowDeleteConfirmation(false)}
+                onConfirm={handleConfirmDelete}
+                selectedDrink={selectedDrink}
               />
             )}
           </div>
-          {selectedDrink && (
-            <DeleteConfirmationModal
-              isOpen={showDeleteConfirmation}
-              onClose={() => setShowDeleteConfirmation(false)}
-              onConfirm={handleConfirmDelete}
-              selectedDrink={selectedDrink}
-            />
-          )}
         </div>
       </Box>
     </Box>

@@ -9,6 +9,7 @@ import InventoryRow from "../../components/InventoryRow/inventoryRow";
 import Table from "@mui/material/Table";
 import SwapVertOutlinedIcon from "@mui/icons-material/SwapVertOutlined";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import SearchIcon from "@mui/icons-material/Search";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
@@ -29,19 +30,37 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
     fontSize: "18px",
     fontWeight: "normal",
-    fontFamily: "Arial",
+    fontFamily: "Montserrat",
   },
 }));
 
 const Inventory = () => {
   const token = useSelector((state) => state.auths.token);
+  const { Position } = useSelector((state) => state.auths.user);
   const [value, setValue] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [originalInventoryData, setOriginalInventoryData] = useState([]);
   const [inventoryData, setInventoryData] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [inventoryCount, setInventoryCount] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortField, setSortField] = useState(null);
+
+  const handleSearch = (searchTerm) => {
+    setSearchTerm(searchTerm);
+    if (!searchTerm) {
+      setInventoryData(originalInventoryData);
+      setInventoryCount(originalInventoryData.length);
+    } else {
+      const lowercasedFilter = searchTerm.toLowerCase();
+      const filteredData = originalInventoryData.filter((inventory) =>
+        inventory.name.toLowerCase().includes(lowercasedFilter)
+      );
+      setInventoryData(filteredData);
+      setInventoryCount(filteredData.length);
+    }
+  };
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -50,6 +69,8 @@ const Inventory = () => {
   const handleCloseModal = () => {
     setModalOpen(false);
   };
+
+  //Gọi dữ liệu kho từ db
   const fetchInventoryData = async () => {
     try {
       const response = await fetch("http://localhost:3005/inventory/", {
@@ -62,6 +83,7 @@ const Inventory = () => {
 
       setInventoryData(inventory);
       setInventoryCount(inventory.length);
+      setOriginalInventoryData(inventory);
     } catch (error) {
       console.error("Failed to fetch bill data:", error);
     }
@@ -79,11 +101,13 @@ const Inventory = () => {
       });
       const data = await response.json();
       console.log(data);
-      fetchInventoryData();
+      await fetchInventoryData();
+      setSearchTerm(""); // Reset search term after editing
     } catch (error) {
       console.error("Request failed with error:", error);
     }
   };
+  
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`http://localhost:3005/inventory/${id}`, {
@@ -95,16 +119,19 @@ const Inventory = () => {
       });
       const data = await response.json();
       console.log(data);
-      fetchInventoryData();
+      await fetchInventoryData();
+      setSearchTerm(""); // Reset search term after deleting
     } catch (error) {
       console.error("Request failed with error:", error);
     }
   };
+
   useEffect(() => {
     fetchInventoryData();
   }, []);
+
   const handleSortAccordingToStorageData = () => {
-    const sortedData = [...inventoryData].sort((a, b) => {
+    const sortedData = [...originalInventoryData].sort((a, b) => {
       const dateA = new Date(a.NgayNhapKho);
       const dateB = new Date(b.NgayNhapKho);
       return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
@@ -114,8 +141,9 @@ const Inventory = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     setSortField("NgayNhapKho");
   };
+
   const handleSortAccordingToExpireDate = () => {
-    const sortedData = [...inventoryData].sort((a, b) => {
+    const sortedData = [...originalInventoryData].sort((a, b) => {
       const dateA = new Date(a.ExpiryDate);
       const dateB = new Date(b.ExpiryDate);
       return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
@@ -126,8 +154,6 @@ const Inventory = () => {
     setSortField("ExpiryDate");
   };
 
-  const user = useSelector((state) => state.auths.user);
-  const Name = user.Name;
   const handleSubmitModal = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -135,7 +161,6 @@ const Inventory = () => {
       name: formData.get("name"),
       quantity: formData.get("quantity"),
       BaoQuan: formData.get("description"),
-      StaffName: Name,
       unit: formData.get("unit"),
       price: formData.get("price"),
       ExpiryDate: formData.get("expiryDate"),
@@ -152,7 +177,8 @@ const Inventory = () => {
       });
       const data = await response.json();
       console.log("data2 : " + JSON.stringify(data));
-      fetchInventoryData();
+      await fetchInventoryData();
+      setSearchTerm(""); // Reset search term after adding new item
     } catch (error) {
       console.error("Request failed with error:", error);
     }
@@ -164,28 +190,43 @@ const Inventory = () => {
       <DashBoard />
       <div
         style={{
-          paddingLeft: "16px",
+          marginLeft:"2.64%",
+          marginRight: "2.64%",
           textAlign: "left",
-        }}
-      >
-        <label style={{ width: "100%" }} className="headerBooking">
-          Màn Hình Nhập Kho/Nguyên Liệu
-        </label>
+          marginTop: "2.15%",
+          marginBottom:"2.15%"
+        }}>
+        <div style={{display: "flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", marginBottom:"1%"}} >
+          <label className="medium_text">
+            Inventory Page
+          </label>
+          <div style={{ position: "relative" }}>
+            <div className="search-bar-staff">
+              <SearchIcon className="fa fa-search" />
+              <input
+                style={{ height: "80%", fontSize: "12px" }}
+                placeholder="Search by ingredient name"
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box
             sx={{
               display: "flex",
-              width: "20%",
+              width: "30%",
               p: 2,
               marginBottom: "0.5%",
-              borderRadius: "4px",
             }}
           >
             <Typography
-              marginLeft="3%"
+              marginLeft="1%"
               color="#9398A9"
               fontSize="1.2em"
               fontWeight="bold"
+              fontFamily={"Montserrat"}
             >
               Details
             </Typography>
@@ -194,29 +235,33 @@ const Inventory = () => {
               color="#412D26"
               fontSize="1.2em"
               fontWeight="bold"
+              fontFamily={"Montserrat"}
             >
-              {inventoryCount} nguyên liệu
+              {inventoryCount} ingredients
             </Typography>
           </Box>
-          <Box sx={{ display: "flex", marginRight: "4%" }}>
-            <Typography
-              color="#412D26"
-              fontSize="1.2em"
-              fontWeight="bold"
-              alignItems="center"
-              alignContent={"center"}
-            >
-              Thêm
-            </Typography>
-            <IconButton onClick={handleOpenModal}>
-              <AddCircleOutlineOutlinedIcon color="#412D26" />
-            </IconButton>
-            <ModalAddIngredients
-              open={modalOpen}
-              handleClose={handleCloseModal}
-              handleSubmit={handleSubmitModal}
-            />
-          </Box>
+          {Position === 'admin' && (
+            <Box sx={{ display: "flex", marginRight: "1%" }}>
+              <Typography
+                color="#412D26"
+                fontSize="1.2em"
+                fontWeight="bold"
+                alignItems="center"
+                alignContent={"center"}
+                fontFamily={"Montserrat"}
+              >
+                Add New Ingredient
+              </Typography>
+              <IconButton onClick={handleOpenModal}>
+                <AddCircleOutlineOutlinedIcon color="#412D26" />
+              </IconButton>
+              <ModalAddIngredients
+                open={modalOpen}
+                handleClose={handleCloseModal}
+                handleSubmit={handleSubmitModal}
+              />
+            </Box>
+          )}
         </Box>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -228,7 +273,7 @@ const Inventory = () => {
                   }}
                   align="center"
                 >
-                  Tên Nguyên Liệu
+                  Ingredient Name
                 </StyledTableCell>
                 <StyledTableCell
                   style={{
@@ -237,7 +282,7 @@ const Inventory = () => {
                   }}
                   align="center"
                 >
-                  Số Lượng
+                  Quantity
                 </StyledTableCell>
                 <StyledTableCell
                   style={{
@@ -246,7 +291,7 @@ const Inventory = () => {
                   }}
                   align="center"
                 >
-                  Miêu Tả Bảo Quản
+                  Product Description
                 </StyledTableCell>
                 <StyledTableCell
                   style={{
@@ -254,7 +299,7 @@ const Inventory = () => {
                   }}
                   align="center"
                 >
-                  Đơn vị
+                  Unit
                 </StyledTableCell>
                 <StyledTableCell
                   style={{
@@ -262,24 +307,24 @@ const Inventory = () => {
                   }}
                   align="center"
                 >
-                  Giá tiền
+                  Price
                 </StyledTableCell>
-                <StyledTableCell
+                {/* <StyledTableCell
                   style={{
                     borderRight: "1px solid rgba(224, 224, 224, 1)",
                   }}
                   align="center"
                 >
                   Nhân Viên
-                </StyledTableCell>
+                </StyledTableCell> */}
                 <StyledTableCell
                   style={{
                     borderRight: "1px solid rgba(224, 224, 224, 1)",
                   }}
                   align="center"
                 >
-                  <Box sx={{ display: "flex" }}>
-                    Ngày Nhập
+                  <Box sx={{ display: "flex", alignItems:"center", justifyContent:"center" }}>
+                   Date Received
                     <IconButton onClick={handleSortAccordingToStorageData}>
                       {sortField === "NgayNhapKho" && sortOrder === "asc" ? (
                         <ArrowDropUpOutlinedIcon />
@@ -296,8 +341,8 @@ const Inventory = () => {
                   }}
                 >
                   {" "}
-                  <Box sx={{ display: "flex" }}>
-                    Ngày Hết Hạn
+                  <Box sx={{ display: "flex" , alignItems:"center", justifyContent:"center"}}>
+                   Expiration Date 
                     <IconButton onClick={handleSortAccordingToExpireDate}>
                       {sortField === "ExpiryDate" && sortOrder === "asc" ? (
                         <ArrowDropUpOutlinedIcon />
@@ -307,14 +352,16 @@ const Inventory = () => {
                     </IconButton>{" "}
                   </Box>
                 </StyledTableCell>
-                <StyledTableCell
-                  style={{
-                    borderRight: "1px solid rgba(224, 224, 224, 1)",
-                  }}
-                  align="center"
-                >
-                  Options
-                </StyledTableCell>
+                {Position === 'admin' && (
+                  <StyledTableCell
+                    style={{
+                      borderRight: "1px solid rgba(224, 224, 224, 1)",
+                    }}
+                    align="center"
+                  >
+                    Options
+                  </StyledTableCell>
+                )}
               </TableRow>
             </TableHead>
             <TableBody>

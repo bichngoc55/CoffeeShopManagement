@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { TableRow, TableCell, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -10,7 +11,21 @@ import { tableCellClasses } from "@mui/material/TableCell";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.body}`]: {
     fontSize: "14px",
-    color: "#70768C",
+    color: "black",
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+  // Add this line to create a border for each row
+  '& td': {
+    borderBottom: '1px solid rgba(224, 224, 224, 1)',
   },
 }));
 
@@ -21,6 +36,7 @@ const InventoryRow = ({
   handleEdit,
   handleDelete,
 }) => {
+  const { Position } = useSelector((state) => state.auths.user);
   const [editData, setEditData] = useState({ ...data });
   const toggleEdit = () => {
     setEditingId(isEditing ? null : data._id);
@@ -36,7 +52,7 @@ const InventoryRow = ({
   };
 
   return (
-    <TableRow hover>
+    <StyledTableRow hover>
       <StyledTableCell align="center" sx={{ fontFamily: "Montserrat" }}>
         {isEditing ? (
           <input
@@ -104,7 +120,7 @@ const InventoryRow = ({
           data.price
         )}
       </StyledTableCell>
-      <StyledTableCell sx={{ fontFamily: "Montserrat" }} align="center">
+      {/* <StyledTableCell sx={{ fontFamily: "Montserrat" }} align="center">
         {isEditing ? (
           <input
             type="text"
@@ -116,7 +132,7 @@ const InventoryRow = ({
         ) : (
           data.StaffName
         )}
-      </StyledTableCell>
+      </StyledTableCell> */}
       <StyledTableCell sx={{ fontFamily: "Montserrat" }} align="center">
         {isEditing ? (
           <input
@@ -143,33 +159,27 @@ const InventoryRow = ({
           new Date(data.ExpiryDate).toLocaleDateString()
         )}
       </StyledTableCell>
-      <StyledTableCell
-        align="center"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-          height: "100%",
-          marginTop: "20%",
-          justifyContent: "space-between",
-        }}
-      >
-        <IconButton
-          aria-label="Edit ingredient"
-          sx={{ flexGrow: 1 }}
-          onClick={toggleEdit}
+      {Position === 'admin' && (
+        <StyledTableCell
+          align="center"
+          sx={{
+            alignItems: "center",
+            width: "10%",
+            height: "100%",
+            justifyContent: "space-between",
+          }}
         >
-          {isEditing ? <DoneOutlineOutlinedIcon /> : <EditIcon />}
-        </IconButton>
-        <IconButton
-          aria-label="Delete ingredient"
-          sx={{ flexGrow: 1 }}
-          onClick={() => handleDelete(data._id)}
-        >
-          <DeleteIcon />
-        </IconButton>
-      </StyledTableCell>
-    </TableRow>
+          <IconButton           aria-label="Edit ingredient"
+  sx={{  }} onClick={toggleEdit}>
+            {isEditing ? <DoneOutlineOutlinedIcon /> : <EditIcon />}
+          </IconButton>
+          <IconButton           aria-label="Delete ingredient"
+ sx={{  }} onClick={() => handleDelete(data._id)}>
+            <DeleteIcon />
+          </IconButton>
+        </StyledTableCell>
+      )}
+    </StyledTableRow > 
   );
 };
 

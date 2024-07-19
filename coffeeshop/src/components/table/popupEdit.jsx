@@ -23,8 +23,8 @@ const modalStyles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "430px",
-    height: "530px",
+    width: "35%",
+    height: "90%",
     alignItems: "center",
     border: "1px solid #ccc",
     borderRadius: " 20px",
@@ -58,6 +58,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
   const [updateAva, setUpdateAva] = useState(false);
   const [image, setImage] = useState();
   const [file, setFile] = useState("");
+  const [errors, setErrors] = useState({});
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add("noscroll");
@@ -77,6 +78,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
     location: "Ho Chi Minh",
     password: "",
   });
+  const [passwordInput, setPasswordInput] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -103,6 +105,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
             password: data.password,
           });
           setFile(data.Ava);
+          setPasswordInput(data.password);
           console.log("user.location" + user);
         } else {
           if (response.status === 500) {
@@ -140,54 +143,56 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
     }));
   };
   const handleUpload = async () => {
-    if (updateAva) {
-      const formdata = new FormData();
-      formdata.append("file", image);
-      formdata.append("upload_preset", "Searn-musicapp");
-      formdata.append("cloud_name", "dzdso60ms");
-      const responseCloud = await axios.post(
-        "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
-        formdata,
-        {
+    if (validateInputs()) {
+      if (updateAva) {
+        const formdata = new FormData();
+        formdata.append("file", image);
+        formdata.append("upload_preset", "Searn-musicapp");
+        formdata.append("cloud_name", "dzdso60ms");
+        const responseCloud = await axios.post(
+          "https://api.cloudinary.com/v1_1/dzdso60ms/image/upload",
+          formdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        const avanew = { Ava: responseCloud.data.url };
+        const response1 = await fetch(`http://localhost:3005/staff/${id}`, {
+          method: "PATCH",
           headers: {
-            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
+          body: JSON.stringify(avanew),
+        });
+        if (!response1.ok) {
+          console.log("Lỗi up Ava" + response1);
         }
-      );
-      const avanew = { Ava: responseCloud.data.url };
-      const response1 = await fetch(`http://localhost:3005/staff/${id}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(avanew),
-      });
-      if (!response1.ok) {
-        console.log("Lỗi up Ava" + response1);
       }
-    }
-    try {
-      const response = await fetch(`http://localhost:3005/staff/${id}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      if (!response.ok) {
-        if (response.status === 500) {
-          alert("Lỗi kết nối đến máy chủ");
-          navigate("/login");
+      try {
+        const response = await fetch(`http://localhost:3005/staff/${id}`, {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        });
+        if (!response.ok) {
+          if (response.status === 500) {
+            alert("Lỗi kết nối đến máy chủ");
+            navigate("/login");
+          }
+          throw new Error("Failed to update user info");
+        } else {
+          console.log(user);
+          onCloseUpdate();
         }
-        throw new Error("Failed to update user info");
-      } else {
-        console.log(user);
-        onCloseUpdate();
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
   };
   const showToast = () => {
@@ -202,10 +207,24 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
       theme: "light",
     });
   };
+  const validateInputs = () => {
+    let tempErrors = {};
+    if (!user.Name) tempErrors.name = true;
+    if (!user.email) tempErrors.email = true;
+    if (!user.Phone && user.Phone < 8) tempErrors.phone = true;
+    if (!user.dateOfBirth) tempErrors.dateOfBirth = true;
+    if (!user.gender) tempErrors.gender = true;
+    if (!user.Position) tempErrors.position = true;
+    if (!user.location) tempErrors.location = true;
+    if (!user.password) tempErrors.password = true;
+    if (!passwordInput) tempErrors.password2 = true;
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose} style={modalStyles}>
       <div className="sbtnt">
-        <label>Thông tin nhân viên</label>
+        <label>Staff information</label>
         <button onClick={onClose} className="sbtnx">
           x
         </button>
@@ -237,16 +256,21 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         </div>
         <div>
           <div className="slabel-input">
-            <label className="slabel">Họ tên:</label>
+            <label className="slabel">Full Name:</label>
             <div className="sinput-container">
               <AccountCircleIcon className="iconH" />
               <input
                 type="text"
-                placeholder="Nhập họ tên"
+                placeholder="Enter staff's full name"
                 name="Name"
-                className="susername"
+                className={`susername ${errors.name ? "error-input" : ""}`}
                 defaultValue={user.Name}
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  if (errors.name) {
+                    setErrors({ ...errors, name: false });
+                  }
+                }}
               />
             </div>
           </div>
@@ -257,26 +281,50 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
               <EmailIcon className="iconH" />
               <input
                 type="text"
-                placeholder="Nhập email"
-                className="semail"
+                placeholder="Enter email"
+                className={`semail ${errors.email ? "error-input" : ""}`}
                 name="email"
                 defaultValue={user.email}
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  if (errors.email) {
+                    setErrors({ ...errors, email: false });
+                  }
+                }}
               />
             </div>
           </div>
 
           <div className="slabel-input">
-            <label className="slabel">SDT:</label>
+            <label className="slabel">Phone:</label>
             <div className="sinput-container">
               <PhoneIphoneIcon className="iconH" />
               <input
                 type="text"
-                placeholder="Nhập sdt"
-                className="sphonea"
+                placeholder="Enter phone number"
+                className={`sphonea ${errors.phone ? "error-input" : ""}`}
                 name="Phone"
                 defaultValue={user.Phone}
-                onChange={handleChange}
+                onChange={(event) => {
+                  const input = event.target.value;
+
+                  // Kiểm tra nếu input chỉ chứa số
+                  if (/^\d*$/.test(input)) {
+                    handleChange(event);
+
+                    // Kiểm tra nếu input có ít nhất 10 chữ số
+                    if (input.length >= 10) {
+                      console.log("hihi" + input.length);
+                      setErrors({ ...errors, phone: false });
+                    } else {
+                      console.log(input.length);
+                      setErrors({ ...errors, phone: true });
+                    }
+                  } else {
+                    // Nếu có ký tự không phải số, đặt lỗi
+                    setErrors({ ...errors, phone: true });
+                  }
+                }}
               />
             </div>
           </div>
@@ -284,7 +332,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
       </div>
       <div className="sfirst">
         <div style={{ display: "flex", alignItems: "center" }}>
-          <label className="slabel">Ngày sinh:</label>
+          <label className="slabel">Date of Birth:</label>
           <input
             type="date"
             className="sdatepick"
@@ -296,7 +344,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
       </div>
       <div className="sfirst" style={{ justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <label className="slabelGender">Giới tính</label>
+          <label className="slabelGender">Gender</label>
           <Select
             value={user.gender}
             name="gender"
@@ -318,7 +366,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         </div>
 
         <div style={{ display: "flex", alignItems: "center" }}>
-          <label className="slabelGender">Chức vụ</label>
+          <label className="slabelGender">Position</label>
           <Select
             name="Position"
             value={user.Position}
@@ -335,7 +383,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
             }}
           >
             <MenuItem value={"admin"}>Admin</MenuItem>
-            <MenuItem value={"staff"}>Nhân viên</MenuItem>
+            <MenuItem value={"staff"}>Staff</MenuItem>
           </Select>
         </div>
       </div>
@@ -344,16 +392,21 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         className="sfirst"
         style={{ alignItems: "center", justifyContent: "space-between" }}
       >
-        <label className="slabelLocation">Địa chỉ:</label>
+        <label className="slabelLocation">Address:</label>
         <div className="sinputlocation">
           <LocationOnIcon className="iconH" />
           <input
             type="text"
-            placeholder="Nhập địa chỉ"
+            placeholder="Enter address"
             name="location"
-            className="slocation"
-            value={user.location || "unknown"}
-            onChange={(e) => handleChange(e)}
+            className={`slocation ${errors.location ? "error-input" : ""}`}
+            value={user.location || ""}
+            onChange={(e) => {
+              handleChange(e);
+              if (errors.location) {
+                setErrors({ ...errors, location: false });
+              }
+            }}
           />
         </div>
       </div>
@@ -362,15 +415,20 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         className="sfirst"
         style={{ alignItems: "center", justifyContent: "space-between" }}
       >
-        <label className="slabelLocation">Mật khẩu:</label>
+        <label className="slabelLocation">Password:</label>
         <div className="sinputpassword">
           <VpnKeyIcon className="iconH" />
           <input
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
             name="password"
-            className="spass1"
-            onChange={handleChange}
+            className={`spass1 ${errors.password ? "error-input" : ""}`}
+            onChange={(event) => {
+              handleChange(event);
+              if (errors.password && user.password.length >= 7) {
+                setErrors({ ...errors, password: false });
+              }
+            }}
           />
         </div>
       </div>
@@ -379,13 +437,19 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         className="sfirst"
         style={{ alignItems: "center", justifyContent: "space-between" }}
       >
-        <label className="slabelLocation">Xác nhận mật khẩu:</label>
+        <label className="slabelLocation">Confirm Password:</label>
         <div className="sinputpassword">
           <VpnKeyIcon className="iconH" />
           <input
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder="Enter password"
             className="spass1"
+            onChange={(event) => {
+              handleChange(event);
+              if (passwordInput === user.password) {
+                setErrors({ ...errors, password2: false });
+              }
+            }}
           />
         </div>
       </div>
@@ -400,7 +464,7 @@ const PopupStaff = ({ isOpen, onClose, onCloseUpdate, id }) => {
         }}
       >
         <button className="sbtnCN" onClick={() => handleUpload()}>
-          Cập nhập
+          Update
         </button>
       </div>
     </Modal>

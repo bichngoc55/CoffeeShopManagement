@@ -1,12 +1,12 @@
 import React from "react";
-import { Card, CardContent, Typography } from "@mui/material";
-import { IconButton } from "@mui/material";
+import { Card, CardContent, Typography, IconButton } from "@mui/material";
 import "./DrinkType.css";
-const DrinkTypeCard = ({ title, onClick, icon: Icon }) => {
+
+const DrinkTypeCard = ({ title, onClick, icon: Icon, iconSize = "60%" }) => {
   return (
     <div className="div">
       <div className="div-2" onClick={() => onClick({ title })}>
-        <Icon />
+        <Icon size={iconSize} /> {/* Set the icon size here */}
       </div>
       <div className="div-3">{title}</div>
     </div>

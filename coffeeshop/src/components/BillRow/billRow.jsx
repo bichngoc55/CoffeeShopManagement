@@ -9,9 +9,11 @@ import {
   TableHead,
   TableBody,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 
@@ -19,7 +21,7 @@ const StyledTableRow = styled(TableRow)(({ theme, index }) => ({
   backgroundColor: index % 2 === 0 ? "#F5F5DC" : "white",
   "&:hover": {
     backgroundColor: "#F9F8FB",
-    color: "#70768C",
+    color: "black",
   },
   "&:last-child td, &:last-child th": {
     borderBottom: 0,
@@ -37,15 +39,15 @@ const StyledCollapseBox = styled(Box)(({ theme }) => ({
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#B49D96",
-    color: "#70768C",
-    fontSize: "10px",
-    fontWeight: "bold",
+    color: "black",
+    fontSize: "14px",
+    fontWeight: "550",
     fontFamily: "Montserrat",
     padding: "10px",
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: "15px",
-    color: "#70768C",
+    fontSize: "14px",
+    color: "black",
     fontWeight: "normal",
     fontFamily: "Montserrat",
   },
@@ -56,6 +58,7 @@ const StyledCollapse = styled(Collapse)({
 });
 
 const BillRow = ({ data, handleDelete, handleEdit }) => {
+  const { Position } = useSelector((state) => state.auths.user);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open2 = Boolean(anchorEl);
@@ -92,34 +95,47 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
         <StyledTableCell align="center">
           {new Date(data.createdAt).toLocaleString()}
         </StyledTableCell>
-        <StyledTableCell align="center">
-          <IconButton
-            aria-label="more"
-            aria-controls="long-menu"
-            aria-haspopup="true"
-            onClick={handleClick}
-          >
-            <MoreVertIcon />
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
+        {Position === 'admin' && (
+          <StyledTableCell align="center">
+            <IconButton
+              aria-label="more"
+              aria-controls="long-menu"
+              aria-haspopup="true"
+              onClick={handleClick}
             >
-              <MenuItem
+
+              <DeleteIcon />
+              <Menu
+                id="simple-menu"
                 aria-label="delete"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  handleClose();
-                  handleDelete(data._id);
-                }}
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
               >
-                Delete
-              </MenuItem>
-            </Menu>
-          </IconButton>
-        </StyledTableCell>
+                <MenuItem
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleClose();
+                    handleDelete(data._id);
+                  }}
+                  style={{fontFamily:"Montserrat", color: "black", fontWeight:"450"}}
+                >
+                  Delete
+                </MenuItem>
+                <MenuItem
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleClose();
+                  }}
+                  style={{fontFamily:"Montserrat", color: "black", fontWeight:"450"}}
+                >
+                  Cancel
+                </MenuItem>
+              </Menu>
+            </IconButton>
+          </StyledTableCell>
+        )}
       </StyledTableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
@@ -127,9 +143,9 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
             <StyledCollapseBox margin={1}>
               <Typography
                 marginLeft="3%"
-                color="#9398A9"
-                fontSize="1.7em"
-                fontWeight="bold"
+                color="black"
+                fontSize="1.5em"
+                fontWeight="550"
               >
                 Drink Details
               </Typography>

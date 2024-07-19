@@ -9,6 +9,7 @@ import Table from "@mui/material/Table";
 import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
 import TableBody from "@mui/material/TableBody";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import SearchIcon from "@mui/icons-material/Search";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import { saveAs } from "file-saver";
@@ -17,29 +18,49 @@ import { Typography } from "@mui/material";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import "./history.css";
+
 const History = () => {
   const token = useSelector((state) => state.auths.token);
+  const { Position } = useSelector((state) => state.auths.user);
   const [value, setValue] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [originalBillData, setOriginalBillData] = useState([]);
   const [billData, setBillData] = useState([]);
   const [billCount, setBillCount] = useState(0);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortField, setSortField] = useState(null);
 
+  const handleSearch = (searchTerm) => {
+    setSearchTerm(searchTerm);
+    if (!searchTerm) {
+      setBillData(originalBillData);
+      setBillCount(originalBillData.length);
+    } else {
+      const lowercasedFilter = searchTerm.toLowerCase();
+      const filteredData = originalBillData.filter((bill) =>
+        bill.Staff.Name.toLowerCase().includes(lowercasedFilter)
+      );
+      setBillData(filteredData);
+      setBillCount(filteredData.length);
+    }
+  };
+
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: "#EFF0F6",
-      color: "#4F5E74",
-      fontSize: "15px",
+      color: "black",
+      fontSize: "14.5px",
       fontWeight: "bold",
       fontFamily: "Montserrat",
       padding: "10px",
     },
     [`&.${tableCellClasses.body}`]: {
-      fontSize: "18px",
+      fontSize: "14px",
       fontWeight: "normal",
-      fontFamily: "Arial",
+      fontFamily: "Montserrat",
     },
   }));
+  
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`http://localhost:3005/history/${id}`, {
@@ -61,6 +82,7 @@ const History = () => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    setSearchTerm("");
     if (newValue === 0) {
       handleTodayTabClick();
     } else if (newValue === 1) {
@@ -121,6 +143,7 @@ const History = () => {
 
     return csvRows.join("\n");
   };
+  
   const fetchBillData = async (startDate, endDate) => {
     try {
       const query =
@@ -150,6 +173,7 @@ const History = () => {
         return detailsResponse.json();
       });
       const billsWithDetails = await Promise.all(billsWithDetailsPromises);
+      setOriginalBillData(billsWithDetails);
       setBillData(billsWithDetails);
       console.log("Bill Details" + billData);
     } catch (error) {
@@ -162,34 +186,26 @@ const History = () => {
     const startDate = new Date(today.setHours(0, 0, 0, 0)).toISOString();
     const endDate = new Date(today.setHours(23, 59, 59, 999)).toISOString();
     fetchBillData(startDate, endDate);
+    setSearchTerm("");
   };
-
+  
   const handleYesterdayTabClick = () => {
     const today = new Date();
     const yesterday = new Date(today.setDate(today.getDate() - 1));
     const startDate = new Date(yesterday.setHours(0, 0, 0, 0)).toISOString();
     const endDate = new Date(yesterday.setHours(23, 59, 59, 999)).toISOString();
     fetchBillData(startDate, endDate);
+    setSearchTerm("");
   };
-
+  
   const handleMonthTabClick = () => {
     const today = new Date();
-    const startDate = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      1
-    ).toISOString();
-    const endDate = new Date(
-      today.getFullYear(),
-      today.getMonth() + 1,
-      0,
-      23,
-      59,
-      59,
-      999
-    ).toISOString();
+    const startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
+    const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
     fetchBillData(startDate, endDate);
+    setSearchTerm("");
   };
+
   const handleSortAccordingToTotalPrice = async () => {
     const sortedData = [...billData].sort((a, b) => {
       return sortOrder === "asc"
@@ -202,24 +218,49 @@ const History = () => {
     setSortField("totalAmount");
   };
   useEffect(() => {
+  if (value === 0) {
     handleTodayTabClick();
-  }, []);
+  } else if (value === 1) {
+    handleYesterdayTabClick();
+  } else if (value === 2) {
+    handleMonthTabClick();
+  }
+}, [value]);
+  
+// }, [value]);
   return (
     <Box sx={{ display: "flex" }}>
       <DashBoard />
       <div
         style={{
-          paddingLeft: "16px",
-          textAlign: "left",
+          marginLeft:"2.64%",
+          marginRight: "2.64%",
+          textAlign: "left", 
+          width: "100%",
+          marginTop: "2.15%" 
         }}
       >
-        <label className="headerBooking">Lịch Sử Giao Dịch</label>
+        <div style={{display: "flex", flexDirection:"row", alignItems:"center", justifyContent:"space-between", marginBottom:"2%"}} >
+          <label className="medium_text">
+            Transaction History
+          </label>
+          <div style={{ position: "relative" }}>
+            <div className="search-bar-staff">
+              <SearchIcon className="fa fa-search" />
+              <input
+                style={{ height: "80%", fontSize: "12px" }}
+                placeholder="Search by staff name"
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
         <Box
-          sx={{
+          sx={{ 
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            width: "100%",
           }}
         >
           <Box
@@ -267,14 +308,16 @@ const History = () => {
               color="#9398A9"
               fontSize="1.2em"
               fontWeight="bold"
+              fontFamily={"Montserrat"}
             >
               Details
             </Typography>
             <Typography
               marginLeft="3%"
-              color="#412D26"
+              color="black"
               fontSize="1.2em"
               fontWeight="bold"
+              fontFamily={"Montserrat"}
             >
               {billCount} bills
             </Typography>
@@ -296,7 +339,7 @@ const History = () => {
         </Box>
 
         <TableContainer component={Paper}>
-          <Table style={{ width: 1150 }} aria-label="customized table">
+          <Table style={{ width: "100%", alignSelf:"center" }} aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell
@@ -370,7 +413,7 @@ const History = () => {
                 >
                   Order Date
                 </StyledTableCell>
-                <StyledTableCell align="center">Option</StyledTableCell>
+                {Position === 'admin' && ( <StyledTableCell align="center">Option</StyledTableCell>)}
               </TableRow>
             </TableHead>
             <TableBody
@@ -394,6 +437,7 @@ const History = () => {
                       color="#412D26"
                       fontSize="1.2em"
                       fontWeight="bold"
+                      fontFamily={"Montserrat"}
                     >
                       No data available for this period
                     </Typography>

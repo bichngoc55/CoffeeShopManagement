@@ -71,6 +71,21 @@ export const register = async (req, res) => {
   }
 };
 
+export const updateUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log("User updated: " + user);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 /* LOGGING IN */
 export const login = async (req, res) => {
   try {
@@ -156,7 +171,10 @@ export const forgotPassword = async (req, res) => {
     oldUser.resetToken = resetToken;
     oldUser.resetTokenExpiration = Date.now() + 30 * 60 * 1000;
     await oldUser.save();
-    const newPassword = "12345678";
+    //const newPassword = "12345678";
+    const newPassword = Math.floor(Math.random() * 100000000)
+      .toString()
+      .padStart(8, "0");
     const hashedPassword = await argon2.hash(newPassword);
     await User.updateOne(
       {
@@ -180,7 +198,7 @@ export const forgotPassword = async (req, res) => {
       from: "coffeeshopxh@gmail.com",
       to: oldUser.email,
       subject: "Reset Password",
-      text: "Your new password: 12345678. You can change it later.",
+      text: "Your new password: " + newPassword + ".You can change it later.",
     };
 
     transporter.sendMail(mailOptions, function (err, info) {
@@ -191,7 +209,7 @@ export const forgotPassword = async (req, res) => {
       }
     });
 
-    res.json({ status: "Check your new passworn in email" });
+    res.json({ status: "Check your new password in email" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

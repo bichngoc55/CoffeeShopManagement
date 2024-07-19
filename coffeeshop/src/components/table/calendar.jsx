@@ -32,8 +32,8 @@ const modalStyles = {
 const CalendarTable = ({ isOpen, onClose }) => {
   const [events, setEvents] = useState([]);
   const { token } = useSelector((state) => state.auths);
-
-  const fetchBookings = useCallback(async () => {
+  const [hasFetched, setHasFetched] = useState(false);
+  const fetchBookings = async () => {
     const response = await fetch(`http://localhost:3005/booking/`, {
       method: "GET",
       headers: {
@@ -43,16 +43,24 @@ const CalendarTable = ({ isOpen, onClose }) => {
     });
 
     if (response.ok) {
+      console.log("get data trong calendar");
       const data = await response.json();
       const convertedEvents = convertToCalendarEvents(data);
+      setHasFetched(true);
       setEvents(convertedEvents);
     }
-  });
+  };
   useEffect(() => {
-    if (isOpen) {
+    if (!hasFetched) {
       fetchBookings();
     }
-  }, [isOpen, fetchBookings]);
+  }, [hasFetched]);
+  // Reset hasFetched when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setHasFetched(false);
+    }
+  }, [isOpen]);
   const convertToCalendarEvents = (bookingData) => {
     // Kiểm tra xem bookingData có phải là một mảng hay không
     if (!Array.isArray(bookingData)) {
@@ -60,7 +68,7 @@ const CalendarTable = ({ isOpen, onClose }) => {
     }
 
     return bookingData
-      .filter((table) => table.status === "booked") // Lọc các bàn có status là "booked"
+      .filter((table) => table.Booking.length > 0) // Lọc các bàn có status là "booked"
       .flatMap((table) => {
         return table.Booking.map((booking) => {
           // Kết hợp ngày và giờ
@@ -79,7 +87,7 @@ const CalendarTable = ({ isOpen, onClose }) => {
 
           return {
             id: booking._id,
-            title: `${booking.bookingTime || "NO TIME"} - Bàn ${
+            title: `${booking.bookingTime || "NO TIME"} - Table ${
               table.tableNumber || "N/A"
             }`,
             start: startDate,
@@ -103,7 +111,7 @@ const CalendarTable = ({ isOpen, onClose }) => {
     return (
       <>
         <b>
-          {extendedProps.bookingTime || "NO TIME"} - Bàn{" "}
+          {extendedProps.bookingTime || "NO TIME"} - Table{" "}
           {extendedProps.tableNumber || "N/A"}
         </b>
       </>

@@ -9,8 +9,8 @@
   gap: 10px;
   flex-direction: column;
   width: 100%;
-  margin-left: 4%;
-  margin-right: 4%;
+  /* margin-left: 4%;
+  margin-right: 4%; */
   justify-content: space-between;
 }
 
@@ -24,7 +24,7 @@
 }
 .imgDrink {
   width: 20%;
-  height: 70px;
+  height: auto;
   object-fit: cover;
   object-position: center;
   border-radius: 10px;
@@ -41,21 +41,10 @@
   margin-left: 0%;
   width: 50%;
 }
-.size {
+.option {
   font-family: Montserrat, sans-serif;
-  font-size: 0.8em;
-}
-.mood {
-  font-family: Montserrat, sans-serif;
-  font-size: 0.8em;
-}
-.ice {
-  font-family: Montserrat, sans-serif;
-  font-size: 0.8em;
-}
-.sugar {
-  font-family: Montserrat, sans-serif;
-  font-size: 0.8em;
+  font-size: 1em;
+  color: black
 }
 .price {
   font-family: Montserrat, sans-serif;
@@ -75,10 +64,6 @@
   color: red;
   font-family: Montserrat, sans-serif;
   font-size: 1em;
-}
-.quantity {
-  font-family: Montserrat, sans-serif;
-  font-size: 0.8em;
 }
 .span {
   font-family: Montserrat, sans-serif;
