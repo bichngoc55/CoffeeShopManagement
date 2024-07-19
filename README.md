@@ -23,6 +23,8 @@ Quán cà phê Java Joy là một điểm đến thú vị cho những người 
 - Quản lý nguyên vật liệu: Theo dõi số lượng nguyên vật liệu như cà phê, sữa, đường, để đảm bảo không bị thiếu hụt.
 - Tích hợp thanh toán và ghi lại lịch sử hoá đơn. 
 - Cho phép chủ cửa hàng quản lý doanh thu, nhân viên.
+- Hiển thị các thống kê, biểu đồ về việc kinh doanh của quán theo thời gian.
+- Cho phép chủ cửa hàng chỉnh sửa các quy định và điều khoản, đồng thời cho phép thiết lập lịch làm việc cho nhân viên. Nhân viên cũng có thể xem những thông tin trên trong ứng dụng.
   
 ## <a name="technology">Công Nghệ</a>
 
