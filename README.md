@@ -13,7 +13,7 @@
   
 # WEB QUẢN LÝ QUÁN COFFEE JAVA JOY
 
-Quán cà phê Java Joy là một điểm đến thú vị cho những người yêu thích cà phê. Không gian ấm cúng, thực đơn đa dạng và nhân viên thân thiện. Hãy ghé thăm để trải nghiệm những ly cà phê ngon và không gian thú vị! ☕🌟
+Đây là một trang web dành cho chủ cửa hàng và nhân viên để quản lý quán cà phê. Với giao diện thân thiện, dễ sử dụng cùng đầy đủ các chức năng cần thiết để điều hành quán cà phê, JavaJoy mong muốn sẽ đem đến cho người sử dụng những trải nghiệm làm việc tốt nhất và năng suất làm việc hiệu quả nhất! ☕🌟
 
  ## <a name="features">Chức năng</a>
 
