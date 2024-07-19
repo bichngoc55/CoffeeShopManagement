@@ -66,8 +66,6 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    // console.log("new drink",newDrink);
-    // Handle image upload and form submission logic here
     handleAddDrink(newDrink);
     onClose();
     setNewDrink(initialDrinkState);
@@ -166,6 +164,7 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
               required
               label="Drink Price"
               sx={textFieldStyles}
+              aria-label="Drink Price"
               name="Price"
               type="number"
               value={newDrink.Price}
@@ -215,7 +214,7 @@ const Modal2 = ({ open, onClose, handleAddDrink }) => {
             </TextField>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <Button type="submit" color="primary">
+            <Button type="submit" color="primary" aria-label="Add">
               Add
             </Button>
           </Box>

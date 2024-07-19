@@ -108,6 +108,7 @@ const BillRow = ({ data, handleDelete, handleEdit }) => {
               onClose={handleClose}
             >
               <MenuItem
+                aria-label="delete"
                 onClick={(event) => {
                   event.stopPropagation();
                   handleClose();
